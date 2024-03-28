@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import LogInScreen from './src/screens/LogIn.js'
 import AdminHomeScreen from './src/screens/admin/HomeScreen.js'
 import AdminStaffScreen from './src/screens/admin/StaffScreen.js'
@@ -11,6 +12,8 @@ import AdminTableScreen from './src/screens/admin/TableScreen.js'
 import AdminReportScreen from './src/screens/admin/ReportScreen.js'
 import AdminSaleScreen from './src/screens/admin/SaleScreen.js'
 
+import DishDetail from './src/screens/admin/menu/DishDetail';
+import AddDish from './src/screens/admin/menu/AddDish';
 
 export default function App() {
 const Stack = createNativeStackNavigator();
@@ -47,6 +50,16 @@ const Stack = createNativeStackNavigator();
 
                  }}
             />
+            <Stack.Screen name="dish_detail" component={DishDetail}
+                  options={{
+                     headerShown: false,
+                  }}
+            />
+            <Stack.Screen name="add_dish" component={AddDish}
+                  options={{
+                     headerShown: false,
+                  }}
+            />
             <Stack.Screen name="table_admin" component={AdminTableScreen}
                  options={{
                     headerShown: false,
@@ -64,7 +77,9 @@ const Stack = createNativeStackNavigator();
                     headerShown: false,
 
                  }}
-            />
+                 />
+
+
 
         </Stack.Navigator>
     </NavigationContainer>
