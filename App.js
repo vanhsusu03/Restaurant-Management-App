@@ -14,7 +14,7 @@ import AdminSaleScreen from './src/screens/admin/SaleScreen.js'
 
 import DishDetail from './src/screens/admin/menu/DishDetail';
 import AddDish from './src/screens/admin/menu/AddDish';
-
+import AddStaff from './src/screens/admin/staff/AddStaff.js';
 export default function App() {
 const Stack = createNativeStackNavigator();
   return (
@@ -33,6 +33,12 @@ const Stack = createNativeStackNavigator();
                  }}
             />
             <Stack.Screen name="staff_admin" component={AdminStaffScreen}
+                 options={{
+                    headerShown: false,
+
+                 }}
+            />
+            <Stack.Screen name="add_staff" component={AddStaff}
                  options={{
                     headerShown: false,
 
