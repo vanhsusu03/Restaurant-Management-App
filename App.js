@@ -10,6 +10,10 @@ import AdminMenuScreen from './src/screens/admin/MenuScreen.js'
 import AdminTableScreen from './src/screens/admin/TableScreen.js'
 import AdminReportScreen from './src/screens/admin/ReportScreen.js'
 import AdminSaleScreen from './src/screens/admin/SaleScreen.js'
+import AdminAccountScreen from './src/screens/admin/AccountScreen.js'
+import AdminUserScreen from './src/screens/admin/UserScreen.js'
+import SideBar from './src/components/SideBar.js'
+//import AppHeader from './src/components/Header.js'
 
 
 export default function App() {
@@ -24,6 +28,12 @@ const Stack = createNativeStackNavigator();
                 }}
             />
             <Stack.Screen name="home_admin" component={AdminHomeScreen}
+                 options={{
+                    headerShown: false,
+
+                 }}
+            />
+            <Stack.Screen name="sidebar" component={SideBar}
                  options={{
                     headerShown: false,
 
@@ -65,7 +75,18 @@ const Stack = createNativeStackNavigator();
 
                  }}
             />
+            <Stack.Screen name="account_admin" component={AdminAccountScreen}
+                 options={{
+                    headerShown: false,
 
+                 }}
+            />
+            <Stack.Screen name="user_admin" component={AdminUserScreen}
+                 options={{
+                    headerShown: false,
+
+                 }}
+            />
         </Stack.Navigator>
     </NavigationContainer>
   );
@@ -79,3 +100,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+

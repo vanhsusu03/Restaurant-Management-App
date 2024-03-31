@@ -21,11 +21,8 @@ const LogInScreen = ({ navigation }) => {
         // console.log(email, password);
         firebase.auth().signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
-                // Signed in
-                // var user = userCredential.user;
-                // console.log(user);
-                // ...
-
+                setEmail('');
+                setPassword('');
                 navigation.navigate('home_admin');
             })
             .catch((error) => {
@@ -62,6 +59,7 @@ const LogInScreen = ({ navigation }) => {
                         setcustomError('')
                     }}
                         onChangeText={(text) => setEmail(text)}
+                        value={email}
                     />
                 </View>
                 <View style={styles.inputout}>
@@ -74,6 +72,7 @@ const LogInScreen = ({ navigation }) => {
 
                         secureTextEntry={showpassword === false ? true : false}
                         onChangeText={(text) => setPassword(text)}
+                        value={password}
                     />
 
                     <Octicons name={showpassword == false ? "eye-closed" : "eye"} size={24} color="black" onPress={() => setShowpassword(!showpassword)} />

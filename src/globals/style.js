@@ -5,6 +5,7 @@ module.exports = {
         text2: 'grey',
         text3: 'black',
         textgreen: 'green',
+        bg: 'rgb(238,156,56)',
     },
     titles: {
         title1: 30,
