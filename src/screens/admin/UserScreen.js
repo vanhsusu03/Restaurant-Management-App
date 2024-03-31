@@ -36,7 +36,7 @@ const AdminUserScreen = ({ navigation }) => {
             }
 
             if(password !== cpassword) {
-                setcustomError('Mật khẩu không trùng khớp.');
+                setcustomError('Mật khẩu không trùng khớp!');
                 return;
             }
 
@@ -47,7 +47,7 @@ const AdminUserScreen = ({ navigation }) => {
             setChangePasswordSuccess(true); // Đánh dấu thành công
             setTimeout(() => {
                 setChangePasswordSuccess(false); // Đặt lại thông báo sau một khoảng thời gian
-            }, 5000);
+            }, 3000);
 
         } catch (error) {
             console.error("Error changing password:", error);
@@ -72,10 +72,20 @@ const AdminUserScreen = ({ navigation }) => {
                     <Text style={styles.link}>Đổi mật khẩu</Text>
                 </View>
             </TouchableOpacity>
-            {changePasswordSuccess && <Text style={styles.successMsg}>Mật khẩu đã được thay đổi thành công!</Text>}
             {isChangePasswordClicked && (
                 <View style={styles.changepw}>
-                    {customerror !== '' && <Text style={styles.errormsg}>{customerror}</Text>}
+                    {changePasswordSuccess &&
+                        <View style={styles.successContainer}>
+                            <FontAwesome5 style={styles.successIcon} name='check-circle' size={26} color='green' />
+                            <Text style={styles.successMsg}>Mật khẩu đã được thay đổi!</Text>
+                        </View>
+                    }
+                    {customerror !== '' &&
+                        <View style={styles.errorContainer}>
+                            <FontAwesome5 style={styles.errorIcon} name='exclamation-circle' size={26} color='red' />
+                            <Text style={styles.errormsg}>{customerror}</Text>
+                        </View>
+                    }
                     <View style={styles.inputout}>
                         <AntDesign name="user" size={24} color={colors.text2} />
                         <Text style={styles.input}>{email}</Text>
@@ -149,11 +159,25 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         width: '80%',
     },
+    errorContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+        width: '80%',
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        paddingVertical: 5,
+        borderColor: 'red',
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    errorIcon: {
+        marginRight: 5,
+    },
     errormsg: {
         color: 'red',
         fontSize: 18,
-        marginBottom: 10,
-        padding: 10,
+        paddingLeft: 10,
     },
     linkContainer: {
         flexDirection: 'row',
@@ -170,12 +194,25 @@ const styles = StyleSheet.create({
         marginRight: 10,
         color: colors.text1,
     },
+    successContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+        width: '80%',
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        paddingVertical: 5,
+        borderColor: 'green',
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    successIcon: {
+        marginRight: 5,
+    },
     successMsg: {
         color: 'green',
         fontSize: 18,
-        marginBottom: 10,
-        padding: 10,
-        marginLeft: 30,
+        paddingLeft: 10,
     },
 });
 

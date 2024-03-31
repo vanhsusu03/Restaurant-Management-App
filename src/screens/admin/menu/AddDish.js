@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, Button,  TouchableOpacity, Alert, ActivityIndicator} from 'react-native';
 import { firebase } from '../../../../Firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
-import {getImage, addDoc } from '../../../utils/firestore';
+import {getImage, addDish } from '../../../utils/firestore';
 import HomeHeadNav from '../../../components/Header.js'
 
 const AddDish = ({navigation, route}) => {
@@ -24,7 +24,7 @@ const AddDish = ({navigation, route}) => {
     const handleSave = async () => {
         try {
             setIsLoading(true); 
-            const imageUrl = await addDoc(type, name, status, price, image);
+            const imageUrl = await addDish(type, name, status, price, image);
             onChangeImage(imageUrl);
 
             Alert.alert(
