@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback} from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity, Alert, Modal, TextInput } from 'react-native';
-import SlideCard from '../../component/SlideCard';
+import SlideCard from '../../components/SlideCard';
 import { firebase } from '../../../Firebase/firebase';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { fetchData } from '../../utils/firestore';
+import HomeHeadNav from '../../components/Header.js'
+
 
 const AdminMenuScreen = ({ navigation }) => {
     const [data, setData] = useState([]);
@@ -62,7 +64,7 @@ const AdminMenuScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.menu}>Menu</Text>
+            <HomeHeadNav navigation={navigation} title='MENU' />
 
             <TouchableOpacity style={styles.add} onPress={handleAdd }>
                 <FontAwesome6 name="add" style={styles.icon}/>
@@ -105,7 +107,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        marginTop: 40,
     },
     buttonContainer: {
         flexDirection: 'row',

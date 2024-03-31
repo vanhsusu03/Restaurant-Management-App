@@ -3,12 +3,12 @@ import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
 import { colors, veg, nonveg } from '../../globals/style.js'
 import HomeHeadNav from '../../components/Header.js'
 
-const AdminCustomerScreen = ({ navigation }) => {
+const AdminAccountScreen = ({ navigation }) => {
     return (
         <View>
-            <HomeHeadNav navigation={navigation} title='QUẢN LÝ KHÁCH HÀNG' />
+            <HomeHeadNav navigation={navigation} title='TÀI KHOẢN' />
         </View>
     )
 }
 
-export default AdminCustomerScreen;
+export default AdminAccountScreen;

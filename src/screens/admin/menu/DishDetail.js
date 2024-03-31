@@ -4,6 +4,7 @@ import { firebase } from '../../../../Firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
 import {getImage, editDoc, deleteDoc, addDoc } from '../../../utils/firestore';
 import { MaterialIcons } from '@expo/vector-icons';
+import HomeHeadNav from '../../../components/Header.js'
 
 
 const DishDetail = ({navigation, route }) => {
@@ -69,7 +70,7 @@ const DishDetail = ({navigation, route }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.menu}>Chi tiết</Text>
+            <HomeHeadNav navigation={navigation} title='CHI TIẾT' />
 
             <TouchableOpacity style={styles.delete} onPress={handelDelete}>
                 <MaterialIcons name="delete-forever" style={styles.icon} />
@@ -150,7 +151,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        marginTop: 45,
     },
     menu: {
         fontSize: 25,

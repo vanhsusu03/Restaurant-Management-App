@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, Image, Button,  TouchableOpacity, Al
 import { firebase } from '../../../../Firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
 import {getImage, addDoc } from '../../../utils/firestore';
+import HomeHeadNav from '../../../components/Header.js'
 
 const AddDish = ({navigation, route}) => {
     const {listType} = route.params;
@@ -53,7 +54,7 @@ const AddDish = ({navigation, route}) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.menu}>Thêm món</Text>
+            <HomeHeadNav navigation={navigation} title='THÊM MÓN ĂN' />
             <Text style={styles.name}>Tên món</Text>
             <TextInput  
                 style={styles.input}
@@ -130,7 +131,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        marginTop: 45,
     },
     menu: {
         fontSize: 25,
