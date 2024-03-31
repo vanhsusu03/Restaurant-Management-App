@@ -7,6 +7,7 @@ import { colors, veg, nonveg } from '../../../globals/style.js';
 import { firebase } from '../../../../Firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
 import { getImage, addDoc } from '../../../utils/firestore';
+import HomeHeadNav from '../../../components/Header.js'
 
 
 const AddStaff = ({ navigation, route }) => {
@@ -54,7 +55,7 @@ const AddStaff = ({ navigation, route }) => {
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }
         ]}>
-            <Text style={styles.title}>Thêm nhân viên</Text>
+            <HomeHeadNav navigation={navigation} title='THÊM NHÂN VIÊN' />
             <ScrollView>
                 <Text style={styles.header}>Loại tài khoản:</Text>
                 <TouchableOpacity
@@ -185,7 +186,6 @@ const AddStaff = ({ navigation, route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 45,
         backgroundColor: '#f9f9f9',
     },
     title: {

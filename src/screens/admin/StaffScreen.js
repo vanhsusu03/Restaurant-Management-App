@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, FlatList, Button, TextInput, StyleSheet, Image, TouchableOpacity, Animated, Keyboard, Platform } from 'react-native';
 import { colors, veg, nonveg } from '../../globals/style.js'
 import { FontAwesome6 } from '@expo/vector-icons';
+import HomeHeadNav from '../../components/Header.js'
+
 const AdminStaffScreen = ({ navigation }) => {
     // return (
     //     <View></View>
@@ -72,7 +74,7 @@ const AdminStaffScreen = ({ navigation }) => {
 
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }]}>
-            <Text style={styles.title}>Quản lý nhân viên</Text>
+            <HomeHeadNav navigation={navigation} title='QUẢN LÝ NHÂN VIÊN' />
 
             <TouchableOpacity style={styles.addButton} onPress={handleAddStaff}>
                 <FontAwesome6 name="add" style={styles.icon} />
@@ -85,7 +87,6 @@ const AdminStaffScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 45,
         backgroundColor: '#f9f9f9',
     },
     title: {

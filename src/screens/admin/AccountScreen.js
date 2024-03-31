@@ -6,7 +6,7 @@ import HomeHeadNav from '../../components/Header.js'
 const AdminAccountScreen = ({ navigation }) => {
     return (
         <View>
-            <HomeHeadNav navigation={navigation} title='ACCOUNT' />
+            <HomeHeadNav navigation={navigation} title='TÀI KHOẢN' />
         </View>
     )
 }

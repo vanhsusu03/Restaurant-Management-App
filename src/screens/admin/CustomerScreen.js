@@ -6,7 +6,7 @@ import HomeHeadNav from '../../components/Header.js'
 const AdminCustomerScreen = ({ navigation }) => {
     return (
         <View>
-            <HomeHeadNav navigation={navigation} title='CUSTOMER' />
+            <HomeHeadNav navigation={navigation} title='QUẢN LÝ KHÁCH HÀNG' />
         </View>
     )
 }

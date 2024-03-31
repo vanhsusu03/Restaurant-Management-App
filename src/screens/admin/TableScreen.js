@@ -6,7 +6,7 @@ import HomeHeadNav from '../../components/Header.js'
 const AdminTableScreen = ({ navigation }) => {
     return (
         <View>
-            <HomeHeadNav navigation={navigation} title='TABLE' />
+            <HomeHeadNav navigation={navigation} title='QUẢN LÝ BÀN' />
         </View>
     )
 }

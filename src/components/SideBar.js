@@ -12,14 +12,14 @@ const SideBar = ({ navigation, title }) => {
     }, [title]);
 
     const items = [
-        { title: 'HOME', screenName: 'home_admin' },
-        { title: 'STAFF', screenName: 'staff_admin' },
-        { title: 'CUSTOMER', screenName: 'customer_admin' },
+        { title: 'TRANG CHỦ', screenName: 'home_admin' },
+        { title: 'QUẢN LÝ NHÂN VIÊN', screenName: 'staff_admin' },
+        { title: 'QUẢN LÝ KHÁCH HÀNG', screenName: 'customer_admin' },
         { title: 'MENU', screenName: 'menu_admin' },
-        { title: 'TABLE', screenName: 'table_admin' },
-        { title: 'REPORT', screenName: 'report_admin' },
-        { title: 'SALE', screenName: 'sale_admin' },
-        { title: 'ACCOUNT', screenName: 'account_admin' },
+        { title: 'QUẢN LÝ BÀN', screenName: 'table_admin' },
+        { title: 'BÁO CÁO', screenName: 'report_admin' },
+        { title: 'DOANH THU', screenName: 'sale_admin' },
+        { title: 'TÀI KHOẢN', screenName: 'account_admin' },
         // Thêm các mục khác nếu cần
     ];
 
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         left: 0,
         top: 0,
         bottom: 0,
-        width: 220,
+        width: 240,
         height: 800,
         backgroundColor: 'white',
         paddingTop: 10,
@@ -67,9 +67,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     text: {
-        fontSize: 21,
+        fontSize: 20,
         color: colors.bg,
-        paddingLeft: 30,
+        paddingLeft: 15,
     },
     activeItem: {
         backgroundColor: '#FFE4B5', // Đặt màu nền cho mục active

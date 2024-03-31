@@ -6,7 +6,7 @@ import HomeHeadNav from '../../components/Header.js'
 const AdminHomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
-            <HomeHeadNav navigation={navigation} title='HOME' />
+            <HomeHeadNav navigation={navigation} title='TRANG CHỦ' />
             <View style={styles.iconContainer}>
                 <View style={styles.row}>
                     {/* Row 1 */}
