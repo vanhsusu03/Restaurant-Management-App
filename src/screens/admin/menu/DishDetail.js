@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity, Alert, ActivityIndicator} from 'react-native';
+import { StyleSheet, View, Text, TextInput, Image, TouchableOpacity, Alert, ActivityIndicator, Switch} from 'react-native';
 import { firebase } from '../../../../Firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
 import {getImage, editDoc, deleteDoc, addDoc } from '../../../utils/firestore';
@@ -11,9 +11,8 @@ const DishDetail = ({navigation, route }) => {
 
     const [name, onChangeName] = useState(detail.name);
     const [type, onChangeType] = useState(category);
-    const [cost, onChangeCost] = useState(detail.data.cost ? detail.data.cost.toString() : '');
+    const [status, onChangeStatus] = useState(detail.data.status);
     const [price, onChangePrice] = useState(detail.data.price ? detail.data.price.toString() : '');
-    const [description, onChangeDescription] = useState(detail.data.description);
     const [image, onChangeImage] = useState(detail.data.image);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -29,9 +28,9 @@ const DishDetail = ({navigation, route }) => {
             setIsLoading(true); 
             if (type != category || name != detail.name) {
                 await deleteDoc(category, detail.name);
-                onChangeImage(await addDoc(type, name, cost, price, description, image));
+                onChangeImage(await addDoc(type, name, status, price, image));
             } else {
-                onChangeImage(await editDoc(type, name, cost, price, description, image));
+                onChangeImage(await editDoc(type, name, status, price, image));
             }
             
             Alert.alert(
@@ -84,23 +83,27 @@ const DishDetail = ({navigation, route }) => {
                 value={name}
             ></TextInput>
 
+            <Text style={styles.name}>Giá bán</Text>
+            <TextInput  
+                style={styles.input}
+                onChangeText={onChangePrice}
+                value={price}
+            ></TextInput>
+
+            <Text style={styles.name}>Trạng thái</Text>
             <View style={styles.container2}>
                 <View style={styles.halfContainer}>
-                    <Text style={styles.name}>Chi phí</Text>
-                    <TextInput  
-                        style={styles.input}
-                        onChangeText={onChangeCost}
-                        value={cost}
-                    ></TextInput>
+                    <TouchableOpacity style={styles.radioContainer} onPress={() => onChangeStatus(true)}>
+                        <View style={[styles.radio, status && styles.radioSelected]}></View>
+                        <Text style={styles.radioLabel}>Còn hàng</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.halfContainer}>
-                    <Text style={styles.name}>Giá bán</Text>
-                    <TextInput  
-                        style={styles.input}
-                        onChangeText={onChangePrice}
-                        value={price}
-                    ></TextInput>
+                    <TouchableOpacity style={styles.radioContainer} onPress={() => onChangeStatus(false)}>
+                        <View style={[styles.radio, !status && styles.radioSelected]}></View>
+                        <Text style={styles.radioLabel}>Hết hàng</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -116,15 +119,6 @@ const DishDetail = ({navigation, route }) => {
                     ))}
                 </Picker>
             </View>
-
-            <Text style={styles.name}>Mô tả</Text>
-            <TextInput  
-                style={styles.input}
-                onChangeText={onChangeDescription}
-                value={description}
-                multiline={true}
-            ></TextInput>
-
 
             <Text style={styles.name}>Hình ảnh </Text>
             <TouchableOpacity style={styles.imageContainer} onPress={pickImage}>
@@ -215,6 +209,26 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingVertical: 6,
         paddingHorizontal: 7,
+    },
+    radioContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 5,
+        marginHorizontal: 30,
+    },
+    radio: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#EE9C37',
+        marginRight: 10,
+    },
+    radioSelected: {
+        backgroundColor: '#EE9C37',
+    },
+    radioLabel: {
+        fontSize: 16,
     },
     select: {
         borderColor: '#EE9C37',
