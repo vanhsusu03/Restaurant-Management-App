@@ -5,66 +5,12 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import HomeHeadNav from '../../components/Header.js'
 
 const AdminStaffScreen = ({ navigation }) => {
-    // return (
-    //     <View></View>
-    // )
     const [staffList, setStaffList] = useState([]);
     const [newStaffName, setNewStaffName] = useState('');
     const [newStaffRole, setNewStaffRole] = useState('');
     const animatedContainerRef = useRef(new Animated.Value(0)).current;
 
-    // useEffect(() => {
-    //     //   const unsubscribe = firebase.firestore().collection('staff').onSnapshot(snapshot => {
-    //     // const staffData = [];
-    //     //     snapshot.forEach(doc => {
-    //     //       staffData.push({ id: doc.id, ...doc.data() });
-    //     //     });
-    //     // setStaffList(staffData);
-    //     //   });
-
-    //     //   return () => unsubscribe();
-    //     const keyboardDidShowListener = Keyboard.addListener(
-    //         Platform.OS === 'android' ? 'keyboardDidShow' : 'keyboardWillShow',
-    //         () => {
-    //             Animated.timing(animatedContainerRef, {
-    //                 toValue: -100,
-    //                 duration: 300,
-    //                 useNativeDriver: false,
-    //             }).start();
-    //         }
-    //     );
-
-    //     const keyboardDidHideListener = Keyboard.addListener(
-    //         Platform.OS === 'android' ? 'keyboardDidHide' : 'keyboardWillHide',
-    //         () => {
-    //             Animated.timing(animatedContainerRef, {
-    //                 toValue: 0,
-    //                 duration: 300,
-    //                 useNativeDriver: false,
-    //             }).start();
-    //         }
-    //     );
-
-    //     return () => {
-    //         // unsubscribe();
-    //         keyboardDidShowListener.remove();
-    //         keyboardDidHideListener.remove();
-    //     };
-    // }, []);
-
-
-
     const handleAddStaff = async () => {
-        //   firebase.firestore().collection('staff').add({
-        //     name: newStaffName,
-        //     role: newStaffRole
-        //   }).then(() => {
-        //     console.log('Staff added successfully');
-        //     setNewStaffName('');
-        //     setNewStaffRole('');
-        //   }).catch(error => {
-        //     console.error('Error adding staff: ', error);
-        //   });
         try {
             navigation.navigate('add_staff');
         } catch (error) {
@@ -74,7 +20,7 @@ const AdminStaffScreen = ({ navigation }) => {
 
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }]}>
-            <HomeHeadNav navigation={navigation} title='QUẢN LÝ NHÂN VIÊN' />
+            <HomeHeadNav navigation={navigation} title='NHÂN VIÊN' />
 
             <TouchableOpacity style={styles.addButton} onPress={handleAddStaff}>
                 <FontAwesome6 name="add" style={styles.icon} />

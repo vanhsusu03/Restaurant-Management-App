@@ -1,43 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
     ScrollView, View, Text, FlatList, Button, TextInput, StyleSheet, Image, TouchableOpacity,
-    Animated, Keyboard, Platform, ActivityIndicator
+    Animated, Keyboard, Platform, ActivityIndicator, Alert
 } from 'react-native';
 import { colors, veg, nonveg } from '../../../globals/style.js';
 import { firebase } from '../../../../Firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
-import { getImage, addDoc } from '../../../utils/firestore';
+import { addStaff } from '../../../utils/firestore';
 import HomeHeadNav from '../../../components/Header.js'
 
 
 const AddStaff = ({ navigation, route }) => {
-    // return (
-    //     <View></View>
-    // )
-    // const [staffList, setStaffList] = useState([]);
-    // const [newStaffName, setNewStaffName] = useState('');
-    // const [newStaffRole, setNewStaffRole] = useState('');
-    // const animatedContainerRef = useRef(new Animated.Value(0)).current;
-
-    // const { listType } = route.params;
-
     const [name, onchangeName] = useState();
-    const [age, setAge] = useState(63);
+    const [age, onchangeAge] = useState(63);
     const [role, setRole] = useState();
     const [email, onchangeEmail] = useState();
     const [phone, onchangePhone] = useState();
     const [gender, setGender] = useState(null);
-    const [username, onchangeUsername] = useState();
-    const [pass, onchangePass] = useState();
     const [isGenderSelectorOpen, setIsGenderSelectorOpen] = useState(null);
-    const [isAgeSelectorOpen, setIsAgeSelectorOpen] = useState(null);
     const [isRoleSelectorOpen, setIsRoleSelectorOpen] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const animatedContainerRef = useRef(new Animated.Value(0)).current;
 
-    const handleChangeAge = (age) => {
-        setAge(age);
-        setIsAgeSelectorOpen(false);
-    }
     const handleChangeGender = (gender) => {
         setGender(gender);
         setIsGenderSelectorOpen(false);
@@ -48,20 +32,49 @@ const AddStaff = ({ navigation, route }) => {
     }
 
     const closeAllOpts = () => {
-        setIsAgeSelectorOpen(false);
         setIsGenderSelectorOpen(false);
         setIsRoleSelectorOpen(false);
     }
+
+    const handleSave = async () => {
+        try {
+            setIsLoading(true);
+            await addStaff(role, name, age, gender, email, phone);
+
+            Alert.alert(
+                'Thành công!',
+                'Thông tin đã được thêm!',
+                [
+                  {
+                    text: 'OK',
+                    onPress: () => console.log('OK pressed'),
+                  },
+                ],
+                {
+                  alertContainerStyle: styles.alertContainer,
+                  backgroundColor: 'blue',
+                }
+              );
+        } catch (error) {
+            console.error("Error saving data:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleCancel = () => {
+        navigation.goBack();
+    };
+
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }
         ]}>
             <HomeHeadNav navigation={navigation} title='THÊM NHÂN VIÊN' />
             <ScrollView>
-                <Text style={styles.header}>Loại tài khoản:</Text>
+                <Text style={styles.header}>Chức vụ:</Text>
                 <TouchableOpacity
                     style={styles.input}
                     onPress={() => {
-                        setIsAgeSelectorOpen(false);
                         setIsGenderSelectorOpen(false);
                         setIsRoleSelectorOpen(!isRoleSelectorOpen);
                     }}
@@ -91,36 +104,17 @@ const AddStaff = ({ navigation, route }) => {
                     onPressIn={closeAllOpts}
                 ></TextInput>
                 <Text style={styles.header}>Tuổi:</Text>
-
-                <TouchableOpacity
+                <TextInput
                     style={styles.input}
-                    onPress={() => {
-                        setIsGenderSelectorOpen(false);
-                        setIsRoleSelectorOpen(false);
-                        setIsAgeSelectorOpen(!isAgeSelectorOpen)
-                    }}
-                >
-                </TouchableOpacity>
-                {isAgeSelectorOpen && (
-                    <View style={styles.genderOptions}>
-                        <Picker
-                            selectedValue={age}
-                            onValueChange={handleChangeAge}
-                            style={{ height: 50, width: 150 }}
-                        >
-                            {[...Array(63)].map((_, index) => {
-                                const age = index + 18;
-                                return <Picker.Item key={age} label={`${age}`} value={age} />;
-                            })}
-                        </Picker>
-                    </View>
-                )}
+                    onChangeText={onchangeAge}
+                    value={age}
+                    keyboardType='numeric'
+                ></TextInput>
 
                 <Text style={styles.header}>Giới tính:</Text>
                 <TouchableOpacity
                     style={styles.input}
                     onPress={() => {
-                        setIsAgeSelectorOpen(false);
                         setIsRoleSelectorOpen(false);
                         setIsGenderSelectorOpen(!isGenderSelectorOpen)
                     }}
@@ -153,28 +147,21 @@ const AddStaff = ({ navigation, route }) => {
                     value={phone}
                 ></TextInput>
 
-                <Text style={styles.header}>Tên đăng nhập:</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={onchangeUsername}
-                    value={username}
-                ></TextInput>
-
-                <Text style={styles.header}>Mật khẩu:</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={onchangePass}
-                    value={pass}
-                ></TextInput>
-
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress>
-                        <Text style={styles.buttonText}>Thêm</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress>
-                        <Text style={styles.buttonText}>Hủy</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={handleSave}>
+                    <Text style={styles.buttonText}>Save</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={handleCancel}>
+                    <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+            </View>
+            {isLoading && (
+                <View style={styles.loadingOverlay}>
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color="#fff" />
+                    </View>
                 </View>
+            )}
             </ScrollView>
             {/* </ScrollView> */}
         </Animated.View>
@@ -261,6 +248,22 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         color: '#fff',
+    },
+    alertContainer: {
+        borderRadius: 10,
+        padding: 10,
+        backgroundColor: 'lightblue',
+    },
+    loadingOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingContainer: {
+        backgroundColor: '#333',
+        padding: 20,
+        borderRadius: 10,
     },
 });
 

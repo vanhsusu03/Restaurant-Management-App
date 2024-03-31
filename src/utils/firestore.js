@@ -54,7 +54,7 @@ const upImgStogare = async (image, name) => {
     }
 }
 
-const addDoc = async (type, name, status, price, image) => {
+const addDish = async (type, name, status, price, image) => {
     try {
         const priceNumber = parseFloat(price);
 
@@ -72,6 +72,25 @@ const addDoc = async (type, name, status, price, image) => {
         return null;
     }
 };
+
+const addStaff = async (role, name, age, gender, email, phone) => {
+    try {
+        await firebase.firestore().collection('staff').add({
+            role: role,
+            name: name,
+            age: age,
+            gender: gender,
+            email: email,
+            phone: phone
+        });
+        console.log("Staff added successfully!");
+        return true;
+    } catch (error) {
+        console.error("Error adding staff:", error);
+        return false;
+    }
+};
+
 
 const editDoc = async (type, name, status, price, image) => {
     try {
@@ -100,4 +119,4 @@ const deleteDoc = async (type, name) => {
 };
 
 
-export {getImage, upImgStogare, addDoc, editDoc, deleteDoc, fetchData}
+export {getImage, upImgStogare, addDish, addStaff, editDoc, deleteDoc, fetchData}
