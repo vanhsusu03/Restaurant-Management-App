@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import LogInScreen from './src/screens/LogIn.js'
 import AdminHomeScreen from './src/screens/admin/HomeScreen.js'
 import AdminStaffScreen from './src/screens/admin/StaffScreen.js'
@@ -15,7 +16,9 @@ import AdminUserScreen from './src/screens/admin/UserScreen.js'
 import SideBar from './src/components/SideBar.js'
 //import AppHeader from './src/components/Header.js'
 
-
+import DishDetail from './src/screens/admin/menu/DishDetail';
+import AddDish from './src/screens/admin/menu/AddDish';
+import AddStaff from './src/screens/admin/staff/AddStaff.js';
 export default function App() {
 const Stack = createNativeStackNavigator();
   return (
@@ -45,6 +48,12 @@ const Stack = createNativeStackNavigator();
 
                  }}
             />
+            <Stack.Screen name="add_staff" component={AddStaff}
+                 options={{
+                    headerShown: false,
+
+                 }}
+            />
             <Stack.Screen name="customer_admin" component={AdminCustomerScreen}
                  options={{
                     headerShown: false,
@@ -56,6 +65,16 @@ const Stack = createNativeStackNavigator();
                     headerShown: false,
 
                  }}
+            />
+            <Stack.Screen name="dish_detail" component={DishDetail}
+                  options={{
+                     headerShown: false,
+                  }}
+            />
+            <Stack.Screen name="add_dish" component={AddDish}
+                  options={{
+                     headerShown: false,
+                  }}
             />
             <Stack.Screen name="table_admin" component={AdminTableScreen}
                  options={{
@@ -100,4 +119,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
