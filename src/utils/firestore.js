@@ -54,17 +54,16 @@ const upImgStogare = async (image, name) => {
     }
 }
 
-const addDoc = async (type, name, cost, price, description, image) => {
+const addDoc = async (type, name, status, price, image) => {
     try {
-        const costNumber = parseFloat(cost);
         const priceNumber = parseFloat(price);
 
         const imageUrl = await upImgStogare(image, name);
 
         await firebase.firestore().collection('menu').doc(type).collection('items').doc(name).set({
-            cost: costNumber,
+            name: name,
             price: priceNumber,
-            description: description,
+            status: status,
             image: imageUrl
         });
         return imageUrl;
@@ -74,13 +73,14 @@ const addDoc = async (type, name, cost, price, description, image) => {
     }
 };
 
-const editDoc = async (type,  name, cost, price, description, image) => {
+const editDoc = async (type, name, status, price, image) => {
     try {
+        const priceNumber = parseFloat(price);
         const imageUrl = await upImgStogare(image, name);
         await firebase.firestore().collection('menu').doc(type).collection('items').doc(name).update({
-            cost: cost,
-            price: price,
-            description: description,
+            name: name,
+            price: priceNumber,
+            status: status,
             image: imageUrl
         })
 
