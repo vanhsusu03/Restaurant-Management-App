@@ -3,8 +3,20 @@ import { Alert } from 'react-native';
 import {firebase} from '../../Firebase/firebase'
 import * as ImagePicker from 'expo-image-picker';
 
-const fetchData = async () => {
+const fetchMenuData = async () => {
     try {
+        const customOrder = [
+            'Lẩu',
+            'Thịt',
+            'Hải sản',
+            'Viên thả lẩu',
+            'Rau & Nấm',
+            'Đậu',
+            'Mỳ',
+            'Món chiên',
+            'Đồ uống',
+        ];
+
         const snapshot = await firebase.firestore().collection('menu').get();
         const updateData = await Promise.all(snapshot.docs.map(async categoryDoc => {
             const category = categoryDoc.id;
@@ -14,11 +26,35 @@ const fetchData = async () => {
                 const itemData = itemDoc.data();
                 return { name: itemName, data: itemData };
             });
+
             return { category, items };
         }));
+
+        updateData.sort((a, b) => {
+            const fallbackIndex = customOrder.length;
+        
+            const adjustedIndexA = customOrder.indexOf(a.category) !== -1 ? customOrder.indexOf(a.category) : fallbackIndex;
+            const adjustedIndexB = customOrder.indexOf(b.category) !== -1 ? customOrder.indexOf(b.category) : fallbackIndex;
+        
+            return adjustedIndexA - adjustedIndexB;
+        });
+        
+
         return updateData;
-        // setData(updateData);
-        // setType(updateData.map(item => item.category));
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+};
+
+const fetchStaffData = async () => {
+    try {
+        const staff = await firebase.firestore().collection('staff').get();
+        const staffData = staff.docs.map(staffDoc => {
+            const itemData = staffDoc.data();
+            return {...itemData};
+        });
+
+        return staffData;
     } catch (error) {
         console.error("Error fetching data:", error);
     }
@@ -119,4 +155,4 @@ const deleteDoc = async (type, name) => {
 };
 
 
-export {getImage, upImgStogare, addDish, addStaff, editDoc, deleteDoc, fetchData}
+export {getImage, upImgStogare, addDish, addStaff, editDoc, deleteDoc, fetchMenuData, fetchStaffData}
