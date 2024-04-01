@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     item: {
         fontSize: 17,
         textAlign: 'center',
+        paddingHorizontal: 15
     },
     edit: {
         flexDirection: 'row'
