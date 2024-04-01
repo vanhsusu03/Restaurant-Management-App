@@ -12,33 +12,33 @@ const AdminHomeScreen = ({ navigation }) => {
                 <View style={styles.row}>
                     {/* Row 1 */}
                     <TouchableOpacity style={styles.icon} onPress={() => { navigation.navigate('staff_admin') }}>
-                        <Feather name={'user'} size={80} color={colors.text1} style={styles.icon} />
+                        <Feather name={'user'} size={80} color={colors.text1} style={styles.iconImage} />
                         <Text style={styles.iconText}>NHÂN VIÊN</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.icon} onPress={() => { navigation.navigate('customer_admin') }}>
-                         <Feather name={'users'} size={80} color={colors.text1} style={styles.icon} />
+                         <Feather name={'users'} size={80} color={colors.text1} style={styles.iconImage} />
                         <Text style={styles.iconText}>KHÁCH HÀNG</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.row}>
                     {/* Row 2 */}
                     <TouchableOpacity style={styles.icon} onPress={() => { navigation.navigate('menu_admin')}}>
-                        <Ionicons name={'restaurant-outline'} size={80} color={colors.text1} style={styles.icon} />
+                        <Ionicons name={'restaurant-outline'} size={80} color={colors.text1} style={styles.iconImage} />
                         <Text style={styles.iconText}>MENU</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.icon, { marginLeft: 25 }]} onPress={() => { navigation.navigate('table_admin')}}>
-                         <MaterialIcons name={'table-restaurant'} size={80} color={colors.text1} style={styles.icon} />
+                    <TouchableOpacity style={styles.icon} onPress={() => { navigation.navigate('table_admin')}}>
+                         <MaterialIcons name={'table-restaurant'} size={80} color={colors.text1} style={styles.iconImage} />
                          <Text style={styles.iconText}>QUẢN LÝ BÀN</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.row}>
                     {/* Row 2 */}
                     <TouchableOpacity style={styles.icon} onPress={() => { navigation.navigate('report_admin') }}>
-                         <SimpleLineIcons name={'notebook'} size={80} color={colors.text1} style={styles.icon} />
+                         <SimpleLineIcons name={'notebook'} size={80} color={colors.text1} style={styles.iconImage} />
                          <Text style={styles.iconText}>BÁO CÁO</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.icon, { marginLeft: 20 }]} onPress={() => { navigation.navigate('sale_admin')}}>
-                         <FontAwesome6 name={'money-check-dollar'} size={80} color={colors.text1} style={styles.icon} />
+                    <TouchableOpacity style={styles.icon} onPress={() => { navigation.navigate('sale_admin')}}>
+                         <FontAwesome6 name={'money-check-dollar'} size={80} color={colors.text1} style={styles.iconImage} />
                         <Text style={styles.iconText}>DOANH THU</Text>
                     </TouchableOpacity>
                 </View>
@@ -70,9 +70,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 10,
-        padding: 10,
+        paddingVertical: 10,
+        width: '50%'
+    },
+    iconImage: {
+        marginBottom: 10,
     },
     iconText: {
+//        fontWeight: 'bold',
         fontSize: 24,
         marginLeft: 10,
         color: colors.text1,

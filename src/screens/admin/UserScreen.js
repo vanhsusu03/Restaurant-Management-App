@@ -35,6 +35,11 @@ const AdminUserScreen = ({ navigation }) => {
                 return;
             }
 
+            if(password.length < 6) {
+                setcustomError('Mật khẩu phải có nhiều hơn 5 kí tự!');
+                return;
+            }
+
             if(password !== cpassword) {
                 setcustomError('Mật khẩu không trùng khớp!');
                 return;
