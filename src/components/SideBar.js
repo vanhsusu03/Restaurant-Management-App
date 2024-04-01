@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { colors } from '../globals/style.js';
 import { MaterialIcons, FontAwesome, SimpleLineIcons, FontAwesome6, Ionicons } from '@expo/vector-icons';
 
-const SideBar = ({ navigation, title }) => {
+const SideBar = ({ navigation, title, user }) => {
     const [activeItem, setActiveItem] = useState(null);
 
     useEffect(() => {
@@ -12,16 +12,57 @@ const SideBar = ({ navigation, title }) => {
         setActiveItem(index);
     }, [title]);
 
-    const items = [
-        { title: 'TRANG CHỦ', screenName: 'home_admin', type: MaterialIcons,icon: 'home' },
+    // Khai báo các mục cho người dùng "admin"
+    const adminItems = [
+        { title: 'TRANG CHỦ', screenName: 'home_admin', type: MaterialIcons, icon: 'home' },
         { title: 'NHÂN VIÊN', screenName: 'staff_admin', type: FontAwesome, icon: 'user' },
         { title: 'KHÁCH HÀNG', screenName: 'customer_admin', type: MaterialIcons, icon: 'people' },
         { title: 'MENU', screenName: 'menu_admin', type: Ionicons, icon: 'restaurant-outline' },
         { title: 'QUẢN LÝ BÀN', screenName: 'table_admin', type: MaterialIcons, icon: 'table-restaurant' },
         { title: 'BÁO CÁO', screenName: 'report_admin', type: SimpleLineIcons, icon: 'notebook' },
         { title: 'DOANH THU', screenName: 'sale_admin', type: FontAwesome6, icon: 'money-check-dollar' },
-
     ];
+
+    // Khai báo các mục cho người dùng "staff"
+    const staffItems = [
+        { title: 'MENU', screenName: 'menu_staff', type: Ionicons, icon: 'restaurant-outline' },
+        { title: 'KHÁCH HÀNG', screenName: 'customer_staff', type: MaterialIcons, icon: 'people' },
+        { title: 'BÁO CÁO', screenName: 'report_staff', type: SimpleLineIcons, icon: 'notebook' },
+        { title: 'QUẢN LÝ BÀN', screenName: 'table_staff', type: MaterialIcons, icon: 'table-restaurant' },
+    ];
+
+    // Khai báo các mục cho người dùng "cashier"
+    const cashierItems = [
+        { title: 'TRANG CHỦ', screenName: 'home_cashier', type: MaterialIcons, icon: 'home' },
+        { title: 'BÁO CÁO', screenName: 'report_cashier', type: SimpleLineIcons, icon: 'notebook' },
+        { title: 'DOANH THU', screenName: 'sale_cashier', type: FontAwesome6, icon: 'money-check-dollar' },
+    ];
+
+    // Khai báo các mục cho người dùng "kitchen_manager"
+    const kitchenManagerItems = [
+        { title: 'TRANG CHỦ', screenName: 'home_kitchen_manager', type: MaterialIcons, icon: 'home' },
+        { title: 'MENU', screenName: 'menu_kitchen_manager', type: Ionicons, icon: 'restaurant-outline' },
+        { title: 'QUẢN LÝ BÀN', screenName: 'table_kitchen_manager', type: MaterialIcons, icon: 'table-restaurant' },
+    ];
+
+    let items = [];
+    switch (user) {
+        case 'admin':
+            items = adminItems;
+            break;
+        case 'staff':
+            items = staffItems;
+            break;
+        case 'cashier':
+            items = cashierItems;
+            break;
+        case 'kitchen_manager':
+            items = kitchenManagerItems;
+            break;
+        default:
+            items = [];
+            break;
+    }
 
     const handleItemPress = (screenName) => {
         navigation.navigate(screenName);

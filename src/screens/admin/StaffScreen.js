@@ -59,7 +59,7 @@ const AdminStaffScreen = ({ navigation }) => {
 
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }]}>
-            <HomeHeadNav navigation={navigation} title='NHÂN VIÊN' />
+            <HomeHeadNav navigation={navigation} title='NHÂN VIÊN' user='admin'/>
 
             <TouchableOpacity style={styles.addButton} onPress={handleAddStaff}>
                 <FontAwesome6 name="add" style={styles.icon} />

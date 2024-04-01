@@ -63,7 +63,7 @@ const AdminMenuScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <HomeHeadNav navigation={navigation} title='MENU' />
+            <HomeHeadNav navigation={navigation} title='MENU' user='admin'/>
 
             <TouchableOpacity style={styles.add} onPress={handleAdd }>
                 <FontAwesome6 name="add" style={styles.icon}/>

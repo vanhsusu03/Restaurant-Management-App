@@ -7,7 +7,7 @@ import { Feather, Ionicons, MaterialIcons, FontAwesome, SimpleLineIcons, FontAwe
 const AdminHomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
-            <HomeHeadNav navigation={navigation} title='TRANG CHỦ' />
+            <HomeHeadNav navigation={navigation} title='TRANG CHỦ' user='admin'/>
             <View style={styles.iconContainer}>
                 <View style={styles.row}>
                     {/* Row 1 */}
