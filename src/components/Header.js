@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../globals/style';
 import SideBar from '../components/SideBar.js';
 
-const HomeHeadNav = ({ navigation, title}) => {
+const HomeHeadNav = ({ navigation, title, user }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleToggleSidebar = () => {
@@ -28,7 +28,7 @@ const HomeHeadNav = ({ navigation, title}) => {
                 </TouchableOpacity>
             </View>
             {/* Sidebar */}
-            {isOpen && <SideBar navigation={navigation} title={title} />}
+            {isOpen && <SideBar navigation={navigation} title={title} user={user}/>}
         </View>
     )
 }

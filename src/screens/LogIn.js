@@ -18,12 +18,22 @@ const LogInScreen = ({ navigation }) => {
     const [customerror, setcustomError] = useState('');
 
     const handlelogin = () => {
-        // console.log(email, password);
         firebase.auth().signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
+                const user = extractUsernameFromEmail(email);
                 setEmail('');
                 setPassword('');
-                navigation.navigate('home_admin');
+                if (user === 'admin') {
+                    navigation.navigate('home_admin');
+                } else if (user === 'staff') {
+                    navigation.navigate('menu_staff');
+                } else if (user === 'cashier') {
+                    navigation.navigate('home_admin');
+                } else if (user === 'kitchen_manager') {
+                    navigation.navigate('home_admin');
+                } else {
+                    setcustomError('Incorrect email or password')
+                }
             })
             .catch((error) => {
                 var errorMessage = error.message;
@@ -38,7 +48,14 @@ const LogInScreen = ({ navigation }) => {
             })
     }
 
-
+    const extractUsernameFromEmail = (email) => {
+        const atIndex = email.indexOf('@');
+        if (atIndex !== -1) {
+            return email.substring(0, atIndex);
+        } else {
+            return '';
+        }
+    }
 
     return (
             <View style={styles.container}>

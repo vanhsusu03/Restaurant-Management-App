@@ -54,7 +54,7 @@ const AddDish = ({navigation, route}) => {
 
     return (
         <View style={styles.container}>
-            <HomeHeadNav navigation={navigation} title='THÊM MÓN ĂN' />
+            <HomeHeadNav navigation={navigation} title='THÊM MÓN ĂN' user='admin'/>
             <Text style={styles.name}>Tên món</Text>
             <TextInput  
                 style={styles.input}

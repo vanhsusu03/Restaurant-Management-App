@@ -36,7 +36,7 @@ const AdminUserScreen = ({ navigation }) => {
             }
 
             if(password.length < 6) {
-                setcustomError('Mật khẩu phải có nhiều hơn 5 kí tự!');
+                setcustomError('Lỗi: Mật khẩu cần ít nhất 6 ký tự!');
                 return;
             }
 
@@ -70,7 +70,7 @@ const AdminUserScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <HomeHeadNav navigation={navigation} title='USER' />
+            <HomeHeadNav navigation={navigation} title='USER' user='admin'/>
             <TouchableOpacity onPress={() => handleToggleChangePassword()} style={{marginTop: 10}}>
                 <View style={styles.linkContainer}>
                     <MaterialCommunityIcons name="key-change" size={27} color={colors.primary} style={styles.icon} />

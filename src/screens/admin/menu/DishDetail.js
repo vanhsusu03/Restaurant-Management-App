@@ -70,7 +70,7 @@ const DishDetail = ({navigation, route }) => {
 
     return (
         <View style={styles.container}>
-            <HomeHeadNav navigation={navigation} title='CHI TIẾT' />
+            <HomeHeadNav navigation={navigation} title='CHI TIẾT' user='admin'/>
 
             <TouchableOpacity style={styles.delete} onPress={handelDelete}>
                 <MaterialIcons name="delete-forever" style={styles.icon} />
