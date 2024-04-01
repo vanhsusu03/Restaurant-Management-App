@@ -3,9 +3,8 @@ import { StyleSheet, View, Text, FlatList, TouchableOpacity, Alert, Modal, TextI
 import SlideCard from '../../components/SlideCard';
 import { firebase } from '../../../Firebase/firebase';
 import { FontAwesome6 } from '@expo/vector-icons';
-import { fetchData } from '../../utils/firestore';
+import { fetchMenuData } from '../../utils/firestore';
 import HomeHeadNav from '../../components/Header.js'
-
 
 const AdminMenuScreen = ({ navigation }) => {
     const [data, setData] = useState([]);
@@ -16,7 +15,7 @@ const AdminMenuScreen = ({ navigation }) => {
 
     const reloadData = useCallback(async () => {
         try {
-            const newData = await fetchData();
+            const newData = await fetchMenuData();
             setData(newData);
             setType(newData.map(item => item.category));
         } catch (error) {
@@ -55,7 +54,7 @@ const AdminMenuScreen = ({ navigation }) => {
     const addNewCategory = async () => {
         if (newCategoryName != "") {
             await firebase.firestore().collection('menu').doc(newCategoryName).set({});
-            fetchData()
+            reloadData()
         }
         setNewCategoryName("")
         setvisible(false);
