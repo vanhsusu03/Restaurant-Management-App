@@ -60,6 +60,19 @@ const fetchStaffData = async () => {
     }
 };
 
+const fetchCustomerData = async() => {
+    try {
+        const customer = await firebase.firestore().collection('customer').get();
+        const customerData = customer.docs.map(cusDoc => {
+            const itemData = cusDoc.data();
+            return {...itemData};
+        })
+        return customerData;
+    } catch(err) {
+        console.log("Error when fetching data customer:", err);
+    }
+}
+
 const getImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -185,4 +198,4 @@ const deleteDoc = async (type, name) => {
 };
 
 
-export { getImage, upImgStogare, addDish, addStaff, editStaffInfo, editDoc, deleteDoc, fetchMenuData, fetchStaffData }
+export { getImage, upImgStogare, addDish, addStaff, editStaffInfo, editDoc, deleteDoc, fetchMenuData, fetchStaffData, fetchCustomerData }
