@@ -33,7 +33,7 @@ const AdminStaffScreen = ({ navigation }) => {
         return (
             <TouchableOpacity
                 style={styles.staffItem}
-                onPress={() => /*navigation.navigate('staff_detail', { })*/ console.log("Đã ấn!", item.name)}
+                onPress={() => navigation.navigate('staff_info', {staff: item })}
             >
                 <View style={styles.staffInfoContainer}>
                     <FontAwesome5 name="user-circle" style={styles.staffIcon}/>

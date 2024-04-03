@@ -17,7 +17,7 @@ const AddStaff = ({ navigation, route }) => {
     const [email, onchangeEmail] = useState();
     const [phone, onchangePhone] = useState();
     const [gender, setGender] = useState(null);
-    const [isGenderSelectorOpen, setIsGenderSelectorOpen] = useState(null);
+    const [isGenderSelectorOpen, setIsGenderSelectorOpen] = useState('Nam');
     const [isRoleSelectorOpen, setIsRoleSelectorOpen] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const animatedContainerRef = useRef(new Animated.Value(0)).current;
@@ -45,20 +45,21 @@ const AddStaff = ({ navigation, route }) => {
                 'Thành công!',
                 'Thông tin đã được thêm!',
                 [
-                  {
-                    text: 'OK',
-                    onPress: () => console.log('OK pressed'),
-                  },
+                    {
+                        text: 'OK',
+                        onPress: () => console.log('OK pressed'),
+                    },
                 ],
                 {
-                  alertContainerStyle: styles.alertContainer,
-                  backgroundColor: 'blue',
+                    alertContainerStyle: styles.alertContainer,
+                    backgroundColor: 'blue',
                 }
-              );
+            );
         } catch (error) {
             console.error("Error saving data:", error);
         } finally {
             setIsLoading(false);
+            navigation.navigate('staff_admin');
         }
     };
 
@@ -112,7 +113,7 @@ const AddStaff = ({ navigation, route }) => {
                 ></TextInput>
 
                 <Text style={styles.header}>Giới tính:</Text>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.input}
                     onPress={() => {
                         setIsRoleSelectorOpen(false);
@@ -121,6 +122,7 @@ const AddStaff = ({ navigation, route }) => {
                 >
                     <Text style={styles.selectorText}> {gender}</Text>
                 </TouchableOpacity>
+
                 {isGenderSelectorOpen && (
                     <View style={styles.genderOptions}>
                         <Picker
@@ -132,7 +134,23 @@ const AddStaff = ({ navigation, route }) => {
                             <Picker.Item label="Nữ" value="Nữ" />
                         </Picker>
                     </View>
-                )}
+                )} */}
+                <View style={styles.radioContainer}>
+                    <TouchableOpacity
+                        style={styles.radioButton}
+                        onPress={() => setGender('Nam')}
+                    >
+                        <Text>Nam</Text>
+                        {gender === 'Nam' && <Text style={styles.radioCheck}>✓</Text>}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.radioButton}
+                        onPress={() => setGender('Nữ')}
+                    >
+                        <Text>Nữ</Text>
+                        {gender === 'Nữ' && <Text style={styles.radioCheck}>✓</Text>}
+                    </TouchableOpacity>
+                </View>
                 <Text style={styles.header}>Email:</Text>
                 <TextInput
                     style={styles.input}
@@ -148,20 +166,20 @@ const AddStaff = ({ navigation, route }) => {
                 ></TextInput>
 
                 <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={handleSave}>
-                    <Text style={styles.buttonText}>Save</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={handleCancel}>
-                    <Text style={styles.buttonText}>Cancel</Text>
-                </TouchableOpacity>
-            </View>
-            {isLoading && (
-                <View style={styles.loadingOverlay}>
-                    <View style={styles.loadingContainer}>
-                        <ActivityIndicator size="large" color="#fff" />
-                    </View>
+                    <TouchableOpacity style={styles.button} onPress={handleSave}>
+                        <Text style={styles.buttonText}>Save</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleCancel}>
+                        <Text style={styles.buttonText}>Cancel</Text>
+                    </TouchableOpacity>
                 </View>
-            )}
+                {isLoading && (
+                    <View style={styles.loadingOverlay}>
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="large" color="#fff" />
+                        </View>
+                    </View>
+                )}
             </ScrollView>
             {/* </ScrollView> */}
         </Animated.View>
@@ -248,6 +266,19 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         color: '#fff',
+    },
+    radioContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginHorizontal: 30,
+        marginTop: 10,
+    },
+    radioButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    radioCheck: {
+        marginLeft: 5,
     },
     alertContainer: {
         borderRadius: 10,

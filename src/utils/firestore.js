@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Alert } from 'react-native';
-import {firebase} from '../../Firebase/firebase'
+import { firebase } from '../../Firebase/firebase'
 import * as ImagePicker from 'expo-image-picker';
 
 const fetchMenuData = async () => {
@@ -32,13 +32,13 @@ const fetchMenuData = async () => {
 
         updateData.sort((a, b) => {
             const fallbackIndex = customOrder.length;
-        
+
             const adjustedIndexA = customOrder.indexOf(a.category) !== -1 ? customOrder.indexOf(a.category) : fallbackIndex;
             const adjustedIndexB = customOrder.indexOf(b.category) !== -1 ? customOrder.indexOf(b.category) : fallbackIndex;
-        
+
             return adjustedIndexA - adjustedIndexB;
         });
-        
+
 
         return updateData;
     } catch (error) {
@@ -51,7 +51,7 @@ const fetchStaffData = async () => {
         const staff = await firebase.firestore().collection('staff').get();
         const staffData = staff.docs.map(staffDoc => {
             const itemData = staffDoc.data();
-            return {...itemData};
+            return { ...itemData };
         });
 
         return staffData;
@@ -62,17 +62,17 @@ const fetchStaffData = async () => {
 
 const getImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: false,
-      quality: 1,
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: false,
+        quality: 1,
     });
 
     if (!result.canceled) {
-      return result.assets[0].uri;
+        return result.assets[0].uri;
     } else {
         return "";
     }
-  };
+};
 
 const upImgStogare = async (image, name) => {
     try {
@@ -127,6 +127,36 @@ const addStaff = async (role, name, age, gender, email, phone) => {
     }
 };
 
+const editStaffInfo = async (staff,name, role, age, gender, email, phone) => {
+    try {
+        const staffRef = firebase.firestore().collection('staff');
+        const querySnapshot = await staffRef.where('email', '==', staff.email).get();
+
+        if (querySnapshot.empty) {
+            console.log('No matching documents.');
+            return false;
+        }
+
+        querySnapshot.forEach(async (doc) => {
+            await doc.ref.update({
+                name: name,
+                age: age,
+                gender: gender,
+                role: role,
+                email: email,
+                phone: phone
+            });
+            console.log('Edit info staff successfully:', doc.id);
+        });
+
+        return true;
+
+    } catch (err) {
+        console.error("Error edit staff info:", err);
+        return false;
+    }
+};
+
 
 const editDoc = async (type, name, status, price, image) => {
     try {
@@ -155,4 +185,4 @@ const deleteDoc = async (type, name) => {
 };
 
 
-export {getImage, upImgStogare, addDish, addStaff, editDoc, deleteDoc, fetchMenuData, fetchStaffData}
+export { getImage, upImgStogare, addDish, addStaff, editStaffInfo, editDoc, deleteDoc, fetchMenuData, fetchStaffData }
