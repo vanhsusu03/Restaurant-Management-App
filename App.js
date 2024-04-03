@@ -20,7 +20,9 @@ import StaffInfo from './src/screens/admin/staff/StaffInfo.js';
 import StaffCustomerScreen from './src/screens/staff/CustomerScreen.js'
 import StaffMenuScreen from './src/screens/staff/MenuScreen.js'
 import StaffTableScreen from './src/screens/staff/TableScreen.js'
-import StaffReportScreen from './src/screens/staff/ReportScreen.js'
+import StaffReportScreen from './src/screens/staff/ReportScreen.js';
+import StaffViewReport from './src/screens/staff/ViewReport.js';
+import StaffAddReportScreen from './src/screens/staff/AddReport.js';
 import CustomerInfo from './src/screens/admin/customer/CustomerInfo.js';
 export default function App() {
 const Stack = createNativeStackNavigator();
@@ -50,7 +52,8 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="menu_staff" component={StaffMenuScreen} options={{ headerShown: false }} />
             <Stack.Screen name="table_staff" component={StaffTableScreen} options={{ headerShown: false }} />
             <Stack.Screen name="report_staff" component={StaffReportScreen} options={{ headerShown: false }} />
-
+            <Stack.Screen name="report_staff_view" component={StaffViewReport} options={{ headerShown: false }} />
+            <Stack.Screen name="report_staff_add" component={StaffAddReportScreen} options={{ headerShown: false }} />
             {/* Trang dành cho cashier */}
 
             {/* Trang dành cho kitchen_manager */}
