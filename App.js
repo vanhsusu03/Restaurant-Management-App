@@ -15,6 +15,7 @@ import AdminSaleScreen from './src/screens/admin/SaleScreen.js'
 import DishDetail from './src/screens/admin/menu/DishDetail';
 import AddDish from './src/screens/admin/menu/AddDish';
 import AddStaff from './src/screens/admin/staff/AddStaff.js';
+import EditTables from './src/screens/admin/table/EditTables.js';
 export default function App() {
 const Stack = createNativeStackNavigator();
   return (
@@ -79,6 +80,12 @@ const Stack = createNativeStackNavigator();
                  }}
             />
             <Stack.Screen name="sale_admin" component={AdminSaleScreen}
+                 options={{
+                    headerShown: false,
+
+                 }}
+                 />
+            <Stack.Screen name="edit_tables" component={EditTables}
                  options={{
                     headerShown: false,
 
