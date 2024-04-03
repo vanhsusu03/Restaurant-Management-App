@@ -27,51 +27,6 @@ const StaffInfo = ({ navigation, route }) => {
     const [isRoleSelectorOpen, setIsRoleSelectorOpen] = useState(null);
     const animatedContainerRef = useRef(new Animated.Value(0)).current;
 
-    // const reloadStaff = useCallback(async () => {
-    //     try {
-    //         const newData = await fetchStaffData();
-    //         setStaffList(newData);
-
-    //     } catch (error) {
-    //         console.error("Error reloading data:", error);
-    //     }
-    // }, []);
-
-    // useEffect(() => {
-    //     const reload = navigation.addListener('focus', () => {
-    //         reloadStaff();
-    //     });
-
-    //     return reload;
-    // }, [navigation, reloadStaff]);
-
-    const handleSave = async () => {
-        try {
-            setIsLoading(true);
-            await addStaff(role, name, age, gender, email, phone);
-
-            Alert.alert(
-                'Thành công!',
-                'Thông tin đã được thêm!',
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => console.log('OK pressed'),
-                    },
-                ],
-                {
-                    alertContainerStyle: styles.alertContainer,
-                    backgroundColor: 'blue',
-                }
-            );
-        } catch (error) {
-            console.error("Error saving data:", error);
-        } finally {
-            setIsLoading(false);
-            navigation.navigate('staff_admin');
-        }
-    };
-
     const handleChangeRole = (role) => {
         setRole(role);
         setIsRoleSelectorOpen(false);
@@ -115,23 +70,7 @@ const StaffInfo = ({ navigation, route }) => {
     const handleCancel = () => {
         navigation.goBack();
     };
-    const renderStaffInfo = () => {
-        return (
-            <TouchableOpacity
-                style={styles.staffItem}
-            >
-                <View style={styles.staffInfoContainer}>
-                    <FontAwesome5 name="user-circle" style={styles.staffIcon} />
-                    <View style={styles.staffNameContainer}>
-                        <Text style={styles.staffName}>{staff.name}</Text>
-                    </View>
-                    <View style={styles.staffRoleContainer}>
-                        <Text style={styles.staffRole}>{staff.role}</Text>
-                    </View>
-                </View>
-            </TouchableOpacity>
-        )
-    }
+    
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }]}>
             {!isEditing && (<><HomeHeadNav navigation={navigation} title='THÔNG TIN NHÂN VIÊN' user='admin' /><ScrollView>
