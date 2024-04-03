@@ -60,16 +60,34 @@ const fetchStaffData = async () => {
     }
 };
 
-const fetchCustomerData = async() => {
+const fetchCustomerData = async () => {
     try {
         const customer = await firebase.firestore().collection('customer').get();
         const customerData = customer.docs.map(cusDoc => {
             const itemData = cusDoc.data();
-            return {...itemData};
+            return { ...itemData };
         })
         return customerData;
-    } catch(err) {
+    } catch (err) {
         console.log("Error when fetching data customer:", err);
+    }
+}
+const fetchReportData = async () => {
+    try {
+        const report = await firebase.firestore().collection('report').get();
+        const reportList = [];
+
+        report.forEach((doc) => {
+            const data = doc.data();
+            const formattedDate = new Date(data.date.seconds * 1000).toLocaleDateString();
+
+            reportList.push({ ...data, date: formattedDate });
+        })
+        return reportList;
+
+    } catch (err) {
+        console.log("Error when fetching data report:", err);
+        return [];
     }
 }
 
@@ -140,7 +158,27 @@ const addStaff = async (role, name, age, gender, email, phone) => {
     }
 };
 
-const editStaffInfo = async (staff,name, role, age, gender, email, phone) => {
+const addReport = async (title, sender, content) => {
+    try {
+        const currentDate = new Date();
+        const formattedDate = firebase.firestore.Timestamp.fromDate(currentDate);
+
+
+        await firebase.firestore().collection('report').add({
+            title: title,
+            sender: sender,
+            date: formattedDate,
+            content: content,
+        })
+
+        return true;
+    } catch (err) {
+        console.log("Err add report: ", err);
+        return false;
+    }
+}
+
+const editStaffInfo = async (staff, name, role, age, gender, email, phone) => {
     try {
         const staffRef = firebase.firestore().collection('staff');
         const querySnapshot = await staffRef.where('email', '==', staff.email).get();
@@ -198,4 +236,7 @@ const deleteDoc = async (type, name) => {
 };
 
 
-export { getImage, upImgStogare, addDish, addStaff, editStaffInfo, editDoc, deleteDoc, fetchMenuData, fetchStaffData, fetchCustomerData }
+export {
+    getImage, upImgStogare, addDish, addStaff, addReport, editStaffInfo, editDoc, deleteDoc,
+    fetchMenuData, fetchStaffData, fetchCustomerData, fetchReportData
+}

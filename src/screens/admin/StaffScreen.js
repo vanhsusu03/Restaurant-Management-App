@@ -63,7 +63,7 @@ const AdminStaffScreen = ({ navigation }) => {
 
             <TouchableOpacity style={styles.addButton} onPress={handleAddStaff}>
                 <FontAwesome6 name="add" style={styles.icon} />
-                <Text style={styles.addButtonText}>Add</Text>
+                <Text style={styles.addButtonText}>Thêm nhân viên</Text>
             </TouchableOpacity>
 
             <FlatList
