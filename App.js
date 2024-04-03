@@ -16,6 +16,7 @@ import SideBar from './src/components/SideBar.js'
 import DishDetail from './src/screens/admin/menu/DishDetail';
 import AddDish from './src/screens/admin/menu/AddDish';
 import AddStaff from './src/screens/admin/staff/AddStaff.js';
+import StaffInfo from './src/screens/admin/staff/StaffInfo.js';
 import StaffCustomerScreen from './src/screens/staff/CustomerScreen.js'
 import StaffMenuScreen from './src/screens/staff/MenuScreen.js'
 import StaffTableScreen from './src/screens/staff/TableScreen.js'
@@ -33,6 +34,7 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="sidebar" component={SideBar} options={{ headerShown: false }} />
             <Stack.Screen name="staff_admin" component={AdminStaffScreen} options={{ headerShown: false }} />
             <Stack.Screen name="add_staff" component={AddStaff} options={{ headerShown: false }} />
+            <Stack.Screen name="staff_info" component={StaffInfo} options={{ headerShown: false }} />
             <Stack.Screen name="customer_admin" component={AdminCustomerScreen} options={{ headerShown: false }} />
             <Stack.Screen name="menu_admin" component={AdminMenuScreen} options={{ headerShown: false }} />
             <Stack.Screen name="dish_detail" component={DishDetail} options={{ headerShown: false }} />
