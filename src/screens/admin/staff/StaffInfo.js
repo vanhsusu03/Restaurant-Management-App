@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     ScrollView, View, Text, FlatList, Button, TextInput, StyleSheet, Image, TouchableOpacity,
     Animated, Keyboard, Platform, ActivityIndicator, Alert
@@ -6,44 +6,48 @@ import {
 import { colors, veg, nonveg } from '../../../globals/style.js';
 import { firebase } from '../../../../Firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
-import { addStaff } from '../../../utils/firestore';
-import HomeHeadNav from '../../../components/Header.js'
+import { addStaff, editStaffInfo } from '../../../utils/firestore';
+import HomeHeadNav from '../../../components/Header.js';
+import { FontAwesome6, FontAwesome5 } from '@expo/vector-icons';
+import { fetchStaffData } from '../../../utils/firestore.js';
 
+const StaffInfo = ({ navigation, route }) => {
 
-const AddStaff = ({ navigation, route }) => {
-    const [name, onchangeName] = useState();
-    const [age, onchangeAge] = useState(63);
-    const [role, setRole] = useState();
-    const [email, onchangeEmail] = useState();
-    const [phone, onchangePhone] = useState();
-    const [gender, setGender] = useState(null);
-    const [isGenderSelectorOpen, setIsGenderSelectorOpen] = useState('Nam');
-    const [isRoleSelectorOpen, setIsRoleSelectorOpen] = useState(null);
+    const staff = route.params.staff;
+
+    const [name, onchangeName] = useState(staff.name);
+    const [age, onchangeAge] = useState(staff.age);
+    const [role, setRole] = useState(staff.role);
+    const [email, onchangeEmail] = useState(staff.email);
+    const [phone, onchangePhone] = useState(staff.phone);
+    const [gender, setGender] = useState(staff.gender);
     const [isLoading, setIsLoading] = useState(false);
+    const [isEditing, setEditStatus] = useState(false);
+
+    const [isRoleSelectorOpen, setIsRoleSelectorOpen] = useState(null);
     const animatedContainerRef = useRef(new Animated.Value(0)).current;
 
-    const handleChangeGender = (gender) => {
-        setGender(gender);
-        setIsGenderSelectorOpen(false);
-    }
     const handleChangeRole = (role) => {
         setRole(role);
         setIsRoleSelectorOpen(false);
     }
 
-    const closeAllOpts = () => {
-        setIsGenderSelectorOpen(false);
-        setIsRoleSelectorOpen(false);
+    const handleCanEdit = () => {
+        setEditStatus(true);
     }
 
-    const handleSave = async () => {
+    const handleCancelEdit = () => {
+        setEditStatus(false);
+    }
+
+    const handleSaveInfo = async () => {
         try {
             setIsLoading(true);
-            await addStaff(role, name, age, gender, email, phone);
+            await editStaffInfo(staff,name, role, age, gender, email, phone);
 
             Alert.alert(
                 'Thành công!',
-                'Thông tin đã được thêm!',
+                'Thông tin đã được cập nhật!',
                 [
                     {
                         text: 'OK',
@@ -61,22 +65,69 @@ const AddStaff = ({ navigation, route }) => {
             setIsLoading(false);
             navigation.navigate('staff_admin');
         }
-    };
+    }
 
     const handleCancel = () => {
         navigation.goBack();
     };
-
+    
     return (
-        <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }
-        ]}>
-            <HomeHeadNav navigation={navigation} title='THÊM NHÂN VIÊN' />
-            <ScrollView>
+        <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }]}>
+            {!isEditing && (<><HomeHeadNav navigation={navigation} title='THÔNG TIN NHÂN VIÊN' user='admin' /><ScrollView>
+                <Text style={styles.header}>Họ và tên:</Text>
+                <Text
+                    style={styles.showinfo}>{staff.name} </Text>
+                <Text style={styles.header}>Tuổi:</Text>
+                <Text
+                    style={styles.showinfo}>{staff.age} </Text>
+
+                <Text style={styles.header}>Chức vụ:</Text>
+                <Text
+                    style={styles.showinfo}>{staff.role} </Text>
+
+                <Text style={styles.header}>Email:</Text>
+                <Text
+                    style={styles.showinfo}>{staff.email} </Text>
+
+                <Text style={styles.header}>Số điện thoại:</Text>
+                <Text
+                    style={styles.showinfo}>{staff.phone} </Text>
+
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.button} onPress={handleCanEdit}>
+                        <Text style={styles.buttonText}>Chỉnh sửa</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleCancel}>
+                        <Text style={styles.buttonText}>Quay lại</Text>
+                    </TouchableOpacity>
+                </View>
+                {isLoading && (
+                    <View style={styles.loadingOverlay}>
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="large" color="#fff" />
+                        </View>
+                    </View>
+                )}
+            </ScrollView></>
+            )}
+
+            {isEditing && (<><HomeHeadNav navigation={navigation} title='CHỈNH SỬA THÔNG TIN' user='admin' /><ScrollView>
+                <Text style={styles.header}>Họ và tên:</Text>
+                <TextInput
+                    style={styles.input}
+                    onChangeText={onchangeName}
+                    value={name} />
+                <Text style={styles.header}>Tuổi:</Text>
+                <TextInput
+                    style={styles.input}
+                    onChangeText={onchangeAge}
+                    value={age}
+                    keyboardType='numeric' />
+
                 <Text style={styles.header}>Chức vụ:</Text>
                 <TouchableOpacity
                     style={styles.input}
                     onPress={() => {
-                        setIsGenderSelectorOpen(false);
                         setIsRoleSelectorOpen(!isRoleSelectorOpen);
                     }}
                 >
@@ -97,80 +148,24 @@ const AddStaff = ({ navigation, route }) => {
                     </View>
                 )}
 
-                <Text style={styles.header}>Họ và tên:</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={onchangeName}
-                    value={name}
-                    onPressIn={closeAllOpts}
-                ></TextInput>
-                <Text style={styles.header}>Tuổi:</Text>
-                <TextInput
-                    style={styles.input}
-                    onChangeText={onchangeAge}
-                    value={age}
-                    keyboardType='numeric'
-                ></TextInput>
-
-                <Text style={styles.header}>Giới tính:</Text>
-                {/* <TouchableOpacity
-                    style={styles.input}
-                    onPress={() => {
-                        setIsRoleSelectorOpen(false);
-                        setIsGenderSelectorOpen(!isGenderSelectorOpen)
-                    }}
-                >
-                    <Text style={styles.selectorText}> {gender}</Text>
-                </TouchableOpacity>
-
-                {isGenderSelectorOpen && (
-                    <View style={styles.genderOptions}>
-                        <Picker
-                            selectedValue={gender}
-                            onValueChange={handleChangeGender}
-                            style={{ height: 50, width: 150 }}
-                        >
-                            <Picker.Item label="Nam" value="Nam" />
-                            <Picker.Item label="Nữ" value="Nữ" />
-                        </Picker>
-                    </View>
-                )} */}
-                <View style={styles.radioContainer}>
-                    <TouchableOpacity
-                        style={styles.radioButton}
-                        onPress={() => setGender('Nam')}
-                    >
-                        <Text>Nam</Text>
-                        {gender === 'Nam' && <Text style={styles.radioCheck}>✓</Text>}
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.radioButton}
-                        onPress={() => setGender('Nữ')}
-                    >
-                        <Text>Nữ</Text>
-                        {gender === 'Nữ' && <Text style={styles.radioCheck}>✓</Text>}
-                    </TouchableOpacity>
-                </View>
                 <Text style={styles.header}>Email:</Text>
                 <TextInput
                     style={styles.input}
                     onChangeText={onchangeEmail}
-                    value={email}
-                ></TextInput>
+                    value={email} />
 
                 <Text style={styles.header}>Số điện thoại:</Text>
                 <TextInput
                     style={styles.input}
                     onChangeText={onchangePhone}
-                    value={phone}
-                ></TextInput>
+                    value={phone} />
 
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.button} onPress={handleSave}>
-                        <Text style={styles.buttonText}>Save</Text>
+                    <TouchableOpacity style={styles.button} onPress={handleSaveInfo}>
+                        <Text style={styles.buttonText}>Lưu</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={handleCancel}>
-                        <Text style={styles.buttonText}>Cancel</Text>
+                    <TouchableOpacity style={styles.button} onPress={handleCancelEdit}>
+                        <Text style={styles.buttonText}>Hủy</Text>
                     </TouchableOpacity>
                 </View>
                 {isLoading && (
@@ -180,11 +175,9 @@ const AddStaff = ({ navigation, route }) => {
                         </View>
                     </View>
                 )}
-            </ScrollView>
-            {/* </ScrollView> */}
+            </ScrollView></>
+            )}
         </Animated.View>
-
-
     );
 };
 
@@ -225,6 +218,14 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingVertical: 5,
         fontSize: 16,
+        minHeight: 45,
+    },
+    showinfo: {
+        marginHorizontal: 30,
+        borderRadius: 10,
+        paddingLeft: 50,
+        paddingVertical: 5,
+        fontSize: 20,
         minHeight: 45,
     },
     genderSelector: {
@@ -296,9 +297,37 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
     },
+    staffItem: {
+        padding: 5,
+        marginLeft: 20
+    },
+    staffInfoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    staffIcon: {
+        fontSize: 24,
+        marginRight: 10,
+    },
+    staffNameContainer: {
+        marginHorizontal: 10,
+        flex: 2.5,
+    },
+    staffRoleContainer: {
+        marginHorizontal: 10,
+        flex: 1,
+    },
+    staffName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    staffRole: {
+        fontSize: 16,
+        color: '#666',
+    },
 });
 
 
 
 
-export default AddStaff;
+export default StaffInfo;

@@ -12,10 +12,12 @@ const SlideCard = ({ category, items, listType, reloadData }) => {
             style={styles.itemContainer}
             onPress={() => navigation.navigate('dish_detail', { detail: item, category: category, listType: listType })}
             >
-            <View>
+            <View style={styles.imageContainer}>
                 <Image source={{uri: item.data.image}} style={styles.image} />
+                <View style={[styles.nameContainer]}>
+                    <Text style={[styles.item,  !item.data.status && styles.outOfFood]}>{item.name}</Text>
+                </View>
             </View>
-            <Text style={styles.item}>{item.name}</Text>
         </TouchableOpacity>
     );
 
@@ -36,7 +38,6 @@ const SlideCard = ({ category, items, listType, reloadData }) => {
             }
        )
     }
-
 
     return (
         <View style={styles.card}>
@@ -70,25 +71,36 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginRight: 10
     },
+    outOfFood: {
+        color: '#EB411D'
+    },
     itemContainer: {
         backgroundColor: '#F6CB99',
         marginRight: 10,
         alignItems: 'center',
         borderRadius: 10,
         width: 130,
-        height: 160,
+        height: 170,
     },
-
+    imageContainer: {
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flex: 1,
+    },
     image: {
         width: 130,
         height: 120,
-        marginBottom: 7,
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+    },
+    nameContainer: {
+        flex: 1,
+        justifyContent: 'center',
     },
     item: {
         fontSize: 17,
         textAlign: 'center',
+        paddingHorizontal: 15
     },
     edit: {
         flexDirection: 'row'

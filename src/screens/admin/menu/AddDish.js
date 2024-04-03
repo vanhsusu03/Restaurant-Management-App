@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, Image, Button,  TouchableOpacity, Alert, ActivityIndicator} from 'react-native';
 import { firebase } from '../../../../Firebase/firebase';
 import { Picker } from '@react-native-picker/picker';
-import {getImage, addDoc } from '../../../utils/firestore';
+import {getImage, addDish } from '../../../utils/firestore';
+import HomeHeadNav from '../../../components/Header.js'
 
 const AddDish = ({navigation, route}) => {
     const {listType} = route.params;
 
     const [name, onChangeName] = useState();
     const [type, onChangeType] = useState(listType[0]);
-    const [cost, onChangeCost] = useState();
     const [price, onChangePrice] = useState();
-    const [description, onChangeDescription] = useState();
+    const [status, onChangeStatus] = useState(true);
     const [image, onChangeImage] = useState();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +24,7 @@ const AddDish = ({navigation, route}) => {
     const handleSave = async () => {
         try {
             setIsLoading(true); 
-            const imageUrl = await addDoc(type, name, cost, price, description, image);
+            const imageUrl = await addDish(type, name, status, price, image);
             onChangeImage(imageUrl);
 
             Alert.alert(
@@ -54,7 +54,7 @@ const AddDish = ({navigation, route}) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.menu}>Thêm món</Text>
+            <HomeHeadNav navigation={navigation} title='THÊM MÓN ĂN' user='admin'/>
             <Text style={styles.name}>Tên món</Text>
             <TextInput  
                 style={styles.input}
@@ -62,23 +62,27 @@ const AddDish = ({navigation, route}) => {
                 value={name}
             ></TextInput>
 
+            <Text style={styles.name}>Giá bán</Text>
+            <TextInput  
+                style={styles.input}
+                onChangeText={onChangePrice}
+                value={price}
+            ></TextInput>
+
+            <Text style={styles.name}>Trạng thái</Text>
             <View style={styles.container2}>
                 <View style={styles.halfContainer}>
-                    <Text style={styles.name}>Chi phí</Text>
-                    <TextInput  
-                        style={styles.input}
-                        onChangeText={onChangeCost}
-                        value={cost}
-                    ></TextInput>
+                    <TouchableOpacity style={styles.radioContainer} onPress={() => onChangeStatus(true)}>
+                        <View style={[styles.radio, status && styles.radioSelected]}></View>
+                        <Text style={styles.radioLabel}>Còn hàng</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.halfContainer}>
-                    <Text style={styles.name}>Giá bán</Text>
-                    <TextInput  
-                        style={styles.input}
-                        onChangeText={onChangePrice}
-                        value={price}
-                    ></TextInput>
+                    <TouchableOpacity style={styles.radioContainer} onPress={() => onChangeStatus(false)}>
+                        <View style={[styles.radio, !status && styles.radioSelected]}></View>
+                        <Text style={styles.radioLabel}>Hết hàng</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -94,14 +98,6 @@ const AddDish = ({navigation, route}) => {
                     ))}
                 </Picker>
             </View>
-
-            <Text style={styles.name}>Mô tả</Text>
-            <TextInput  
-                style={styles.input}
-                onChangeText={onChangeDescription}
-                value={description}
-                multiline={true}
-            ></TextInput>
 
 
             <Text style={styles.name}>Hình ảnh </Text>
@@ -135,7 +131,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        marginTop: 45,
     },
     menu: {
         fontSize: 25,
@@ -169,6 +164,26 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         fontSize: 16,
         minHeight: 45,
+    },
+    radioContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 5,
+        marginHorizontal: 30,
+    },
+    radio: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#EE9C37',
+        marginRight: 10,
+    },
+    radioSelected: {
+        backgroundColor: '#EE9C37',
+    },
+    radioLabel: {
+        fontSize: 16,
     },
     upload: {
         borderColor: '#EE9C37',

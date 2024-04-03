@@ -1,68 +1,55 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, FlatList, Button, TextInput, StyleSheet, Image, TouchableOpacity, Animated, Keyboard, Platform } from 'react-native';
 import { colors, veg, nonveg } from '../../globals/style.js'
-import { FontAwesome6 } from '@expo/vector-icons';
+import { FontAwesome6, FontAwesome5 } from '@expo/vector-icons';
+import HomeHeadNav from '../../components/Header.js'
+import { fetchStaffData } from '../../utils/firestore.js';
+
+
 const AdminStaffScreen = ({ navigation }) => {
-    // return (
-    //     <View></View>
-    // )
     const [staffList, setStaffList] = useState([]);
-    const [newStaffName, setNewStaffName] = useState('');
-    const [newStaffRole, setNewStaffRole] = useState('');
     const animatedContainerRef = useRef(new Animated.Value(0)).current;
 
-    // useEffect(() => {
-    //     //   const unsubscribe = firebase.firestore().collection('staff').onSnapshot(snapshot => {
-    //     // const staffData = [];
-    //     //     snapshot.forEach(doc => {
-    //     //       staffData.push({ id: doc.id, ...doc.data() });
-    //     //     });
-    //     // setStaffList(staffData);
-    //     //   });
+    const reloadStaff = useCallback(async () => {
+        try {
+            const newData = await fetchStaffData();
+            setStaffList(newData);
+           
+        } catch (error) {
+            console.error("Error reloading data:", error);
+        }
+    },[]);
+    
+    
+    useEffect(() => {
+        const reload = navigation.addListener('focus', () => {
+            reloadStaff();
+        });
 
-    //     //   return () => unsubscribe();
-    //     const keyboardDidShowListener = Keyboard.addListener(
-    //         Platform.OS === 'android' ? 'keyboardDidShow' : 'keyboardWillShow',
-    //         () => {
-    //             Animated.timing(animatedContainerRef, {
-    //                 toValue: -100,
-    //                 duration: 300,
-    //                 useNativeDriver: false,
-    //             }).start();
-    //         }
-    //     );
+        return reload;
+    }, [navigation, reloadStaff]);
 
-    //     const keyboardDidHideListener = Keyboard.addListener(
-    //         Platform.OS === 'android' ? 'keyboardDidHide' : 'keyboardWillHide',
-    //         () => {
-    //             Animated.timing(animatedContainerRef, {
-    //                 toValue: 0,
-    //                 duration: 300,
-    //                 useNativeDriver: false,
-    //             }).start();
-    //         }
-    //     );
-
-    //     return () => {
-    //         // unsubscribe();
-    //         keyboardDidShowListener.remove();
-    //         keyboardDidHideListener.remove();
-    //     };
-    // }, []);
-
-
+    const renderStaff = ({ item }) => {
+        return (
+            <TouchableOpacity
+                style={styles.staffItem}
+                onPress={() => navigation.navigate('staff_info', {staff: item })}
+            >
+                <View style={styles.staffInfoContainer}>
+                    <FontAwesome5 name="user-circle" style={styles.staffIcon}/>
+                    <View style={styles.staffNameContainer}>
+                        <Text style={styles.staffName}>{item.name}</Text>
+                    </View>
+                    <View style={styles.staffRoleContainer}>
+                        <Text style={styles.staffRole}>{item.role}</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    
 
     const handleAddStaff = async () => {
-        //   firebase.firestore().collection('staff').add({
-        //     name: newStaffName,
-        //     role: newStaffRole
-        //   }).then(() => {
-        //     console.log('Staff added successfully');
-        //     setNewStaffName('');
-        //     setNewStaffRole('');
-        //   }).catch(error => {
-        //     console.error('Error adding staff: ', error);
-        //   });
         try {
             navigation.navigate('add_staff');
         } catch (error) {
@@ -72,12 +59,18 @@ const AdminStaffScreen = ({ navigation }) => {
 
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }]}>
-            <Text style={styles.title}>Quản lý nhân viên</Text>
+            <HomeHeadNav navigation={navigation} title='NHÂN VIÊN' user='admin'/>
 
             <TouchableOpacity style={styles.addButton} onPress={handleAddStaff}>
                 <FontAwesome6 name="add" style={styles.icon} />
                 <Text style={styles.addButtonText}>Add</Text>
             </TouchableOpacity>
+
+            <FlatList
+                data={staffList}
+                renderItem={renderStaff}
+                keyExtractor={(_, index) => index.toString()}
+            />
         </Animated.View>
     );
 };
@@ -85,7 +78,6 @@ const AdminStaffScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 45,
         backgroundColor: '#f9f9f9',
     },
     title: {
@@ -105,11 +97,24 @@ const styles = StyleSheet.create({
         marginRight: 8
     },
     staffItem: {
-        marginBottom: 10,
-        padding: 15,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        elevation: 3,
+        padding: 5,
+        marginLeft: 20
+    },
+    staffInfoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    staffIcon: {
+        fontSize: 24,
+        marginRight: 10,
+    },
+    staffNameContainer: {
+        marginHorizontal: 10,
+        flex: 2.5,
+    },
+    staffRoleContainer: {
+        marginHorizontal: 10,
+        flex: 1,
     },
     staffName: {
         fontSize: 18,
@@ -133,6 +138,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingRight: 30,
         marginTop: 10,
+        marginBottom: 20
     },
     addButtonText: {
         fontSize: 18,

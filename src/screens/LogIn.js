@@ -18,15 +18,22 @@ const LogInScreen = ({ navigation }) => {
     const [customerror, setcustomError] = useState('');
 
     const handlelogin = () => {
-        // console.log(email, password);
         firebase.auth().signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
-                // Signed in
-                // var user = userCredential.user;
-                // console.log(user);
-                // ...
-
-                navigation.navigate('home_admin');
+                const user = extractUsernameFromEmail(email);
+                setEmail('');
+                setPassword('');
+                if (user === 'admin') {
+                    navigation.navigate('home_admin');
+                } else if (user === 'staff') {
+                    navigation.navigate('menu_staff');
+                } else if (user === 'cashier') {
+                    navigation.navigate('home_admin');
+                } else if (user === 'kitchen_manager') {
+                    navigation.navigate('home_admin');
+                } else {
+                    setcustomError('Incorrect email or password')
+                }
             })
             .catch((error) => {
                 var errorMessage = error.message;
@@ -41,7 +48,14 @@ const LogInScreen = ({ navigation }) => {
             })
     }
 
-
+    const extractUsernameFromEmail = (email) => {
+        const atIndex = email.indexOf('@');
+        if (atIndex !== -1) {
+            return email.substring(0, atIndex);
+        } else {
+            return '';
+        }
+    }
 
     return (
             <View style={styles.container}>
@@ -62,6 +76,7 @@ const LogInScreen = ({ navigation }) => {
                         setcustomError('')
                     }}
                         onChangeText={(text) => setEmail(text)}
+                        value={email}
                     />
                 </View>
                 <View style={styles.inputout}>
@@ -74,6 +89,7 @@ const LogInScreen = ({ navigation }) => {
 
                         secureTextEntry={showpassword === false ? true : false}
                         onChangeText={(text) => setPassword(text)}
+                        value={password}
                     />
 
                     <Octicons name={showpassword == false ? "eye-closed" : "eye"} size={24} color="black" onPress={() => setShowpassword(!showpassword)} />

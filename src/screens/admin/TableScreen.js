@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
 import { colors, veg, nonveg } from "../../globals/style.js";
 import { FontAwesome6 } from "@expo/vector-icons";
+import HomeHeadNav from '../../components/Header.js'
 
 const AdminTableScreen = ({ navigation }) => {
   const editTables = async () => {
@@ -13,6 +14,7 @@ const AdminTableScreen = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
+     <HomeHeadNav navigation={navigation} title='QUẢN LÝ BÀN' user='admin'/>
       <Text style={styles.tables}>Bàn</Text>
 
       <TouchableOpacity style={styles.edit} onPress={editTables}>
