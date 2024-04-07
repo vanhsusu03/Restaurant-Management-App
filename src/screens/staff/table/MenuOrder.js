@@ -24,8 +24,6 @@ const MenuOrder = ({ navigation, route }) => {
                 add: true
             }
         }));
-    
-        
     };
 
     const handleDecrease = (itemName) => {
@@ -94,6 +92,7 @@ const MenuOrder = ({ navigation, route }) => {
             style={styles.categoryItemContainer}
             onPress={() => handleCategoryPress(item)}
         >
+            <Image source={{ uri: "https://firebasestorage.googleapis.com/v0/b/restaurantmanagerapp-2e7e5.appspot.com/o/image%2FB%C3%A0o%20ng%C6%B0?alt=media&token=c75fbfe7-061c-4c35-a798-f0d8d052b212" }} style={styles.itemImage} />
             <Text style={styles.categoryItem}>{item}</Text>
         </TouchableOpacity>
     );
