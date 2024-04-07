@@ -10,7 +10,7 @@ const StaffMenuScreen = ({ navigation }) => {
    
     return (
         <View>
-            <HomeHeadNav navigation={navigation} title='KHÁCH HÀNG' user='staff'/>
+            <HomeHeadNav navigation={navigation} title='MENU' user='staff'/>
         </View>
     )
 }
