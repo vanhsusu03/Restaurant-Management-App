@@ -42,7 +42,7 @@ const StaffReportScreen = ({ navigation }) => {
         return (
             <TouchableOpacity
                 style={styles.reportItem}
-                onPress={() => navigation.navigate('report_staff_view', { report: item })}
+                onPress={() => navigation.navigate('report_staff_view', { report: item, user: 'staff', })}
             >
                 <View style={styles.reportContainer}>
                     <FontAwesome5 name="file-alt" style={styles.reportIcon} />

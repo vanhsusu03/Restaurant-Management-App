@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  Text,
-  FlatList,
-} from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity, Text, FlatList, } from "react-native";
 import { colors, veg, nonveg } from "../../globals/style.js";
 import { FontAwesome6 } from "@expo/vector-icons";
 import HomeHeadNav from "../../components/Header.js";

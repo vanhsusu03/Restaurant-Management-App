@@ -36,7 +36,7 @@ const AdminReportScreen = ({ navigation }) => {
         return (
             <TouchableOpacity
                 style={styles.reportItem}
-                onPress={() => navigation.navigate('report_staff_view', { report: item })}
+                onPress={() => navigation.navigate('report_staff_view', { report: item, user: 'admin' })}
             >
                 <View style={styles.reportContainer}>
                     <FontAwesome5 name="file-alt" style={styles.reportIcon} />
@@ -54,7 +54,7 @@ const AdminReportScreen = ({ navigation }) => {
 
     return (
         <View>
-            <HomeHeadNav navigation={navigation} title='BÁO CÁO' user='staff' />
+            <HomeHeadNav navigation={navigation} title='BÁO CÁO' user='admin' />
             <View>
                 <FlatList
                     data={reportList}
