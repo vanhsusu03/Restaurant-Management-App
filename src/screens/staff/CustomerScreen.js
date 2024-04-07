@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     },
     customerNameContainer: {
         marginHorizontal: 10,
-        flex: 2.5,
+        flex: 1.2,
     },
     customerPhoneContainer: {
         marginHorizontal: 10,
