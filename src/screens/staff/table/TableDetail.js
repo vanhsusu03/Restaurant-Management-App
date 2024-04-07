@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { StyleSheet, View, Image, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { Table, Row, TableWrapper } from 'react-native-table-component';
 import { firebase } from '../../../../Firebase/firebase';
 import { getDocumentById, addCustomer, addOrder, deleteTableData } from '../../../utils/firestore';
@@ -11,17 +11,21 @@ const TableDetail = ({ navigation, route }) => {
   const { table_id } = route.params;
   const [data, setData] = useState(null);
 
-  useEffect(() => {
-    const fetchTableData = async () => {
-      try {
-        const tableData = await getDocumentById('tables', table_id);
-        setData(tableData);
-      } catch (error) {
-        console.error('Error fetching table data:', error);
-      }
-    };
-    fetchTableData();
-  }, []);
+  const fetchTableData = useCallback(async () => {
+    try {
+      const tableData = await getDocumentById('tables', table_id);
+      setData(tableData);
+    } catch (error) {
+      console.error('Error fetching table data:', error);
+    }
+  }, [table_id]);
+
+    useEffect(() => {
+      const reload = navigation.addListener('focus', () => {
+        fetchTableData();
+      });
+      return reload;
+    }, [navigation, fetchTableData]);
 
   const handleCancel = () => {
     navigation.goBack();
@@ -40,10 +44,12 @@ const TableDetail = ({ navigation, route }) => {
   };
 
   const handleAdd = () => {
+    navigation.navigate('menu_order', { table_id: table_id });
+};
 
-  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <HomeHeadNav navigation={navigation} title='CHI TIẾT BÀN' user='staff'/>
       {data && (
         <View style={styles.customer}>
@@ -80,13 +86,14 @@ const TableDetail = ({ navigation, route }) => {
           <TableWrapper style={styles.tableWrapper}>
             <Table>
               <Row
+                style={styles.tableTitle}
                 data={[
                   <View style={styles.headerItemContainer}>
                     <Text style={styles.headerText}>{'MÓN ĂN'}</Text>
                     <Text style={styles.headerText}>{'SỐ LƯỢNG'}</Text>
                   </View>
                 ]}
-                style={styles.tableTitle}
+                
               />
               {data.items.map((item) => (
                 <Row
@@ -124,7 +131,7 @@ const TableDetail = ({ navigation, route }) => {
           <Text style={styles.buttonText}>Quay lại</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

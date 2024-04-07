@@ -207,6 +207,40 @@ const addOrder = async (date, total, guests, customer, items) => {
     }
 };
 
+const addOrderByTable = async (table_id, newItems) => {
+    try {
+        const tableRef = firebase.firestore().collection('tables').doc(table_id);
+        const tableSnapshot = await tableRef.get();
+        const existingItems = tableSnapshot.exists ? tableSnapshot.data().items : [];
+        console.log(newItems)
+
+        newItems.forEach((newItem) => {
+            const existingItemIndex = existingItems.findIndex(item => item.name === newItem.name);
+            if (existingItemIndex !== -1) {
+                existingItems[existingItemIndex].quantity += newItem.quantity;
+            } else if (newItem.quantity !== 0) {
+                existingItems.push(newItem);
+            }
+        });
+
+        const total = existingItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+        await tableRef.set(
+            {
+                items: existingItems,
+                total: total
+            },
+            { merge: true }
+        );
+
+        console.log("Order added successfully!");
+        return true;
+    } catch (error) {
+        console.error("Error adding order:", error);
+        return false;
+    }
+};
+
 
 
 const addReport = async (title, sender, content) => {
@@ -314,5 +348,5 @@ const deleteTableData = async (tableId) => {
 export {
     getImage, upImgStogare, addDish, addStaff, addReport, editStaffInfo, editDoc, deleteDoc,
     fetchMenuData, fetchStaffData, fetchCustomerData, fetchReportData, getDocumentById, addOrder, addCustomer,
-    deleteTableData
+    deleteTableData, addOrderByTable
 }
