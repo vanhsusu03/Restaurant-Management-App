@@ -1,63 +1,70 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Alert } from 'react-native';
-import { firebase } from '../../Firebase/firebase'
-import * as ImagePicker from 'expo-image-picker';
+import React, { useState, useEffect, useCallback } from "react";
+import { Alert } from "react-native";
+import { firebase } from "../../Firebase/firebase";
+import * as ImagePicker from "expo-image-picker";
 
 const fetchMenuData = async () => {
-    try {
-        const customOrder = [
-            'Lẩu',
-            'Thịt',
-            'Hải sản',
-            'Viên thả lẩu',
-            'Rau & Nấm',
-            'Đậu',
-            'Mỳ',
-            'Món chiên',
-            'Đồ uống',
-        ];
+  try {
+    const customOrder = [
+      "Lẩu",
+      "Thịt",
+      "Hải sản",
+      "Viên thả lẩu",
+      "Rau & Nấm",
+      "Đậu",
+      "Mỳ",
+      "Món chiên",
+      "Đồ uống",
+    ];
 
-        const snapshot = await firebase.firestore().collection('menu').get();
-        const updateData = await Promise.all(snapshot.docs.map(async categoryDoc => {
-            const category = categoryDoc.id;
-            const itemsSnap = await categoryDoc.ref.collection('items').get();
-            const items = itemsSnap.docs.map(itemDoc => {
-                const itemName = itemDoc.id;
-                const itemData = itemDoc.data();
-                return { name: itemName, data: itemData };
-            });
-
-            return { category, items };
-        }));
-
-        updateData.sort((a, b) => {
-            const fallbackIndex = customOrder.length;
-
-            const adjustedIndexA = customOrder.indexOf(a.category) !== -1 ? customOrder.indexOf(a.category) : fallbackIndex;
-            const adjustedIndexB = customOrder.indexOf(b.category) !== -1 ? customOrder.indexOf(b.category) : fallbackIndex;
-
-            return adjustedIndexA - adjustedIndexB;
+    const snapshot = await firebase.firestore().collection("menu").get();
+    const updateData = await Promise.all(
+      snapshot.docs.map(async (categoryDoc) => {
+        const category = categoryDoc.id;
+        const itemsSnap = await categoryDoc.ref.collection("items").get();
+        const items = itemsSnap.docs.map((itemDoc) => {
+          const itemName = itemDoc.id;
+          const itemData = itemDoc.data();
+          return { name: itemName, data: itemData };
         });
 
+        return { category, items };
+      })
+    );
 
-        return updateData;
-    } catch (error) {
-        console.error("Error fetching data:", error);
-    }
+    updateData.sort((a, b) => {
+      const fallbackIndex = customOrder.length;
+
+      const adjustedIndexA =
+        customOrder.indexOf(a.category) !== -1
+          ? customOrder.indexOf(a.category)
+          : fallbackIndex;
+      const adjustedIndexB =
+        customOrder.indexOf(b.category) !== -1
+          ? customOrder.indexOf(b.category)
+          : fallbackIndex;
+
+      return adjustedIndexA - adjustedIndexB;
+    });
+
+    return updateData;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
 };
 
 const fetchStaffData = async () => {
-    try {
-        const staff = await firebase.firestore().collection('staff').get();
-        const staffData = staff.docs.map(staffDoc => {
-            const itemData = staffDoc.data();
-            return { ...itemData };
-        });
+  try {
+    const staff = await firebase.firestore().collection("staff").get();
+    const staffData = staff.docs.map((staffDoc) => {
+      const itemData = staffDoc.data();
+      return { ...itemData };
+    });
 
-        return staffData;
-    } catch (error) {
-        console.error("Error fetching data:", error);
-    }
+    return staffData;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
 };
 
 const fetchPendingOrderData = async () => {
@@ -77,17 +84,17 @@ const fetchPendingOrderData = async () => {
 
 
 const fetchCustomerData = async () => {
-    try {
-        const customer = await firebase.firestore().collection('customer').get();
-        const customerData = customer.docs.map(cusDoc => {
-            const itemData = cusDoc.data();
-            return { ...itemData };
-        })
-        return customerData;
-    } catch (err) {
-        console.log("Error when fetching data customer:", err);
-    }
-}
+  try {
+    const customer = await firebase.firestore().collection("customer").get();
+    const customerData = customer.docs.map((cusDoc) => {
+      const itemData = cusDoc.data();
+      return { ...itemData };
+    });
+    return customerData;
+  } catch (err) {
+    console.log("Error when fetching data customer:", err);
+  }
+};
 
 const getDocumentById = async (collectionName, documentId) => {
   try {
@@ -106,89 +113,110 @@ const getDocumentById = async (collectionName, documentId) => {
 };
 
 const fetchReportData = async () => {
-    try {
-        const report = await firebase.firestore().collection('report').get();
-        const reportList = [];
+  try {
+    const report = await firebase.firestore().collection("report").get();
+    const reportList = [];
 
-        report.forEach((doc) => {
-            const data = doc.data();
-            const formattedDate = new Date(data.date.seconds * 1000).toLocaleDateString();
+    report.forEach((doc) => {
+      const data = doc.data();
+      const formattedDate = new Date(
+        data.date.seconds * 1000
+      ).toLocaleDateString();
 
-            reportList.push({ ...data, date: formattedDate });
-        })
-        return reportList;
+      reportList.push({ ...data, date: formattedDate });
+    });
+    return reportList;
+  } catch (err) {
+    console.log("Error when fetching data report:", err);
+    return [];
+  }
+};
 
-    } catch (err) {
-        console.log("Error when fetching data report:", err);
-        return [];
-    }
-}
+const fetchTableData = async () => {
+  try {
+    const table = await firebase.firestore().collection("tables").get();
+    const tablesList = table.docs.map((tableDoc) => {
+      const itemData = tableDoc.data();
+      return { ...itemData };
+    });
+    return tablesList;
+  } catch (err) {
+    console.log("Error when fetching data table:", err);
+    return [];
+  }
+};
 
 const getImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: false,
-        quality: 1,
-    });
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: false,
+    quality: 1,
+  });
 
-    if (!result.canceled) {
-        return result.assets[0].uri;
-    } else {
-        return "";
-    }
+  if (!result.canceled) {
+    return result.assets[0].uri;
+  } else {
+    return "";
+  }
 };
 
 const upImgStogare = async (image, name) => {
-    try {
-        const response = await fetch(image);
-        const blob = await response.blob();
-        const storage = firebase.storage().ref();
-        const imageRef = storage.child(`image/${name}`);
-        await imageRef.put(blob);
+  try {
+    const response = await fetch(image);
+    const blob = await response.blob();
+    const storage = firebase.storage().ref();
+    const imageRef = storage.child(`image/${name}`);
+    await imageRef.put(blob);
 
-        const imageUrl = await imageRef.getDownloadURL();
-        return imageUrl;
-    } catch (error) {
-        console.log("Error up image!");
-        return null;
-    }
-}
+    const imageUrl = await imageRef.getDownloadURL();
+    return imageUrl;
+  } catch (error) {
+    console.log("Error up image!");
+    return null;
+  }
+};
 
 const addDish = async (type, name, status, price, image) => {
-    try {
-        const priceNumber = parseFloat(price);
+  try {
+    const priceNumber = parseFloat(price);
 
-        const imageUrl = await upImgStogare(image, name);
+    const imageUrl = await upImgStogare(image, name);
 
-        await firebase.firestore().collection('menu').doc(type).collection('items').doc(name).set({
-            name: name,
-            price: priceNumber,
-            status: status,
-            image: imageUrl
-        });
-        return imageUrl;
-    } catch (error) {
-        console.error("Error saving data:", error);
-        return null;
-    }
+    await firebase
+      .firestore()
+      .collection("menu")
+      .doc(type)
+      .collection("items")
+      .doc(name)
+      .set({
+        name: name,
+        price: priceNumber,
+        status: status,
+        image: imageUrl,
+      });
+    return imageUrl;
+  } catch (error) {
+    console.error("Error saving data:", error);
+    return null;
+  }
 };
 
 const addStaff = async (role, name, age, gender, email, phone) => {
-    try {
-        await firebase.firestore().collection('staff').add({
-            role: role,
-            name: name,
-            age: age,
-            gender: gender,
-            email: email,
-            phone: phone
-        });
-        console.log("Staff added successfully!");
-        return true;
-    } catch (error) {
-        console.error("Error adding staff:", error);
-        return false;
-    }
+  try {
+    await firebase.firestore().collection("staff").add({
+      role: role,
+      name: name,
+      age: age,
+      gender: gender,
+      email: email,
+      phone: phone,
+    });
+    console.log("Staff added successfully!");
+    return true;
+  } catch (error) {
+    console.error("Error adding staff:", error);
+    return false;
+  }
 };
 
 const addCustomer = async (name, phone) => {
@@ -227,79 +255,191 @@ const addOrder = async (table, date, total, guests, customer, items) => {
 
 
 const addReport = async (title, sender, content) => {
-    try {
-        const currentDate = new Date();
-        const formattedDate = firebase.firestore.Timestamp.fromDate(currentDate);
+  try {
+    const currentDate = new Date();
+    const formattedDate = firebase.firestore.Timestamp.fromDate(currentDate);
 
+    await firebase.firestore().collection("report").add({
+      title: title,
+      sender: sender,
+      date: formattedDate,
+      content: content,
+    });
 
-        await firebase.firestore().collection('report').add({
-            title: title,
-            sender: sender,
-            date: formattedDate,
-            content: content,
-        })
-
-        return true;
-    } catch (err) {
-        console.log("Err add report: ", err);
-        return false;
-    }
-}
-
-const editStaffInfo = async (staff, name, role, age, gender, email, phone) => {
-    try {
-        const staffRef = firebase.firestore().collection('staff');
-        const querySnapshot = await staffRef.where('email', '==', staff.email).get();
-
-        if (querySnapshot.empty) {
-            console.log('No matching documents.');
-            return false;
-        }
-
-        querySnapshot.forEach(async (doc) => {
-            await doc.ref.update({
-                name: name,
-                age: age,
-                gender: gender,
-                role: role,
-                email: email,
-                phone: phone
-            });
-            console.log('Edit info staff successfully:', doc.id);
-        });
-
-        return true;
-
-    } catch (err) {
-        console.error("Error edit staff info:", err);
-        return false;
-    }
+    return true;
+  } catch (err) {
+    console.log("Err add report: ", err);
+    return false;
+  }
 };
 
+const editStaffInfo = async (staff, name, role, age, gender, email, phone) => {
+  try {
+    const staffRef = firebase.firestore().collection("staff");
+    const querySnapshot = await staffRef
+      .where("email", "==", staff.email)
+      .get();
+
+    if (querySnapshot.empty) {
+      console.log("No matching documents.");
+      return false;
+    }
+
+    querySnapshot.forEach(async (doc) => {
+      await doc.ref.update({
+        name: name,
+        age: age,
+        gender: gender,
+        role: role,
+        email: email,
+        phone: phone,
+      });
+      console.log("Edit info staff successfully:", doc.id);
+    });
+
+    return true;
+  } catch (err) {
+    console.error("Error edit staff info:", err);
+    return false;
+  }
+};
 
 const editDoc = async (type, name, status, price, image) => {
-    try {
-        const priceNumber = parseFloat(price);
-        const imageUrl = await upImgStogare(image, name);
-        await firebase.firestore().collection('menu').doc(type).collection('items').doc(name).update({
-            name: name,
-            price: priceNumber,
-            status: status,
-            image: imageUrl
-        })
+  try {
+    const priceNumber = parseFloat(price);
+    const imageUrl = await upImgStogare(image, name);
+    await firebase
+      .firestore()
+      .collection("menu")
+      .doc(type)
+      .collection("items")
+      .doc(name)
+      .update({
+        name: name,
+        price: priceNumber,
+        status: status,
+        image: imageUrl,
+      });
 
-        return imageUrl;
-    } catch (error) {
-        console.error("Error saving data:", error);
-        return null;
-    }
+    return imageUrl;
+  } catch (error) {
+    console.error("Error saving data:", error);
+    return null;
+  }
 };
 
 const deleteDoc = async (type, name) => {
+  try {
+    await firebase
+      .firestore()
+      .collection("menu")
+      .doc(type)
+      .collection("items")
+      .doc(name)
+      .delete({});
+  } catch (error) {
+    console.error("Error deleting document: ", error);
+  }
+};
+
+const updateTables = async (updatedTableList) => {
+  try {
+    const table = await firebase.firestore().collection("tables").get();
+    const firestoreData = table.docs.map((doc) => doc.data());
+
+    // So sánh dữ liệu trên Firestore với dữ liệu mới
+    updatedTableList.forEach(async (updatedItem) => {
+      const existingItem = firestoreData.find(
+        (item) => item.id === updatedItem.id
+      );
+      if (existingItem && existingItem.state !== updatedItem.state) {
+        // Nếu ID trùng khớp và trạng thái khác nhau, cập nhật dữ liệu trên Firestore
+        await firebase
+          .firestore()
+          .collection("tables")
+          .doc(existingItem.id)
+          .update(updatedItem);
+      }
+    });
+  } catch (error) {
+    console.error("Error saving data of table:", error);
+  }
+  const getDocumentById = async (collectionName, documentId) => {
     try {
-        await firebase.firestore().collection('menu').doc(type).collection('items').doc(name).delete({})
+      const documentRef = firebase
+        .firestore()
+        .collection(collectionName)
+        .doc(documentId);
+      const documentSnapshot = await documentRef.get();
+
+      if (documentSnapshot.exists) {
+        console.log("Getting document successfully!");
+        return { id: documentSnapshot.id, ...documentSnapshot.data() };
+      } else {
+        console.log("Document not found");
+      }
     } catch (error) {
-        console.error('Error deleting document: ', error);
+      console.error("Error getting document:", error);
+    }
+  };
+
+  const addCustomer = async (name, phone) => {
+    try {
+      await firebase.firestore().collection("customer").add({
+        name: name,
+        phone: phone,
+      });
+      console.log("Customer added successfully!");
+      return true;
+    } catch (error) {
+      console.error("Error adding customer:", error);
+      return false;
+    }
+  };
+
+  const addOrder = async (date, total, guests, customer, items) => {
+    try {
+      await firebase.firestore().collection("order").add({
+        date: date,
+        total: total,
+        guests: guests,
+        customer: customer,
+        items: items,
+        state: "Chờ thanh toán",
+      });
+      console.log("Order added successfully!");
+      return true;
+    } catch (error) {
+      console.error("Error adding order:", error);
+      return false;
+    }
+  };
+
+  const deleteTableData = async (tableId) => {
+    try {
+      const db = firebase.firestore();
+
+      // Xóa dữ liệu về customer và items
+      // Đặt trường customer về một map rỗng
+      await db
+        .collection("tables")
+        .doc(tableId)
+        .update({
+          customer: { name: "", phone: "" },
+          items: [],
+        });
+
+      // Cập nhật trạng thái và total
+      await db.collection("tables").doc(tableId).update({
+        state: "available",
+        total: 0,
+        guests: 0,
+      });
+      console.log(
+        "Dữ liệu đã được xóa và trạng thái đã được cập nhật thành công."
+      );
+    } catch (error) {
+      console.error("Lỗi khi xóa dữ liệu và cập nhật trạng thái:", error);
     }
 };
 
@@ -325,6 +465,7 @@ const deleteTableData = async (tableId) => {
   } catch (error) {
     console.error('Lỗi khi xóa dữ liệu và cập nhật trạng thái:', error);
   }
+  };
 };
 
 const payment = async (orderId) => {
@@ -345,6 +486,7 @@ const payment = async (orderId) => {
 
 export {
     getImage, upImgStogare, addDish, addStaff, addReport, editStaffInfo, editDoc, deleteDoc,
+    fetchMenuData, fetchStaffData, fetchCustomerData, fetchReportData
     fetchMenuData, fetchStaffData, fetchCustomerData, fetchReportData, getDocumentById, addOrder, addCustomer,
     deleteTableData, fetchPendingOrderData, payment
 }
