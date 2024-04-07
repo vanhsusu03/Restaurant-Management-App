@@ -24,6 +24,8 @@ const MenuOrder = ({ navigation, route }) => {
                 add: true
             }
         }));
+    
+        
     };
 
     const handleDecrease = (itemName) => {
@@ -92,7 +94,6 @@ const MenuOrder = ({ navigation, route }) => {
             style={styles.categoryItemContainer}
             onPress={() => handleCategoryPress(item)}
         >
-            <Image source={{ uri: "https://firebasestorage.googleapis.com/v0/b/restaurantmanagerapp-2e7e5.appspot.com/o/image%2FB%C3%A0o%20ng%C6%B0?alt=media&token=c75fbfe7-061c-4c35-a798-f0d8d052b212" }} style={styles.itemImage} />
             <Text style={styles.categoryItem}>{item}</Text>
         </TouchableOpacity>
     );
@@ -100,33 +101,31 @@ const MenuOrder = ({ navigation, route }) => {
     const handleCategoryPress = (category) => {
         // Xử lý khi người dùng chọn một danh mục
     }
-
-    const renderItem = useCallback(({ item }) => {
+    
+    const renderItem = ({ item }) => (
         <View style={styles.itemContainer}>
-            <Image source={{ uri: item.data.image }} style={styles.itemImage} />
-            <Text style={styles.itemName}>{item.data.name}</Text>
-            <View style={styles.addContainer}>
-                <Text style={styles.itemPrice}>{item.data.price}</Text>
-                {itemInfo[item.data.name] && itemInfo[item.data.name].add ? (
-                    <View style={styles.quantityContainer}>
-                        <TouchableOpacity onPress={() => handleDecrease(item.data.name)}>
-                            <Ionicons name="remove" style={styles.icon} />
-                        </TouchableOpacity>
-                        <Text style={styles.quantity}>{itemInfo[item.data.name].quantity}</Text>
-                        <TouchableOpacity onPress={() => handleIncrease(item.data.name)}>
-                            <Ionicons name="add" style={styles.icon} />
-                        </TouchableOpacity>
-                    </View>
-                ) : (
-                    <TouchableOpacity style={styles.addButton} onPress={() => handleAdd(item.data.name, item.data.image)}>
-                        <Ionicons name="add-circle" style={styles.addIcon} />
+        <Image source={{ uri: item.data.image }} style={styles.itemImage} />
+        <Text style={styles.itemName}>{item.data.name}</Text>
+        <View style={styles.addContainer}>
+            <Text style={styles.itemPrice}>{item.data.price}</Text>
+            {itemInfo[item.data.name] && itemInfo[item.data.name].add ? (
+                <View style={styles.quantityContainer}>
+                    <TouchableOpacity onPress={() => handleDecrease(item.data.name)}>
+                        <Ionicons name="remove" style={styles.icon} />
                     </TouchableOpacity>
-                )}
-            </View>
+                    <Text style={styles.quantity}>{itemInfo[item.data.name].quantity}</Text>
+                    <TouchableOpacity onPress={() => handleIncrease(item.data.name)}>
+                        <Ionicons name="add" style={styles.icon} />
+                    </TouchableOpacity>
+                </View>
+            ) : (
+                <TouchableOpacity style={styles.addButton} onPress={() => handleAdd(item.data.name, item.data.image)}>
+                    <Ionicons name="add-circle" style={styles.addIcon} />
+                </TouchableOpacity>
+            )}
         </View>
-      }, [itemInfo]);
-
-
+    </View>
+    );
 
     const handleConfirmPress = async () => {
         const updatedItemsOrder = itemsArray.reduce((accumulator, item) => {
@@ -187,7 +186,6 @@ const MenuOrder = ({ navigation, route }) => {
                 numColumns={2}
                 style={styles.flatList}
                 contentContainerStyle={styles.flatListContent}
-                
             />
         </View>
     )
