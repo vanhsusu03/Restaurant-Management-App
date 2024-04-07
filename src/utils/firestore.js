@@ -60,6 +60,22 @@ const fetchStaffData = async () => {
     }
 };
 
+const fetchPendingOrderData = async () => {
+    try {
+        const ordersSnapshot = await firebase.firestore().collection('order').where('state', '==', 'Chờ thanh toán').get();
+        const pendingOrders = ordersSnapshot.docs.map(orderDoc => {
+            const orderData = orderDoc.data();
+            return {  id: orderDoc.id, ...orderData }; // Đảm bảo cả id của tài liệu được bao gồm
+        });
+        console.log("Lấy dữ liệu đơn hàng thành công!");
+        return pendingOrders;
+    } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+    }
+};
+
+
+
 const fetchCustomerData = async () => {
     try {
         const customer = await firebase.firestore().collection('customer').get();
@@ -189,9 +205,10 @@ const addCustomer = async (name, phone) => {
     }
 };
 
-const addOrder = async (date, total, guests, customer, items) => {
+const addOrder = async (table, date, total, guests, customer, items) => {
     try {
         await firebase.firestore().collection('order').add({
+            table: table,
             date: date,
             total: total,
             guests: guests,
@@ -310,9 +327,24 @@ const deleteTableData = async (tableId) => {
   }
 };
 
+const payment = async (orderId) => {
+  try {
+    // Get a reference to the order document
+    const orderRef = firebase.firestore().collection('order').doc(orderId);
+
+    // Update the state field to 'Đã thanh toán'
+    await orderRef.update({
+      state: 'Đã thanh toán'
+    });
+    console.log('Order state updated successfully.');
+  } catch (error) {
+    console.error('Error updating order state:', error);
+  }
+};
+
 
 export {
     getImage, upImgStogare, addDish, addStaff, addReport, editStaffInfo, editDoc, deleteDoc,
     fetchMenuData, fetchStaffData, fetchCustomerData, fetchReportData, getDocumentById, addOrder, addCustomer,
-    deleteTableData
+    deleteTableData, fetchPendingOrderData, payment
 }
