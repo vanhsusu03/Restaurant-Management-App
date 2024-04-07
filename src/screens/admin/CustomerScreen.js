@@ -39,6 +39,9 @@ const AdminCustomerScreen = ({ navigation }) => {
                     <View style={styles.customerNameContainer}>
                         <Text style={styles.cusName}>{item.name}</Text>
                     </View>
+                    <View style={styles.customerPhoneContainer}>
+                        <Text style={styles.customerPhone}>{item.phone}</Text>
+                    </View>
                 </View>
             </TouchableOpacity>
         )
@@ -47,7 +50,9 @@ const AdminCustomerScreen = ({ navigation }) => {
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }]}>
             <HomeHeadNav navigation={navigation} title='KHÁCH HÀNG' user='admin' /> 
-
+            <View style={styles.listTitleContainer}>
+                 <Text style={styles.listTitle}>DANH SÁCH KHÁCH HÀNG</Text>
+            </View>
             <FlatList
                 data={cusList}
                 renderItem={renderCus}
@@ -93,7 +98,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         flex: 2.5,
     },
-    staffRoleContainer: {
+    customerPhoneContainer: {
         marginHorizontal: 10,
         flex: 1,
     },
@@ -101,7 +106,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
-    staffRole: {
+    customerPhone: {
         fontSize: 16,
         color: '#666',
     },
@@ -124,6 +129,15 @@ const styles = StyleSheet.create({
     addButtonText: {
         fontSize: 18,
         color: '#EE9C37'
+    },
+    listTitleContainer: {
+        marginVertical: 20,
+        alignItems: 'center'
+    },
+    listTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: colors.text1,
     },
 });
 
