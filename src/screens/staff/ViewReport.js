@@ -11,13 +11,14 @@ const StaffViewReport = ({ navigation, route }) => {
     const animatedContainerRef = useRef(new Animated.Value(0)).current;
 
     const report = route.params.report;
+    const user = route.params.user;
 
     const handleCancel = () => {
         navigation.goBack();
     }
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }]}>
-            <HomeHeadNav navigation={navigation} title='CHI TIẾT BÁO CÁO' user='staff' />
+            <HomeHeadNav navigation={navigation} title='CHI TIẾT BÁO CÁO' user={user} />
             <ScrollView>
                 <Text style={styles.header}>Tiêu đề:</Text>
                 <Text
