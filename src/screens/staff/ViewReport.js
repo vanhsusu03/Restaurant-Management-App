@@ -17,7 +17,7 @@ const StaffViewReport = ({ navigation, route }) => {
     }
     return (
         <Animated.View style={[styles.container, { transform: [{ translateY: animatedContainerRef }] }]}>
-            <HomeHeadNav navigation={navigation} title='CHI TIẾT BÁO CÁO' user='admin' />
+            <HomeHeadNav navigation={navigation} title='CHI TIẾT BÁO CÁO' user='staff' />
             <ScrollView>
                 <Text style={styles.header}>Tiêu đề:</Text>
                 <Text

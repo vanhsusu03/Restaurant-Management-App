@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../globals/style';
@@ -7,6 +7,10 @@ import SideBar from '../components/SideBar.js';
 
 const HomeHeadNav = ({ navigation, title, user }) => {
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        setIsOpen(false);
+    }, []);
 
     const handleToggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -23,7 +27,7 @@ const HomeHeadNav = ({ navigation, title, user }) => {
                 {/* Title */}
                 <Text style={styles.title}>{title}</Text>
                 {/* User icon */}
-                <TouchableOpacity onPress={() => { navigation.navigate('user_admin') }} style={styles.userIcon}>
+                <TouchableOpacity onPress={() => { navigation.navigate('user', { user: user }) }} style={styles.userIcon}>
                     <FontAwesome5 name="user-circle" size={35} color="white" />
                 </TouchableOpacity>
             </View>
