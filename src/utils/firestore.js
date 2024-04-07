@@ -79,6 +79,23 @@ const fetchCustomerData = async () => {
     console.log("Error when fetching data customer:", err);
   }
 };
+
+const getDocumentById = async (collectionName, documentId) => {
+  try {
+    const documentRef = firebase.firestore().collection(collectionName).doc(documentId);
+    const documentSnapshot = await documentRef.get();
+
+    if (documentSnapshot.exists) {
+      console.log('Getting document successfully!');
+      return { id: documentSnapshot.id, ...documentSnapshot.data() };
+    } else {
+      console.log('Document not found');
+    }
+  } catch (error) {
+    console.error('Error getting document:', error);
+  }
+};
+
 const fetchReportData = async () => {
   try {
     const report = await firebase.firestore().collection("report").get();
@@ -185,6 +202,40 @@ const addStaff = async (role, name, age, gender, email, phone) => {
     return false;
   }
 };
+
+const addCustomer = async (name, phone) => {
+    try {
+        await firebase.firestore().collection('customer').add({
+            name: name,
+            phone: phone
+        });
+        console.log("Customer added successfully!");
+        return true;
+    } catch (error) {
+        console.error("Error adding customer:", error);
+        return false;
+    }
+};
+
+const addOrder = async (date, total, guests, customer, items) => {
+    try {
+        await firebase.firestore().collection('order').add({
+            date: date,
+            total: total,
+            guests: guests,
+            customer: customer,
+            items: items,
+            state: "Chờ thanh toán",
+        });
+        console.log("Order added successfully!");
+        return true;
+    } catch (error) {
+        console.error("Error adding order:", error);
+        return false;
+    }
+};
+
+
 
 const addReport = async (title, sender, content) => {
   try {
@@ -373,26 +424,34 @@ const updateTables = async (updatedTableList) => {
     } catch (error) {
       console.error("Lỗi khi xóa dữ liệu và cập nhật trạng thái:", error);
     }
+};
+
+const deleteTableData = async (tableId) => {
+  try {
+    const db = firebase.firestore();
+
+    // Xóa dữ liệu về customer và items
+    // Đặt trường customer về một map rỗng
+    await db.collection('tables').doc(tableId).update({
+      'customer': {name: '', phone: ''},
+      'items': [],
+    });
+
+    // Cập nhật trạng thái và total
+    await db.collection('tables').doc(tableId).update({
+      state: 'available',
+      total: 0,
+      guests: 0,
+    });
+    console.log('Dữ liệu đã được xóa và trạng thái đã được cập nhật thành công.');
+
+  } catch (error) {
+    console.error('Lỗi khi xóa dữ liệu và cập nhật trạng thái:', error);
+  }
   };
 };
 
 export {
-  getImage,
-  upImgStogare,
-  addDish,
-  addStaff,
-  addReport,
-  editStaffInfo,
-  editDoc,
-  deleteDoc,
-  updateTables,
-  fetchMenuData,
-  fetchStaffData,
-  fetchCustomerData,
-  fetchReportData,
-  fetchTableData,
-  getDocumentById,
-  addOrder,
-  addCustomer,
-  deleteTableData,
-};
+    getImage, upImgStogare, addDish, addStaff, addReport, editStaffInfo, editDoc, deleteDoc,
+    fetchMenuData, fetchStaffData, fetchCustomerData, fetchReportData
+}
