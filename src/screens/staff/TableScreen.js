@@ -7,6 +7,9 @@ const StaffTableScreen = ({ navigation }) => {
     return (
         <View>
             <HomeHeadNav navigation={navigation} title='QUẢN LÝ BÀN' user='staff'/>
+            <TouchableOpacity onPress={() => { navigation.navigate('table_detail', { table_id: '1' })}}>
+                <Text>Chi tiết bàn</Text>
+            </TouchableOpacity>
         </View>
     )
 }

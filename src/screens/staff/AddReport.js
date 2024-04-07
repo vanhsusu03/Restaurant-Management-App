@@ -52,7 +52,7 @@ const StaffAddReportScreen = ({ navigation }) => {
     return (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
             <Animated.View style={[styles.container]}>
-                <HomeHeadNav navigation={navigation} title='VIẾT BÁO CÁO' />
+                <HomeHeadNav navigation={navigation} title='VIẾT BÁO CÁO' user='staff'/>
                 <ScrollView>
                     <Text style={styles.header}>Tiêu đề:</Text>
                     <TextInput

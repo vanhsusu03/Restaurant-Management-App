@@ -11,7 +11,8 @@ import { changePassword, getCurrentUserEmail, logout } from '../../utils/auth';
 //import { Toast } from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 
-const AdminUserScreen = ({ navigation }) => {
+const AdminUserScreen = ({ navigation, route }) => {
+    const { user } = route.params;
     const [passwordfocus, setPasswordfocus] = useState(false);
     const [showpassword, setShowpassword] = useState(false);
     const [cpasswordfocus, setCpasswordfocus] = useState(false);
@@ -70,7 +71,7 @@ const AdminUserScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <HomeHeadNav navigation={navigation} title='USER' user='admin'/>
+            <HomeHeadNav navigation={navigation} title='USER' user={user}/>
             <TouchableOpacity onPress={() => handleToggleChangePassword()} style={{marginTop: 10}}>
                 <View style={styles.linkContainer}>
                     <MaterialCommunityIcons name="key-change" size={27} color={colors.primary} style={styles.icon} />
