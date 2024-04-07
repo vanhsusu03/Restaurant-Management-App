@@ -25,7 +25,7 @@ import StaffViewReport from './src/screens/staff/ViewReport.js';
 import StaffAddReportScreen from './src/screens/staff/AddReport.js';
 import CustomerInfo from './src/screens/admin/customer/CustomerInfo.js';
 import TableDetail from './src/screens/staff/table/TableDetail';
-
+import EditTables from './src/screens/admin/table/EditTables.js';
 export default function App() {
 const Stack = createNativeStackNavigator();
   return (
@@ -45,6 +45,7 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="dish_detail" component={DishDetail} options={{ headerShown: false }} />
             <Stack.Screen name="add_dish" component={AddDish} options={{ headerShown: false }} />
             <Stack.Screen name="table_admin" component={AdminTableScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="edit_tables" component={EditTables} options={{headerShown: false,}}/>
             <Stack.Screen name="report_admin" component={AdminReportScreen} options={{ headerShown: false }} />
             <Stack.Screen name="sale_admin" component={AdminSaleScreen} options={{ headerShown: false }} />
             <Stack.Screen name="user" component={AdminUserScreen} options={{ headerShown: false }} />

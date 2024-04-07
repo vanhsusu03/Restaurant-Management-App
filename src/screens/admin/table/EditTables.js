@@ -1,104 +1,116 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
-import { colors, veg, nonveg } from "../../globals/style.js";
+import { StyleSheet, View, Image, TouchableOpacity, Text, Alert, Modal, TextInput} from "react-native";
 import { FontAwesome6 } from "@expo/vector-icons";
-import HomeHeadNav from '../../components/Header.js'
 
-const AdminTableScreen = ({ navigation }) => {
-  const editTables = async () => {
-    try {
-      navigation.navigate("edit_tables");
-    } catch (error) {
-      console.error("Error navigating to : EditTables", error);
-    }
+const EditTables = ({ navigation, route }) => {
+  const [isDeleted, setIsDeleted] = useState(false);
+
+  const fixTable = () => {
+    Alert.alert(
+      'Bạn muốn xoá bàn này?',
+      [
+        { text: 'Không', onPress: () => console.log('No Pressed'), style: 'cancel' },
+        { text: 'Có', onPress: () => setIsDeleted(true) }
+      ],
+      { cancelable: false }
+    );
   };
+
+
   return (
     <View style={styles.container}>
-     <HomeHeadNav navigation={navigation} title='QUẢN LÝ BÀN' user='admin'/>
-      <Text style={styles.tables}>Bàn</Text>
+      <Text style={styles.tables}>Chỉnh sửa bàn</Text>
 
-      <TouchableOpacity style={styles.edit} onPress={editTables}>
-        <FontAwesome6 name="edit" style={styles.icon} />
-        <Text style={styles.text}>Sửa</Text>
+      <TouchableOpacity style={styles.edit}>
+        <FontAwesome6 name="save" style={styles.icon} />
+        <Text style={styles.text}>Lưu</Text>
       </TouchableOpacity>
       <View style={styles.row}>
+
         {/* Row 1 */}
-        <Image
-          source={require("../../../assets/TableList/Table1.png")}
-          style={styles.imageTable}
-        />
-        <Image
-          source={require("../../../assets/TableList/Table2.png")}
-          style={styles.imageTable}
-        />
-        <Image
-          source={require("../../../assets/TableList/Table3.png")}
-          style={styles.imageTable}
-        />
+        <TouchableOpacity onPress={fixTable}>
+          <Image
+            source={isDeleted ? require("../../../../assets/TableList/TableDelete.png") : require("../../../../assets/TableList/Table1.png")}
+            style={styles.imageTable}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Image
+            source={require("../../../../assets/TableList/Table2.png")}
+            style={styles.imageTable}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Image
+            source={require("../../../../assets/TableList/Table3.png")}
+            style={styles.imageTable}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.row}>
         {/* Row 2 */}
         <Image
-          source={require("../../../assets/TableList/Table4.png")}
+          source={require("../../../../assets/TableList/Table4.png")}
           style={styles.imageTable}
         />
         <Image
-          source={require("../../../assets/TableList/Table5.png")}
+          source={require("../../../../assets/TableList/Table5.png")}
           style={styles.imageTable}
         />
         <Image
-          source={require("../../../assets/TableList/Table6.png")}
+          source={require("../../../../assets/TableList/Table6.png")}
           style={styles.imageTable}
         />
       </View>
       <View style={styles.row}>
         {/* Row 3 */}
         <Image
-          source={require("../../../assets/TableList/Table7.png")}
+          source={require("../../../../assets/TableList/Table7.png")}
           style={styles.imageTable}
         />
         <Image
-          source={require("../../../assets/TableList/Table8.png")}
+          source={require("../../../../assets/TableList/Table8.png")}
           style={styles.imageTable}
         />
         <Image
-          source={require("../../../assets/TableList/Table9.png")}
+          source={require("../../../../assets/TableList/Table9.png")}
           style={styles.imageTable}
         />
       </View>
       <View style={styles.row}>
         {/* Row 4 */}
         <Image
-          source={require("../../../assets/TableList/Table10.png")}
+          source={require("../../../../assets/TableList/Table10.png")}
           style={styles.imageTable}
         />
         <Image
-          source={require("../../../assets/TableList/Table11.png")}
+          source={require("../../../../assets/TableList/Table11.png")}
           style={styles.imageTable}
         />
         <Image
-          source={require("../../../assets/TableList/Table12.png")}
+          source={require("../../../../assets/TableList/Table12.png")}
           style={styles.imageTable}
         />
       </View>
       <View style={styles.row}>
         {/* Row 5 */}
         <Image
-          source={require("../../../assets/TableList/Table13.png")}
+          source={require("../../../../assets/TableList/Table13.png")}
           style={styles.imageTable}
         />
         <Image
-          source={require("../../../assets/TableList/Table14.png")}
+          source={require("../../../../assets/TableList/Table14.png")}
           style={styles.imageTable}
         />
         <Image
-          source={require("../../../assets/TableList/Table15.png")}
+          source={require("../../../../assets/TableList/Table15.png")}
           style={styles.imageTable}
         />
       </View>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -190,4 +202,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AdminTableScreen;
+export default EditTables;
