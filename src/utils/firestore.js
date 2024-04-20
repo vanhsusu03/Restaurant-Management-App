@@ -67,6 +67,22 @@ const fetchStaffData = async () => {
   }
 };
 
+const fetchPendingOrderData = async () => {
+    try {
+        const ordersSnapshot = await firebase.firestore().collection('order').where('state', '==', 'Chờ thanh toán').get();
+        const pendingOrders = ordersSnapshot.docs.map(orderDoc => {
+            const orderData = orderDoc.data();
+            return {  id: orderDoc.id, ...orderData }; // Đảm bảo cả id của tài liệu được bao gồm
+        });
+        console.log("Lấy dữ liệu đơn hàng thành công!");
+        return pendingOrders;
+    } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+    }
+};
+
+
+
 const fetchCustomerData = async () => {
   try {
     const customer = await firebase.firestore().collection("customer").get();
@@ -221,22 +237,24 @@ const addCustomer = async (name, phone) => {
 };
 
 const addOrder = async (date, total, guests, customer, items) => {
-  try {
-    await firebase.firestore().collection("order").add({
-      date: date,
-      total: total,
-      guests: guests,
-      customer: customer,
-      items: items,
-      state: "Chờ thanh toán",
-    });
-    console.log("Order added successfully!");
-    return true;
-  } catch (error) {
-    console.error("Error adding order:", error);
-    return false;
-  }
+    try {
+        await firebase.firestore().collection('order').add({
+            date: date,
+            total: total,
+            guests: guests,
+            customer: customer,
+            items: items,
+            state: "Chờ thanh toán",
+        });
+        console.log("Order added successfully!");
+        return true;
+    } catch (error) {
+        console.error("Error adding order:", error);
+        return false;
+    }
 };
+
+
 
 const addReport = async (title, sender, content) => {
   try {
@@ -400,33 +418,83 @@ const updateTables = async (updatedTableList) => {
   } catch (error) {
     console.error("Error saving data of table:", error);
   }
-};
-const deleteTableData = async (tableId) => {
-  try {
-    const db = firebase.firestore();
+  const getDocumentById = async (collectionName, documentId) => {
+    try {
+      const documentRef = firebase
+        .firestore()
+        .collection(collectionName)
+        .doc(documentId);
+      const documentSnapshot = await documentRef.get();
 
-    // Xóa dữ liệu về customer và items
-    // Đặt trường customer về một map rỗng
-    await db
-      .collection("tables")
-      .doc(tableId)
-      .update({
-        customer: { name: "", phone: "" },
-        items: [],
+      if (documentSnapshot.exists) {
+        console.log("Getting document successfully!");
+        return { id: documentSnapshot.id, ...documentSnapshot.data() };
+      } else {
+        console.log("Document not found");
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
+    }
+  };
+
+  const addCustomer = async (name, phone) => {
+    try {
+      await firebase.firestore().collection("customer").add({
+        name: name,
+        phone: phone,
       });
+      console.log("Customer added successfully!");
+      return true;
+    } catch (error) {
+      console.error("Error adding customer:", error);
+      return false;
+    }
+  };
 
-    // Cập nhật trạng thái và total
-    await db.collection("tables").doc(tableId).update({
-      state: "available",
-      total: 0,
-      guests: 0,
-    });
-    console.log(
-      "Dữ liệu đã được xóa và trạng thái đã được cập nhật thành công."
-    );
-  } catch (error) {
-    console.error("Lỗi khi xóa dữ liệu và cập nhật trạng thái:", error);
-  }
+  const addOrder = async (date, total, guests, customer, items) => {
+    try {
+      await firebase.firestore().collection("order").add({
+        date: date,
+        total: total,
+        guests: guests,
+        customer: customer,
+        items: items,
+        state: "Chờ thanh toán",
+      });
+      console.log("Order added successfully!");
+      return true;
+    } catch (error) {
+      console.error("Error adding order:", error);
+      return false;
+    }
+  };
+
+  const deleteTableData = async (tableId) => {
+    try {
+      const db = firebase.firestore();
+
+      // Xóa dữ liệu về customer và items
+      // Đặt trường customer về một map rỗng
+      await db
+        .collection("tables")
+        .doc(tableId)
+        .update({
+          customer: { name: "", phone: "" },
+          items: [],
+        });
+
+      // Cập nhật trạng thái và total
+      await db.collection("tables").doc(tableId).update({
+        state: "available",
+        total: 0,
+        guests: 0,
+      });
+      console.log(
+        "Dữ liệu đã được xóa và trạng thái đã được cập nhật thành công."
+      );
+    } catch (error) {
+      console.error("Lỗi khi xóa dữ liệu và cập nhật trạng thái:", error);
+    }
 };
 
 const cancelBooking = async (table_id) => {
@@ -448,27 +516,11 @@ const cancelBooking = async (table_id) => {
   } catch (error) {
     console.error("Lỗi khi huỷ đặt bàn:", error);
   }
+  };
 };
 
+
 export {
-  getImage,
-  upImgStogare,
-  addDish,
-  addStaff,
-  addReport,
-  editStaffInfo,
-  editDoc,
-  deleteDoc,
-  fetchMenuData,
-  fetchStaffData,
-  fetchCustomerData,
-  fetchReportData,
-  getDocumentById,
-  addOrder,
-  addCustomer,
-  deleteTableData,
-  fetchTableData,
-  updateTables,
-  addInforBooking,
-  cancelBooking,
-};
+    getImage, upImgStogare, addDish, addStaff, addReport, editStaffInfo, editDoc, deleteDoc,
+    fetchMenuData, fetchStaffData, fetchCustomerData, fetchReportData
+}

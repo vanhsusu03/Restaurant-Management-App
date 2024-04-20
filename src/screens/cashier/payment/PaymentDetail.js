@@ -1,58 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Text, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
 import { Table, Row, TableWrapper } from 'react-native-table-component';
 import { firebase } from '../../../../Firebase/firebase';
-import { getDocumentById, addCustomer, addOrder, deleteTableData } from '../../../utils/firestore';
+import { payment } from '../../../utils/firestore';
 import { colors, veg, nonveg } from '../../../globals/style.js'
 import HomeHeadNav from '../../../components/Header.js'
 import { MaterialIcons, Feather, Fontisto, FontAwesome6 } from '@expo/vector-icons';
 
-const TableDetail = ({ navigation, route }) => {
-  const { table_id } = route.params;
-  const [data, setData] = useState(null);
-  
-
-  const fetchTableData = useCallback(async () => {
-    try {
-      const tableData = await getDocumentById('tables', table_id);
-      setData(tableData);
-    } catch (error) {
-      console.error('Error fetching table data:', error);
-    }
-  }, [table_id]);
-
-    useEffect(() => {
-      const reload = navigation.addListener('focus', () => {
-        fetchTableData();
-      });
-      return reload;
-    }, [navigation, fetchTableData]);
-
-  const handleCancel = () => {
-    navigation.goBack();
-  };
+const PaymentDetail = ({ navigation, route }) => {
+  const data = route.params.order;
 
   const handlePayment = async () => {
     try {
-        await addCustomer(data.customer.name, data.customer.phone);
-        await addOrder(table_id, data.date, data.total, data.guests, data.customer, data.items);
-        await deleteTableData(table_id);
-        alert('Hóa đơn này đã được chuyển sang trạng thái chờ thanh toán!');
-        navigation.navigate('table_staff');
+        await payment(data.id);
+        alert('Hóa đơn này đã được thanh toán thành công!');
+        navigation.navigate('payment_cashier');
     } catch (error) {
         console.error("Error saving data:", error);
     }
   };
 
-  const handleAdd = () => {
-    navigation.navigate('menu_order', { table_id: table_id });
-};
-
-
   return (
-    <ScrollView style={styles.container}>
-      <HomeHeadNav navigation={navigation} title='CHI TIẾT BÀN' user='staff'/>
-      {data && (
+    <View style={styles.container}>
+      <HomeHeadNav navigation={navigation} title='CHI TIẾT HÓA ĐƠN' user='cashier'/>
+
         <View style={styles.customer}>
           <View style={styles.customerInfo}>
             <Text style={styles.customerTitle}>Tên khách hàng: </Text>
@@ -62,7 +33,7 @@ const TableDetail = ({ navigation, route }) => {
             <View style={styles.tableId}>
               <MaterialIcons name={'table-restaurant'} size={20} />
               <Text style={styles.customerText}>Bàn: </Text>
-              <Text style={styles.tableText}>{data.id}</Text>
+              <Text style={styles.tableText}>{data.table}</Text>
             </View>
             <View style={styles.tableGuests}>
               <Feather name={'users'} size={20} />
@@ -76,25 +47,19 @@ const TableDetail = ({ navigation, route }) => {
             <Text style={styles.tableText}>{data.date}</Text>
           </View>
         </View>
-      )}
-      <TouchableOpacity style={styles.add} onPress={handleAdd}>
-          <FontAwesome6 name="add" style={styles.icon}/>
-          <Text style={styles.tableText}>Add</Text>
-      </TouchableOpacity>
 
-      {data && (
+
         <View style={styles.table}>
           <TableWrapper style={styles.tableWrapper}>
             <Table>
               <Row
-                style={styles.tableTitle}
                 data={[
                   <View style={styles.headerItemContainer}>
                     <Text style={styles.headerText}>{'MÓN ĂN'}</Text>
                     <Text style={styles.headerText}>{'SỐ LƯỢNG'}</Text>
                   </View>
                 ]}
-                
+                style={styles.tableTitle}
               />
               {data.items.map((item) => (
                 <Row
@@ -115,7 +80,7 @@ const TableDetail = ({ navigation, route }) => {
             </Table>
           </TableWrapper>
         </View>
-      )}
+
 
       {data && (
         <View style={styles.totalContainer}>
@@ -128,11 +93,8 @@ const TableDetail = ({ navigation, route }) => {
         <TouchableOpacity style={styles.button} onPress={handlePayment}>
           <Text style={styles.buttonText}>Thanh toán</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleCancel}>
-          <Text style={styles.buttonText}>Quay lại</Text>
-        </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -300,4 +262,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TableDetail;
+export default PaymentDetail;

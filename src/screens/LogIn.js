@@ -28,7 +28,7 @@ const LogInScreen = ({ navigation }) => {
                 } else if (user === 'staff') {
                     navigation.navigate('menu_staff');
                 } else if (user === 'cashier') {
-                    navigation.navigate('home_admin');
+                    navigation.navigate('payment_cashier');
                 } else if (user === 'kitchen_manager') {
                     navigation.navigate('home_admin');
                 } else {
