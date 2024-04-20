@@ -32,6 +32,8 @@ import CashierSaleScreen from './src/screens/cashier/SaleScreen.js'
 import PaymentDetail from './src/screens/cashier/payment/PaymentDetail';
 
 import EditTables from './src/screens/admin/table/EditTables.js';
+import AddInforBooking from './src/screens/staff/table/AddInforBooking.js';
+import BookedTable from './src/screens/staff/table/BookedTable.js';
 export default function App() {
 const Stack = createNativeStackNavigator();
   return (
@@ -64,7 +66,10 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="report_staff_view" component={StaffViewReport} options={{ headerShown: false }} />
             <Stack.Screen name="report_staff_add" component={StaffAddReportScreen} options={{ headerShown: false }} />
             <Stack.Screen name="table_detail" component={TableDetail} options={{ headerShown: false }} />
+            <Stack.Screen name="table_booking" component={AddInforBooking} options={{ headerShown: false }} />
+            <Stack.Screen name="table_booked" component={BookedTable} options={{ headerShown: false }} />
             <Stack.Screen name="menu_order" component={MenuOrder} options={{ headerShown: false }} />
+
             {/* Trang dành cho cashier */}
             <Stack.Screen name="payment_cashier" component={PaymentScreen} options={{ headerShown: false }} />
             <Stack.Screen name="table_cashier" component={CashierTableScreen} options={{ headerShown: false }} />

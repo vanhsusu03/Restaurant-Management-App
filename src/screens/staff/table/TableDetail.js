@@ -10,6 +10,7 @@ import { MaterialIcons, Feather, Fontisto, FontAwesome6 } from '@expo/vector-ico
 const TableDetail = ({ navigation, route }) => {
   const { table_id } = route.params;
   const [data, setData] = useState(null);
+  
 
   const fetchTableData = useCallback(async () => {
     try {
