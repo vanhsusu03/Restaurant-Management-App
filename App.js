@@ -25,6 +25,12 @@ import StaffViewReport from './src/screens/staff/ViewReport.js';
 import StaffAddReportScreen from './src/screens/staff/AddReport.js';
 import CustomerInfo from './src/screens/admin/customer/CustomerInfo.js';
 import TableDetail from './src/screens/staff/table/TableDetail';
+import MenuOrder from './src/screens/staff/table/MenuOrder.js';
+import PaymentScreen from './src/screens/cashier/PaymentScreen.js'
+import CashierTableScreen from './src/screens/cashier/TableScreen.js'
+import CashierSaleScreen from './src/screens/cashier/SaleScreen.js'
+import PaymentDetail from './src/screens/cashier/payment/PaymentDetail';
+
 import EditTables from './src/screens/admin/table/EditTables.js';
 export default function App() {
 const Stack = createNativeStackNavigator();
@@ -58,7 +64,12 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="report_staff_view" component={StaffViewReport} options={{ headerShown: false }} />
             <Stack.Screen name="report_staff_add" component={StaffAddReportScreen} options={{ headerShown: false }} />
             <Stack.Screen name="table_detail" component={TableDetail} options={{ headerShown: false }} />
+            <Stack.Screen name="menu_order" component={MenuOrder} options={{ headerShown: false }} />
             {/* Trang dành cho cashier */}
+            <Stack.Screen name="payment_cashier" component={PaymentScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="table_cashier" component={CashierTableScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="sale_cashier" component={CashierSaleScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="payment_detail" component={PaymentDetail} options={{ headerShown: false }} />
 
             {/* Trang dành cho kitchen_manager */}
 

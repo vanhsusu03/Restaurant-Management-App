@@ -33,8 +33,8 @@ const SideBar = ({ navigation, title, user }) => {
 
     // Khai báo các mục cho người dùng "cashier"
     const cashierItems = [
-        { title: 'TRANG CHỦ', screenName: 'home_cashier', type: MaterialIcons, icon: 'home' },
-        { title: 'BÁO CÁO', screenName: 'report_cashier', type: SimpleLineIcons, icon: 'notebook' },
+        { title: 'THANH TOÁN', screenName: 'payment_cashier', type: MaterialIcons, icon: 'payment' },
+        { title: 'ĐẶT BÀN', screenName: 'table_cashier', type: MaterialIcons, icon: 'table-restaurant' },
         { title: 'DOANH THU', screenName: 'sale_cashier', type: FontAwesome6, icon: 'money-check-dollar' },
     ];
 
