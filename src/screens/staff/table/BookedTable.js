@@ -35,7 +35,10 @@ const BookedTable = ({ navigation, route }) => {
 
   const handleUsing = async () => {
     try {
-      await firebase.firestore().collection("tables").doc(table_id).update({ state: "in use" });
+
+    // Cập nhật trạng thái "in use" cho bàn
+    await firebase.firestore().collection("tables").doc(table_id).update({ state: "in use", items: [] });
+
       navigation.navigate("table_staff");
     } catch (error) {
       console.error("Error saving data:", error);
