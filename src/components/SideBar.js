@@ -40,9 +40,9 @@ const SideBar = ({ navigation, title, user }) => {
 
     // Khai báo các mục cho người dùng "kitchen_manager"
     const kitchenManagerItems = [
-        { title: 'TRANG CHỦ', screenName: 'home_kitchen_manager', type: MaterialIcons, icon: 'home' },
         { title: 'MENU', screenName: 'menu_kitchen_manager', type: Ionicons, icon: 'restaurant-outline' },
-        { title: 'QUẢN LÝ BÀN', screenName: 'table_kitchen_manager', type: MaterialIcons, icon: 'table-restaurant' },
+        { title: 'MÓN ĐÃ ĐẶT', screenName: 'ordered_dishes', type: MaterialIcons, icon: 'table-restaurant' },
+        { title: 'MÓN ĐÃ XONG ', screenName: 'completed_dishes', type: MaterialIcons, icon: 'home' },
     ];
 
     let items = [];

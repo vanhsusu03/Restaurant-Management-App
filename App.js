@@ -30,6 +30,9 @@ import PaymentScreen from './src/screens/cashier/PaymentScreen.js'
 import CashierTableScreen from './src/screens/cashier/TableScreen.js'
 import CashierSaleScreen from './src/screens/cashier/SaleScreen.js'
 import PaymentDetail from './src/screens/cashier/payment/PaymentDetail';
+import KitchenManagerMenuScreen from './src/screens/kitchen_manager/MenuScreen.js'
+import OrderedDishesScreen from './src/screens/kitchen_manager/OrderedDishes.js'
+import CompletedDishesScreen from './src/screens/kitchen_manager/CompletedDishes.js'
 
 import EditTables from './src/screens/admin/table/EditTables.js';
 import AddInforBooking from './src/screens/staff/table/AddInforBooking.js';
@@ -77,6 +80,9 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="payment_detail" component={PaymentDetail} options={{ headerShown: false }} />
 
             {/* Trang dành cho kitchen_manager */}
+            <Stack.Screen name="menu_kitchen_manager" component={KitchenManagerMenuScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="ordered_dishes" component={OrderedDishesScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="completed_dishes" component={CompletedDishesScreen} options={{ headerShown: false }} />
 
         </Stack.Navigator>
     </NavigationContainer>
