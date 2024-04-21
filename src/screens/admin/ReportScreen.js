@@ -55,6 +55,9 @@ const AdminReportScreen = ({ navigation }) => {
     return (
         <View>
             <HomeHeadNav navigation={navigation} title='BÁO CÁO' user='admin' />
+            <View style={styles.listTitleContainer}>
+                 <Text style={styles.listTitle}>DANH SÁCH BÁO CÁO</Text>
+            </View>
             <View>
                 <FlatList
                     data={reportList}
@@ -90,7 +93,7 @@ const styles = StyleSheet.create({
     reportItem: {
         padding: 5,
         marginLeft: 20,
-        marginTop: 20,
+        marginTop: 10,
     },
     reportContainer: {
         flexDirection: 'row',
@@ -135,6 +138,15 @@ const styles = StyleSheet.create({
     addButtonText: {
         fontSize: 18,
         color: '#EE9C37'
+    },
+    listTitleContainer: {
+        marginVertical: 20,
+        alignItems: 'center'
+    },
+    listTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: colors.text1,
     },
 });
 
