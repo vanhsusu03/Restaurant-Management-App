@@ -80,6 +80,58 @@ const fetchCustomerData = async () => {
   }
 };
 
+const fetchOrderedDishesData = async () => {
+  try {
+    const orderedDishesDoc = await firebase.firestore().collection("ordered_dishes").doc("ordered_dishes").get();
+    if (!orderedDishesDoc.exists) {
+      throw new Error("Ordered dishes document does not exist!");
+    }
+    const orderedDishesData = orderedDishesDoc.data();
+    const orderedDishes = orderedDishesData.ordered_dishes;
+
+    // Lọc ra các món ăn có trạng thái "ordered" hoặc "preparing"
+    const filteredDishes = [];
+    orderedDishes.forEach((dish, index) => {
+      if (dish.state === "ordered" || dish.state === "preparing") {
+        // Thêm trường id vào phần tử đã lọc
+        filteredDishes.push({ ...dish, id: index });
+      }
+    });
+    return filteredDishes;
+  } catch (error) {
+    console.log("Error when fetching ordered dishes data:", error);
+    throw error;
+  }
+};
+
+
+
+const fetchCompletedDishesData = async () => {
+  try {
+    const orderedDishesDoc = await firebase.firestore().collection("ordered_dishes").doc("ordered_dishes").get();
+    if (!orderedDishesDoc.exists) {
+      throw new Error("Ordered dishes document does not exist!");
+    }
+    const orderedDishesData = orderedDishesDoc.data();
+    const orderedDishes = orderedDishesData.ordered_dishes;
+
+    // Lọc ra các món ăn có trạng thái "ordered" hoặc "preparing"
+    const filteredDishes = [];
+    orderedDishes.forEach((dish, index) => {
+      if (dish.state === "cooked" || dish.state === "served") {
+        // Thêm trường id vào phần tử đã lọc
+        filteredDishes.push({ ...dish, id: index });
+      }
+    });
+
+    return filteredDishes;
+  } catch (error) {
+    console.log("Error when fetching ordered dishes data:", error);
+    throw error;
+  }
+};
+
+
 const getDocumentById = async (collectionName, documentId) => {
   try {
     const documentRef = firebase
@@ -416,6 +468,36 @@ const updateTables = async (updatedTableList) => {
     console.error("Error saving data of table:", error);
   }
 };
+
+const updateDishState = async (dishId, newState) => {
+  try {
+    const orderedDishesRef = firebase.firestore().collection("ordered_dishes").doc("ordered_dishes");
+    const orderedDishesDoc = await orderedDishesRef.get();
+
+    if (!orderedDishesDoc.exists) {
+      throw new Error("Ordered dishes document does not exist!");
+    }
+
+    const orderedDishesData = orderedDishesDoc.data().ordered_dishes;
+
+    const updatedDishes = orderedDishesData.map((dish, index) => {
+      if (index === dishId) {
+        return { ...dish, state: newState };
+      } else {
+        return dish;
+      }
+    });
+
+    // Cập nhật dữ liệu mới của mảng "ordered_dishes" trong Firestore
+    await orderedDishesRef.update({ ordered_dishes: updatedDishes });
+
+    console.log(`Dish with ID ${dishId} has been updated to state ${newState}`);
+  } catch (error) {
+    console.error("Error updating dish state:", error);
+    throw error;
+  }
+};
+
 const deleteTableData = async (tableId) => {
   try {
     const db = firebase.firestore();
@@ -487,4 +569,7 @@ export {
   addInforBooking,
   cancelBooking,
   fetchPendingOrderData,
+  fetchOrderedDishesData,
+  fetchCompletedDishesData,
+  updateDishState,
 };
