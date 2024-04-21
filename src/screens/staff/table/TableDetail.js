@@ -1,11 +1,28 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Text, ScrollView } from 'react-native';
-import { Table, Row, TableWrapper } from 'react-native-table-component';
-import { firebase } from '../../../../Firebase/firebase';
-import { getDocumentById, addCustomer, addOrder, deleteTableData } from '../../../utils/firestore';
-import { colors, veg, nonveg } from '../../../globals/style.js'
-import HomeHeadNav from '../../../components/Header.js'
-import { MaterialIcons, Feather, Fontisto, FontAwesome6 } from '@expo/vector-icons';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+} from "react-native";
+import { Table, Row, TableWrapper } from "react-native-table-component";
+import { firebase } from "../../../../Firebase/firebase";
+import {
+  getDocumentById,
+  addCustomer,
+  addOrder,
+  deleteTableData,
+} from "../../../utils/firestore";
+import { colors, veg, nonveg } from "../../../globals/style.js";
+import HomeHeadNav from "../../../components/Header.js";
+import {
+  MaterialIcons,
+  Feather,
+  Fontisto,
+  FontAwesome6,
+} from "@expo/vector-icons";
 
 const TableDetail = ({ navigation, route }) => {
   const { table_id } = route.params;
@@ -13,19 +30,19 @@ const TableDetail = ({ navigation, route }) => {
 
   const fetchTableData = useCallback(async () => {
     try {
-      const tableData = await getDocumentById('tables', table_id);
+      const tableData = await getDocumentById("tables", table_id);
       setData(tableData);
     } catch (error) {
-      console.error('Error fetching table data:', error);
+      console.error("Error fetching table data:", error);
     }
   }, [table_id]);
 
-    useEffect(() => {
-      const reload = navigation.addListener('focus', () => {
-        fetchTableData();
-      });
-      return reload;
-    }, [navigation, fetchTableData]);
+  useEffect(() => {
+    const reload = navigation.addListener("focus", () => {
+      fetchTableData();
+    });
+    return reload;
+  }, [navigation, fetchTableData]);
 
   const handleCancel = () => {
     navigation.goBack();
@@ -33,24 +50,30 @@ const TableDetail = ({ navigation, route }) => {
 
   const handlePayment = async () => {
     try {
-        await addCustomer(data.customer.name, data.customer.phone);
-        await addOrder(table_id, data.date, data.total, data.guests, data.customer, data.items);
-        await deleteTableData(table_id);
-        alert('Hóa đơn này đã được chuyển sang trạng thái chờ thanh toán!');
-        navigation.navigate('table_staff');
+      await addCustomer(data.customer.name, data.customer.phone);
+      await addOrder(
+        table_id,
+        data.date,
+        data.total,
+        data.guests,
+        data.customer,
+        data.items
+      );
+      await deleteTableData(table_id);
+      alert("Hóa đơn này đã được chuyển sang trạng thái chờ thanh toán!");
+      navigation.navigate("table_staff");
     } catch (error) {
-        console.error("Error saving data:", error);
+      console.error("Error saving data:", error);
     }
   };
 
   const handleAdd = () => {
-    navigation.navigate('menu_order', { table_id: table_id });
-};
-
+    navigation.navigate("menu_order", { table_id: table_id });
+  };
 
   return (
     <ScrollView style={styles.container}>
-      <HomeHeadNav navigation={navigation} title='CHI TIẾT BÀN' user='staff'/>
+      <HomeHeadNav navigation={navigation} title="CHI TIẾT BÀN" user="staff" />
       {data && (
         <View style={styles.customer}>
           <View style={styles.customerInfo}>
@@ -59,26 +82,26 @@ const TableDetail = ({ navigation, route }) => {
           </View>
           <View style={styles.tableInfo}>
             <View style={styles.tableId}>
-              <MaterialIcons name={'table-restaurant'} size={20} />
+              <MaterialIcons name={"table-restaurant"} size={20} />
               <Text style={styles.customerText}>Bàn: </Text>
               <Text style={styles.tableText}>{data.id}</Text>
             </View>
             <View style={styles.tableGuests}>
-              <Feather name={'users'} size={20} />
+              <Feather name={"users"} size={20} />
               <Text style={styles.customerText}>Số khách: </Text>
               <Text style={styles.tableText}>{data.guests}</Text>
             </View>
           </View>
           <View style={styles.dateInfo}>
-            <Fontisto name={'date'} size={20} />
+            <Fontisto name={"date"} size={20} />
             <Text style={styles.customerText}>Ngày: </Text>
             <Text style={styles.tableText}>{data.date}</Text>
           </View>
         </View>
       )}
       <TouchableOpacity style={styles.add} onPress={handleAdd}>
-          <FontAwesome6 name="add" style={styles.icon}/>
-          <Text style={styles.tableText}>Add</Text>
+        <FontAwesome6 name="add" style={styles.icon} />
+        <Text style={styles.tableText}>Add</Text>
       </TouchableOpacity>
 
       {data && (
@@ -89,18 +112,20 @@ const TableDetail = ({ navigation, route }) => {
                 style={styles.tableTitle}
                 data={[
                   <View style={styles.headerItemContainer}>
-                    <Text style={styles.headerText}>{'MÓN ĂN'}</Text>
-                    <Text style={styles.headerText}>{'SỐ LƯỢNG'}</Text>
-                  </View>
+                    <Text style={styles.headerText}>{"MÓN ĂN"}</Text>
+                    <Text style={styles.headerText}>{"SỐ LƯỢNG"}</Text>
+                  </View>,
                 ]}
-                
               />
               {data.items.map((item) => (
                 <Row
                   key={item.id}
                   data={[
                     <View style={styles.rowContainer}>
-                      <Image source={{ uri: item.image }} style={styles.itemImage} />
+                      <Image
+                        source={{ uri: item.image }}
+                        style={styles.itemImage}
+                      />
                       <View style={styles.itemInfo}>
                         <Text style={styles.itemName}>{item.name}</Text>
                         <Text style={styles.itemPrice}>{item.price}</Text>
@@ -144,17 +169,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     paddingHorizontal: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'gray',
+    borderBottomColor: "gray",
     paddingBottom: 10,
   },
   customerInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 5,
   },
   customerTitle: {
     fontSize: 23,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   customerName: {
     fontSize: 22,
@@ -165,8 +190,8 @@ const styles = StyleSheet.create({
     paddingLeft: 7,
   },
   tableInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 5,
   },
   tableText: {
@@ -175,25 +200,25 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   tableId: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '50%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "50%",
   },
   tableGuests: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   dateInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   table: {
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingHorizontal: 20,
     marginTop: 20,
   },
   tableWrapper: {
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   tableTitle: {
     backgroundColor: colors.text1,
@@ -201,29 +226,29 @@ const styles = StyleSheet.create({
     height: 40,
   },
   headerItemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
   },
   headerText: {
     fontSize: 21,
-    color: 'white',
+    color: "white",
   },
   row: {
-    backgroundColor: '#EDE4C8', //#EDE4C8
+    backgroundColor: "#EDE4C8", //#EDE4C8
     borderRadius: 7,
     marginTop: 10,
     borderRadius: 10,
     elevation: 20,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 20,
   },
   button: {
-    backgroundColor: '#EE9C37',
+    backgroundColor: "#EE9C37",
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -231,11 +256,11 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    color: '#fff',
+    color: "#fff",
   },
   rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 5,
     paddingLeft: 15,
     paddingRight: 25,
@@ -247,22 +272,22 @@ const styles = StyleSheet.create({
   itemImage: {
     width: 60,
     height: 60,
-    resizeMode: 'cover',
+    resizeMode: "cover",
     borderRadius: 5,
   },
   itemName: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
     fontSize: 22,
   },
   itemPrice: {
-    color: 'gray',
+    color: "gray",
     fontSize: 21,
   },
   itemQuantity: {
-    textAlign: 'right',
+    textAlign: "right",
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   totalContainer: {
     marginTop: 20,
@@ -270,32 +295,32 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     paddingHorizontal: 10,
     borderTopWidth: 1,
-    borderTopColor: 'gray',
+    borderTopColor: "gray",
     paddingTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   totalTitle: {
     fontSize: 25,
-    fontWeight: 'bold',
-    width: '70%',
+    fontWeight: "bold",
+    width: "70%",
   },
   total: {
     fontSize: 25,
   },
   add: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      alignItems: 'center',
-      paddingRight: 30,
-      marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingRight: 30,
+    marginTop: 10,
   },
   icon: {
-     marginLeft: 5,
-     color: '#fff',
-     backgroundColor: '#EE9C37',
-     fontSize: 17,
-     padding: 2,
+    marginLeft: 5,
+    color: "#fff",
+    backgroundColor: "#EE9C37",
+    fontSize: 17,
+    padding: 2,
   },
 });
 
