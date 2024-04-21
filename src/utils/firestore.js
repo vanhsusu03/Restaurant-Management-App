@@ -28,7 +28,9 @@ const fetchMenuData = async () => {
           return { name: itemName, data: itemData };
         });
 
-        return { category, items };
+        const categoryImage = await fetchCategoryImages([category]);
+
+        return { category, items, image: categoryImage[category] };
       })
     );
 
@@ -199,6 +201,36 @@ const fetchPendingOrderData = async () => {
   }
 };
 
+const fetchCategoryData = async (category) => {
+  try {
+    const categoryData = await firebase.firestore().collection("menu").doc(category).collection("items").get();
+
+    const items = [];
+
+    categoryData.forEach((itemDoc) => {
+      const itemName = itemDoc.id;
+      const itemData = itemDoc.data();
+      items.push({name: itemName, data: itemData});
+    });
+
+    return items;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+const fetchCategoryImages = async (category) => {
+  const storageRef = firebase.storage().ref();
+  const categoryImages = {};
+  try {
+    const imageURL = await storageRef.child(`icon/${category}.png`).getDownloadURL();
+    categoryImages[category] = imageURL;
+} catch (error) {
+    console.error(`Error fetching image for category ${category}:`, error);
+}
+  return categoryImages;
+};
+
 
 const getImage = async () => {
   let result = await ImagePicker.launchImageLibraryAsync({
@@ -302,6 +334,40 @@ const addOrder = async (date, total, guests, customer, items) => {
   } catch (error) {
     console.error("Error adding order:", error);
     return false;
+  }
+};
+
+const addOrderByTable = async (table_id, newItems) => {
+  try {
+      const tableRef = firebase.firestore().collection('tables').doc(table_id);
+      const tableSnapshot = await tableRef.get();
+      const existingItems = tableSnapshot.exists ? tableSnapshot.data().items : [];
+      console.log(newItems)
+
+      newItems.forEach((newItem) => {
+          const existingItemIndex = existingItems.findIndex(item => item.name === newItem.name);
+          if (existingItemIndex !== -1) {
+              existingItems[existingItemIndex].quantity += newItem.quantity;
+          } else if (newItem.quantity !== 0) {
+              existingItems.push(newItem);
+          }
+      });
+
+      const total = existingItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+      await tableRef.set(
+          {
+              items: existingItems,
+              total: total
+          },
+          { merge: true }
+      );
+
+      console.log("Order added successfully!");
+      return true;
+  } catch (error) {
+      console.error("Error adding order:", error);
+      return false;
   }
 };
 
@@ -572,4 +638,7 @@ export {
   fetchOrderedDishesData,
   fetchCompletedDishesData,
   updateDishState,
+  fetchCategoryData,
+  fetchCategoryImages,
+  addOrderByTable
 };

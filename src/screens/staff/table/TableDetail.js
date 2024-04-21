@@ -108,15 +108,17 @@ const TableDetail = ({ navigation, route }) => {
         <View style={styles.table}>
           <TableWrapper style={styles.tableWrapper}>
             <Table>
-              <Row
-                style={styles.tableTitle}
-                data={[
-                  <View style={styles.headerItemContainer}>
-                    <Text style={styles.headerText}>{"MÓN ĂN"}</Text>
-                    <Text style={styles.headerText}>{"SỐ LƯỢNG"}</Text>
-                  </View>,
-                ]}
-              />
+            <Row
+              style={styles.tableTitle}
+              textStyle={styles.headerText}
+              data={[
+                <View style={styles.headerItemContainer}>
+                  <Text style={styles.headerText}>{'MÓN ĂN'}</Text>
+                  <Text style={styles.headerText}>{'SỐ LƯỢNG'}</Text>
+                </View>
+              ]}
+            />
+
               {data.items.map((item) => (
                 <Row
                   key={item.id}
@@ -131,9 +133,10 @@ const TableDetail = ({ navigation, route }) => {
                         <Text style={styles.itemPrice}>{item.price}</Text>
                       </View>
                       <Text style={styles.itemQuantity}>{item.quantity}</Text>
-                    </View>,
+                    </View>
                   ]}
                   style={styles.row}
+                  textStyle={styles.rowText}
                 />
               ))}
             </Table>
