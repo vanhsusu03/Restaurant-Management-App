@@ -29,6 +29,8 @@ const SideBar = ({ navigation, title, user }) => {
         { title: 'KHÁCH HÀNG', screenName: 'customer_staff', type: MaterialIcons, icon: 'people' },
         { title: 'BÁO CÁO', screenName: 'report_staff', type: SimpleLineIcons, icon: 'notebook' },
         { title: 'QUẢN LÝ BÀN', screenName: 'table_staff', type: MaterialIcons, icon: 'table-restaurant' },
+        { title: 'MÓN ĐÃ ĐẶT', user: 'staff', screenName: 'ordered_dishes', type: MaterialIcons, icon: 'table-restaurant' },
+        { title: 'MÓN ĐÃ XONG', user: 'staff', screenName: 'completed_dishes', type: MaterialIcons, icon: 'home' },
     ];
 
     // Khai báo các mục cho người dùng "cashier"
@@ -42,7 +44,7 @@ const SideBar = ({ navigation, title, user }) => {
     const kitchenManagerItems = [
         { title: 'MENU', screenName: 'menu_kitchen_manager', type: Ionicons, icon: 'restaurant-outline' },
         { title: 'MÓN ĐÃ ĐẶT', screenName: 'ordered_dishes', type: MaterialIcons, icon: 'table-restaurant' },
-        { title: 'MÓN ĐÃ XONG ', screenName: 'completed_dishes', type: MaterialIcons, icon: 'home' },
+        { title: 'MÓN ĐÃ XONG', screenName: 'completed_dishes', type: MaterialIcons, icon: 'home' },
     ];
 
     let items = [];
@@ -65,7 +67,7 @@ const SideBar = ({ navigation, title, user }) => {
     }
 
     const handleItemPress = (screenName) => {
-        navigation.navigate(screenName);
+        navigation.navigate(screenName, {user});
     };
 
     return (
