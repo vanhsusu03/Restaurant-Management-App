@@ -4,7 +4,7 @@ import { colors, veg, nonveg } from '../../../globals/style'
 import HomeHeadNav from '../../../components/Header.js'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { firebase } from '../../../../Firebase/firebase';
-import { fetchMenuData, addOrderByTable, fetchCategoryData } from '../../../utils/firestore';
+import { fetchMenuData, addOrderByTable, fetchCategoryData, addOrderedDishes } from '../../../utils/firestore';
 
 const MenuOrder = ({ navigation, route }) => {
     const { table_id } = route.params;
@@ -170,9 +170,17 @@ const MenuOrder = ({ navigation, route }) => {
             quantity: itemInfo[item.name].quantity,
             price: item.price
         }));
+
+        const orderList = selectedItems.map(item => ({
+            name: item.name,
+            quantity: itemInfo[item.name].quantity,
+            state: 'ordered',
+            table: table_id,
+        }));
     
         try {
             await addOrderByTable(table_id, updatedItemsOrder);
+            await addOrderedDishes(orderList);
         } catch (error) {
             console.error("Error saving data:", error);
         }

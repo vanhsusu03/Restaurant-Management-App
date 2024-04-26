@@ -564,6 +564,33 @@ const updateDishState = async (dishId, newState) => {
   }
 };
 
+const addOrderedDishes = async (orderList) => {
+  try {
+    // Lấy tham chiếu đến tài liệu ordered_dishes trong collection ordered_dishes
+    const orderedDishesRef = firebase.firestore().collection("ordered_dishes").doc("ordered_dishes");
+    const orderedDishesDoc = await orderedDishesRef.get();
+
+    if (!orderedDishesDoc.exists) {
+      throw new Error("Ordered dishes document does not exist!");
+    }
+
+    // Lấy dữ liệu của trường ordered_dishes trong tài liệu
+    const orderedDishesData = orderedDishesDoc.data().ordered_dishes;
+
+    // Thêm orderList vào cuối mảng ordered_dishes
+    const updatedDishes = [...orderedDishesData, ...orderList];
+
+    // Cập nhật dữ liệu mới của trường ordered_dishes trong Firestore
+    await orderedDishesRef.update({ ordered_dishes: updatedDishes });
+
+    console.log("Ordered dishes have been successfully added.");
+  } catch (error) {
+    console.error("Error adding ordered dishes:", error);
+    throw error;
+  }
+};
+
+
 const deleteTableData = async (tableId) => {
   try {
     const db = firebase.firestore();
@@ -640,5 +667,6 @@ export {
   updateDishState,
   fetchCategoryData,
   fetchCategoryImages,
-  addOrderByTable
+  addOrderByTable,
+  addOrderedDishes,
 };
