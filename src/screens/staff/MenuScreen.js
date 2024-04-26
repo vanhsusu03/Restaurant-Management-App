@@ -103,7 +103,7 @@ const StaffMenuScreen = ({ navigation }) => {
    
     return (
         <View style={styles.container}>
-            <HomeHeadNav navigation={navigation} title='MENUuu' user='staff'/>
+            <HomeHeadNav navigation={navigation} title='MENU' user='staff'/>
 
             <View style={styles.searchContainer}>
                 <View style={styles.searchBox}>
