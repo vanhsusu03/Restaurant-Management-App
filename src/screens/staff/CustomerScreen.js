@@ -30,7 +30,7 @@ const StaffCustomerScreen = ({ navigation }) => {
 
     const renderCus = ({ item }) => {
         return (
-            <TouchableOpacity
+            <View
                 style={styles.cusItem}
                 onPress={() => navigation.navigate('customer_info', { customer: item })}
             >
@@ -43,7 +43,7 @@ const StaffCustomerScreen = ({ navigation }) => {
                         <Text style={styles.customerPhone}>{item.phone}</Text>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </View>
         )
     }
 
