@@ -187,6 +187,16 @@ const fetchTableData = async () => {
   }
 };
 
+const fetchPreOrderData = async (tableId) => {
+    try {
+    const table = await getDocumentById("tables",tableId);
+    return table.preorder;
+    } catch(err) {
+    console.log("Error when fetching preorder data:", err);
+    return [];
+    }
+}
+
 const fetchPendingOrderData = async () => {
   try {
       const ordersSnapshot = await firebase.firestore().collection('order').where('state', '==', 'Chờ thanh toán').get();
@@ -390,7 +400,7 @@ const addReport = async (title, sender, content) => {
   }
 };
 
-// const addInforBooking = async (
+// const addInforUsing = async (
 //   id,
 //   customerName,
 //   phoneNumber,
@@ -407,7 +417,7 @@ const addReport = async (title, sender, content) => {
 //   tableData.state = "booked";
 //   await firebase.firestore().collection("tables").doc(id).update(tableData);
 // };
-const addInforBooking = async (
+const addInforUsing = async (
   id,
   customerName,
   phoneNumber,
@@ -431,6 +441,43 @@ const addInforBooking = async (
       date: bookingDate,
       time: bookingTime,
       guests: numberOfGuests,
+      state: "in use",
+    };
+
+    // Cập nhật lại dữ liệu bàn trong Firestore
+    await tableRef.update(updatedTableData);
+    console.log("Thông tin đặt bàn đã được cập nhật thành công!");
+  } catch (error) {
+    console.error("Lỗi khi cập nhật thông tin đặt bàn:", error);
+  }
+};
+const addInforBooking = async (
+  id,
+  customerName,
+  phoneNumber,
+  bookingDate,
+  bookingTime,
+  numberOfGuests
+) => {
+  try {
+    // Lấy dữ liệu bàn từ Firestore
+    const tableRef = firebase.firestore().collection("tables").doc(id);
+    const tableSnapshot = await tableRef.get();
+    const preorder = tableSnapshot.exists ? tableSnapshot.data().preorder : [];
+    const tableData = tableSnapshot.data();
+
+    // Tạo một bản sao của dữ liệu bàn và thay đổi các giá trị
+    const updatedPreorder = {
+          name: customerName,
+          phone: phoneNumber,
+          date: bookingDate,
+          time: bookingTime,
+          guests: numberOfGuests,
+        };
+    preorder.push(updatedPreorder);
+    const updatedTableData = {
+      ...tableData,
+      preorder: preorder,
       state: "booked",
     };
 
@@ -606,16 +653,59 @@ const deleteTableData = async (tableId) => {
       });
 
     // Cập nhật trạng thái và total
+    if(db.collection("table").doc(tableId).preorder === null) {
     await db.collection("tables").doc(tableId).update({
-      state: "available",
-      total: 0,
-      guests: 0,
-    });
+          state: "available",
+          total: 0,
+          guests: 0,
+        });
+    } else {
+    await db.collection("tables").doc(tableId).update({
+              state: "booked",
+              total: 0,
+              guests: 0,
+            });
+    }
     console.log(
       "Dữ liệu đã được xóa và trạng thái đã được cập nhật thành công."
     );
   } catch (error) {
     console.error("Lỗi khi xóa dữ liệu và cập nhật trạng thái:", error);
+  }
+};
+const cancelPreorderBooking = async (table_id, preorder) => {
+  try {
+    const tableRef = firebase.firestore().collection("tables").doc(table_id);
+    const tableDocSnapshot = await tableRef.get();
+    if (tableDocSnapshot.exists) {
+      // Extract the data from the document
+      const tableData = tableDocSnapshot.data();
+
+      // Check if the preorder array exists
+      if (tableData.preorder) {
+        // Find the index of the preorder to delete
+        const indexToDelete = tableData.preorder.findIndex(item => (item.name === preorder.name && item.date === preorder.date && item.time === preorder.time));
+
+        // If the preorder exists in the array
+        if (indexToDelete !== -1) {
+          // Remove the preorder from the array
+          tableData.preorder.splice(indexToDelete, 1);
+
+          // Update the document in Firestore with the modified preorder array
+          await tableRef.update({ preorder: tableData.preorder });
+
+          console.log("Preorder deleted successfully.");
+        } else {
+          console.log("Preorder not found in the preorder array.");
+        }
+      } else {
+        console.log("Preorder array does not exist.");
+      }
+    } else {
+      console.log(`Document '${table_id}' does not exist in the 'tables' collection.`);
+    }
+  } catch (error) {
+    console.error("Lỗi khi huỷ đặt bàn:", error);
   }
 };
 
@@ -653,14 +743,17 @@ export {
   fetchStaffData,
   fetchCustomerData,
   fetchReportData,
+  fetchPreOrderData,
   getDocumentById,
   addOrder,
   addCustomer,
   deleteTableData,
   fetchTableData,
   updateTables,
+  addInforUsing,
   addInforBooking,
   cancelBooking,
+  cancelPreorderBooking,
   fetchPendingOrderData,
   fetchOrderedDishesData,
   fetchCompletedDishesData,
