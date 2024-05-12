@@ -56,7 +56,7 @@ const BookedTableScreen = ({ navigation, route }) => {
               return (
                   <TouchableOpacity
                       style={styles.preorderItem}
-                      onPress={() => navigation.navigate('table_booked_detail', { table_id: table_id, preorder: item  })}
+                      onPress={() => navigation.navigate('preorder_detail', { table_id: table_id, preorder: item  })}
                   >
                       <View style={styles.preorderContainer}>
                           <FontAwesome5 name="file-alt" style={styles.preorderIcon} />
@@ -85,7 +85,7 @@ const BookedTableScreen = ({ navigation, route }) => {
       <HomeHeadNav navigation={navigation} title="DANH SÁCH KHÁCH ĐÃ ĐẶT" user="cashier" />
       <TouchableOpacity style={styles.addButton} onPress={handleAddPreOrder} >
          <FontAwesome6 name="add" style={styles.icon} />
-         <Text style={styles.addButtonText}>Thêm đặt bàn?</Text>
+         <Text style={styles.addButtonText}>Thêm khách đặt</Text>
       </TouchableOpacity>
         <View style={styles.imageContainer}>
           <Text style={styles.tableId}>Bàn số {table_id} </Text>
@@ -97,6 +97,14 @@ const BookedTableScreen = ({ navigation, route }) => {
                             keyExtractor={(_, index) => index.toString()}
                         />
                     </View>
+        <Button
+                          title="Quay lại"
+                          color="#FF5733"
+                          onPress={() => {
+                            handleCancel();
+                          }
+                            }
+                        />
     </KeyboardAvoidingView>
   );
 };

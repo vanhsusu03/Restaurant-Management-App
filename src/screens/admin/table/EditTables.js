@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import HomeHeadNav from "../../../components/Header.js";
 import { FontAwesome6 } from "@expo/vector-icons";
-import { firebase } from "@react-native-firebase/storage";
+import { firebase } from "../../../../Firebase/firebase";
 import { updateTables } from "../../../utils/firestore.js";
 
 const EditTables = ({ navigation, route }) => {
@@ -44,7 +44,7 @@ const EditTables = ({ navigation, route }) => {
       { alertContainerStyle: styles.alertContainer, cancelable: false }
     );
   };
-  const addTable = (item) => {
+  const addTable = async (item) => {
     Alert.alert(
       "Xác nhận",
       "Bạn muốn thêm bàn này?",
@@ -56,8 +56,9 @@ const EditTables = ({ navigation, route }) => {
         },
         {
           text: "Có",
-          onPress: () => {
+          onPress: async () => {
             item.state = "available";
+            await firebase.firestore().collection("tables").doc(item.id).update({ preorder: [] });
             setUpdateTableList([...updatedTableList]); // Cập nhật tableList với bản sao mới đã thay đổi
           },
         },
