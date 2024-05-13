@@ -4,7 +4,7 @@ import { colors, veg, nonveg } from '../../../globals/style'
 import HomeHeadNav from '../../../components/Header.js'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { firebase } from '../../../../Firebase/firebase';
-import { fetchMenuData, addOrderByTable } from '../../../utils/firestore';
+import { fetchMenuData, addOrderByTable, fetchCategoryData, addOrderedDishes } from '../../../utils/firestore';
 
 const MenuOrder = ({ navigation, route }) => {
     const { table_id } = route.params;
@@ -12,23 +12,51 @@ const MenuOrder = ({ navigation, route }) => {
     const [searchText, setSearchText] = useState("");
     const [data, setData] = useState([]);
     const [type, setType] = useState([]);
-    const itemsArray = data.map(category => category.items).flat();
+
+    const [categoryIcons, setCategoryIcons] = useState({});
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    const [itemsArray, setItemsArray] = useState([]);
+
+    useEffect(() => {
+        const filteredItems = data
+            .map(category => category.items)
+            .flat()
+            .filter(item => item.data.status); // Lọc ra những mục có status là true
+        setItemsArray(filteredItems);
+    }, [data]);
     
+
+    useEffect(() => {
+        if (selectedCategory !== null && selectedCategory !== undefined) {
+            const fetchCategoryItems = async () => {
+                const items = await fetchCategoryData(selectedCategory);
+                const filteredItems = items.filter(item => item.data.status); // Lọc ra những mục có status là true
+                setItemsArray(filteredItems);
+            };    
+    
+            fetchCategoryItems();
+        }
+    }, [selectedCategory]);
+    
+    
+
     const [itemInfo, setItemInfo] = useState({});
 
-    const handleAdd = (itemName) => {
+    const handleAdd = useCallback((itemName, itemImage, itemPrice) => {
         setItemInfo(prevState => ({
             ...prevState,
             [itemName]: {
                 ...prevState[itemName],
                 add: true
             }
-        }));
-    
-        
-    };
+        })); 
 
-    const handleDecrease = (itemName) => {
+        setSelectedItems(prevItems => [...prevItems, { name: itemName, image: itemImage, price: itemPrice}]);
+    }, [setItemInfo]);
+    
+    const handleDecrease = useCallback((itemName) => {
         if (itemInfo[itemName].quantity > 0) {
             setItemInfo(prevState => ({
                 ...prevState,
@@ -38,9 +66,9 @@ const MenuOrder = ({ navigation, route }) => {
                 }
             }));
         }
-    };
+    }, [itemInfo, setItemInfo]);
     
-    const handleIncrease = (itemName) => {
+    const handleIncrease = useCallback((itemName) => {
         setItemInfo(prevState => ({
             ...prevState,
             [itemName]: {
@@ -48,7 +76,8 @@ const MenuOrder = ({ navigation, route }) => {
                 quantity: prevState[itemName].quantity + 1
             }
         }));
-    };
+    }, [setItemInfo]);
+    
     
     const reloadData = useCallback(async () => {
         try {
@@ -56,6 +85,12 @@ const MenuOrder = ({ navigation, route }) => {
             setData(newData);
             setType(newData.map(item => item.category));
             
+            const icons = {};
+            newData.forEach(category => {
+              icons[category.category] = category.image;
+            });
+            setCategoryIcons(icons);
+
         } catch (error) {
             console.error("Error reloading data:", error);
         }
@@ -68,7 +103,7 @@ const MenuOrder = ({ navigation, route }) => {
         });
     
         return reload;
-    }, [navigation, reloadData]);
+    }, [navigation, reloadData, type]);
     
     useEffect(() => {
         const initialItemInfo = {};
@@ -91,57 +126,61 @@ const MenuOrder = ({ navigation, route }) => {
 
     const renderCategoryItem = ({ item }) => (
         <TouchableOpacity
-            style={styles.categoryItemContainer}
-            onPress={() => handleCategoryPress(item)}
+            style={selectedCategory === item ? styles.categorySelectItemContainer : styles.categoryItemContainer}
+            onPress={() => setSelectedCategory(item)}
         >
+            {categoryIcons[item] && (
+            <Image source={{ uri: categoryIcons[item] }} style={styles.categoryImage} />
+            )}
             <Text style={styles.categoryItem}>{item}</Text>
         </TouchableOpacity>
     );
-
-    const handleCategoryPress = (category) => {
-        // Xử lý khi người dùng chọn một danh mục
-    }
     
-    const renderItem = ({ item }) => (
-        <View style={styles.itemContainer}>
-        <Image source={{ uri: item.data.image }} style={styles.itemImage} />
-        <Text style={styles.itemName}>{item.data.name}</Text>
-        <View style={styles.addContainer}>
-            <Text style={styles.itemPrice}>{item.data.price}</Text>
-            {itemInfo[item.data.name] && itemInfo[item.data.name].add ? (
-                <View style={styles.quantityContainer}>
-                    <TouchableOpacity onPress={() => handleDecrease(item.data.name)}>
-                        <Ionicons name="remove" style={styles.icon} />
-                    </TouchableOpacity>
-                    <Text style={styles.quantity}>{itemInfo[item.data.name].quantity}</Text>
-                    <TouchableOpacity onPress={() => handleIncrease(item.data.name)}>
-                        <Ionicons name="add" style={styles.icon} />
-                    </TouchableOpacity>
+    const renderItem = ({ item }) => {
+        return (
+            <View style={styles.itemContainer}>
+                <Image source={{ uri: item.data.image }} style={styles.itemImage} />
+                <Text style={styles.itemName}>{item.data.name}</Text>
+                <View style={styles.addContainer}>
+                    <Text style={styles.itemPrice}>{item.data.price}</Text>
+                    {itemInfo[item.data.name] && itemInfo[item.data.name].add ? (
+                        <View style={styles.quantityContainer}>
+                            <TouchableOpacity onPress={() => handleDecrease(item.data.name)}>
+                                <Ionicons name="remove" style={styles.icon} />
+                            </TouchableOpacity>
+                            <Text style={styles.quantity}>{itemInfo[item.data.name].quantity}</Text>
+                            <TouchableOpacity onPress={() => handleIncrease(item.data.name)}>
+                                <Ionicons name="add" style={styles.icon} />
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <TouchableOpacity style={styles.addButton} onPress={() => handleAdd(item.data.name, item.data.image, item.data.price)}>
+                            <Ionicons name="add-circle" style={styles.addIcon} />
+                        </TouchableOpacity>
+                    )}
                 </View>
-            ) : (
-                <TouchableOpacity style={styles.addButton} onPress={() => handleAdd(item.data.name, item.data.image)}>
-                    <Ionicons name="add-circle" style={styles.addIcon} />
-                </TouchableOpacity>
-            )}
-        </View>
-    </View>
-    );
+            </View>
+        );
+    };
 
     const handleConfirmPress = async () => {
-        const updatedItemsOrder = itemsArray.reduce((accumulator, item) => {
-            if (itemInfo[item.data.name]?.add) {
-                accumulator.push({
-                    name: item.data.name,
-                    image: item.data.image, 
-                    quantity: itemInfo[item.data.name].quantity,
-                    price: item.data.price
-                });
-            }
-            return accumulator;
-        }, []);
+        const updatedItemsOrder = selectedItems.map(item => ({
+            name: item.name,
+            image: item.image,
+            quantity: itemInfo[item.name].quantity,
+            price: item.price
+        }));
+
+        const orderList = selectedItems.map(item => ({
+            name: item.name,
+            quantity: itemInfo[item.name].quantity,
+            state: 'ordered',
+            table: table_id,
+        }));
     
         try {
             await addOrderByTable(table_id, updatedItemsOrder);
+            await addOrderedDishes(orderList);
         } catch (error) {
             console.error("Error saving data:", error);
         }
@@ -163,7 +202,7 @@ const MenuOrder = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-
+            
             <View>
                 <Text style={styles.categoryHeaderText}>Các danh mục</Text>
                 <FlatList
@@ -189,6 +228,7 @@ const MenuOrder = ({ navigation, route }) => {
             />
         </View>
     )
+    
 }
 
 export default MenuOrder;
@@ -204,17 +244,30 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         width: 140,
-        height: 190,
+        height: 195,
+        justifyContent: 'space-between',
     },
-    categoryItemContainer: {
-        backgroundColor: '#F6CB99',
+    categorySelectItemContainer: {
+        backgroundColor: '#f2b269',
         marginHorizontal: 10,
         borderRadius: 50,
-        paddingVertical: 20,
+        paddingVertical: 10,
         alignItems: 'center',
-        height: 100,
+        height: 115,
         width: 70,
-        marginBottom: 10
+        marginBottom: 10,
+    },
+    categoryItemContainer: {
+        backgroundColor: '#DDDEE0',
+        borderColor: '#B7B8BA',
+        borderWidth: 1,
+        marginHorizontal: 10,
+        borderRadius: 50,
+        paddingVertical: 10,
+        alignItems: 'center',
+        height: 115,
+        width: 70,
+        marginBottom: 10,
     },
     cardContainer: {
         justifyContent: 'center',
@@ -261,11 +314,19 @@ const styles = StyleSheet.create({
     categoryHeaderText: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginVertical: 10,
+        marginVertical: 5,
         marginLeft: 10,
     },
     categoryItem: {
+        marginTop: 4,
         fontSize: 16,
+        textAlign: 'center',
+        justifyContent: 'center',
+    },
+    categoryImage: {
+        borderRadius: 50,
+        width: 55,
+        height: 55
     },
     itemImage: {
         width: 140,
@@ -275,12 +336,15 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     addContainer: {
-        margin: 8,
+        marginHorizontal: 10,
+        marginBottom: 3,
         flexDirection: 'row',
+        alignItems: 'flex-end'
     },
     itemName: {
         fontSize: 15,
         fontWeight: 'bold',
+        textAlign: 'center'
     },
     itemPrice: {
         fontSize: 14,
@@ -288,10 +352,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         flex: 1
     },
+    addButton: {
+        marginTop: -5
+    },
     addIcon: {
         fontSize: 30,
         color: colors.bg,
-        flex: 1
+        flex: 1,
     },
     confirmButton: {
         backgroundColor: colors.bg,
@@ -319,7 +386,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 50,
         width: 45,
-        height: 25
+        height: 25,
+        marginBottom: 6
     },
     
 });

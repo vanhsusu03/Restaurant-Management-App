@@ -30,7 +30,7 @@ const LogInScreen = ({ navigation }) => {
                 } else if (user === 'cashier') {
                     navigation.navigate('payment_cashier');
                 } else if (user === 'kitchen_manager') {
-                    navigation.navigate('home_admin');
+                    navigation.navigate('menu_kitchen_manager');
                 } else {
                     setcustomError('Incorrect email or password')
                 }

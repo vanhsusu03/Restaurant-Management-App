@@ -16,11 +16,11 @@ import {
   addCustomer,
   addOrder,
   deleteTableData,
-  addInforUsing,
+  addInforBooking,
 } from "../../../utils/firestore";
 import { firebase } from "../../../../Firebase/firebase";
 
-const AddInforBooking = ({ navigation, route }) => {
+const PreOrderScreen = ({ navigation, route }) => {
   const { table_id } = route.params;
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -29,45 +29,46 @@ const AddInforBooking = ({ navigation, route }) => {
   const [numberOfGuests, setNumberOfGuests] = useState(null);
 
   const handleCancel = () => {
-          navigation.goBack();
-      };
+            navigation.goBack();
+        };
 
-      const checkBookingTable = async  () => {
-      if(!customerName
-          || !phoneNumber
-          || !bookingDate
-          || !bookingTime
-          || !numberOfGuests)
-      {
-        Alert.alert(
-            "Thông báo",
-            "Điền thiếu thông tin khách hàng"
-            )
-      }
-      else {
-        addInforUsing(
-                      table_id,
-                      customerName,
-                      phoneNumber,
-                      bookingDate,
-                      bookingTime,
-                      numberOfGuests
-                    );
-        await firebase.firestore().collection("tables").doc(table_id).update({ items: [] });
-                    Alert.alert(
-                      "Thông báo",
-                      "Bàn bắt đầu được sử dụng!"
-                    )
-                    try {
-                      navigation.navigate("table_staff");
-                    } catch (error) {
-                      console.error("Error navigating to :TableScreen", error);
-                    }
-      }
-      }
+  const checkBookingTable = async  () => {
+        if(!customerName
+            || !phoneNumber
+            || !bookingDate
+            || !bookingTime
+            || !numberOfGuests)
+        {
+          Alert.alert(
+              "Thông báo",
+              "Điền thiếu thông tin khách hàng"
+              )
+        }
+        else {
+          addInforBooking(
+                        table_id,
+                        customerName,
+                        phoneNumber,
+                        bookingDate,
+                        bookingTime,
+                        numberOfGuests
+                      );
+
+                      Alert.alert(
+                        "Thông báo",
+                        "Đặt trước bàn thành công!"
+                      )
+                      try {
+                        navigation.navigate("table_cashier");
+                      } catch (error) {
+                        console.error("Error navigating to :TableScreen", error);
+                      }
+        }
+  }
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <HomeHeadNav navigation={navigation} title="THÔNG TIN KHÁCH HÀNG" user="staff" />
+      <HomeHeadNav navigation={navigation} title="ĐẶT BÀN TRƯỚC" user="cashier" />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.imageContainer}>
           <Image source={require("../../../../assets/TableList/Table1.png")} />
@@ -116,22 +117,36 @@ const AddInforBooking = ({ navigation, route }) => {
             keyboardType="numeric"
           />
         </View>
-        <View style={styles.button}>
         <Button
-          title="Xác nhận"
+          title="Đặt bàn"
           color="#FF5733"
-          style = {styles.button}
           onPress={() => {
-            checkBookingTable()
+            addInforBooking(
+              table_id,
+              customerName,
+              phoneNumber,
+              bookingDate,
+              bookingTime,
+              numberOfGuests
+            );
+            Alert.alert(
+              "Thông báo",
+              "Bàn đã được đặt"
+            )
+            try {
+              navigation.navigate("table_cashier");
+            } catch (error) {
+              console.error("Error navigating to :TableScreen", error);
+            }
           }}
         />
-        </View>
         <Button
                   title="Quay lại"
                   color="#FF5733"
                   onPress={() => {
-                    handleCancel()
-                  }}
+                    handleCancel();
+                  }
+                    }
                 />
       </ScrollView>
     </KeyboardAvoidingView>
@@ -160,7 +175,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
-    marginTop: 10
   },
   label: {
     flex: 1,
@@ -174,8 +188,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
-  button: {
-  marginBottom: 10,}
 });
 
-export default AddInforBooking;
+export default PreOrderScreen;

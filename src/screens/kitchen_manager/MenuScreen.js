@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, TextInput, Text, FlatList, Button } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, TextInput, Text, FlatList, Modal, Pressable, Alert } from 'react-native';
 import { colors, veg, nonveg } from '../../globals/style.js'
 import HomeHeadNav from '../../components/Header.js'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
-import { firebase } from '../../../Firebase/firebase';
-import { fetchMenuData, fetchCategoryData } from '../../utils/firestore';
+import { fetchMenuData, fetchCategoryData, editDoc } from '../../utils/firestore';
 
-const StaffMenuScreen = ({ navigation }) => {
+const KitchenManagerMenuScreen = ({ navigation }) => {
+
     const [searchText, setSearchText] = useState("");
     const [data, setData] = useState([]);
     const [type, setType] = useState([]);
@@ -15,6 +15,9 @@ const StaffMenuScreen = ({ navigation }) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
 
     const [itemsArray, setItemsArray] = useState([]);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [status, updateStatus] = useState();
 
     useEffect(() => {
         setItemsArray(data.map(category => category.items).flat());
@@ -84,13 +87,13 @@ const StaffMenuScreen = ({ navigation }) => {
                 <Text style={styles.itemName}>{item.data.name}</Text>
                 <View style={styles.addContainer}>
                 {item.data.status ? ( // Nếu status là true
-                    <View style={styles.saleButton}>
+                    <TouchableOpacity style={styles.saleButton} onPress={() => openModal(item.data)}>
                         <Text style={styles.saleText}>Sale</Text>
-                    </View>
+                    </TouchableOpacity>
                 ) : (
-                    <View style={styles.stopSaleButton}>
+                    <TouchableOpacity style={styles.stopSaleButton} onPress={() => openModal(item.data)}>
                         <Text style={styles.saleText}>Stop Sale</Text>
-                    </View>
+                    </TouchableOpacity>
                     
                 )}
                     <Text style={styles.itemPrice}>{item.data.price}</Text>
@@ -100,11 +103,68 @@ const StaffMenuScreen = ({ navigation }) => {
         );
     };
 
-   
+    const getCategoryFromData = (itemName) => {
+        let category = null;
+        data.forEach(categoryItem => {
+            categoryItem.items.forEach(item => {
+                if (item.data.name === itemName) {
+                    category = categoryItem.category;
+                    return;
+                }
+            });
+            if (category) {
+                return;
+            }
+        });
+        return category;
+    };
+    
+    const openModal = (item) => {
+        setSelectedItem({
+            ...item,
+            category: getCategoryFromData(item.name) 
+        });
+        setModalVisible(true);
+        updateStatus(item.status);
+    }
+
+    const handleSave = async (item) => {
+        try {
+            await editDoc(item.category, item.name, status, item.price, item.image);
+            
+            const updatedItemsArray = itemsArray.map((arrayItem) => {
+                if (arrayItem.data.name === item.name) {
+                    return {
+                        ...arrayItem,
+                        data: {
+                            ...arrayItem.data,
+                            status: status
+                        }
+                    };
+                }
+                return arrayItem;
+            });
+            
+            setModalVisible(!modalVisible)
+            
+            Alert.alert(
+                'Thành công!',
+                'Đã lưu lại trạng thái món ăn!',
+                [
+                  {  text: 'OK', },
+                ],
+              );
+
+            setItemsArray(updatedItemsArray);
+
+        } catch (error) {
+            console.error("Error saving data:", error);
+        }
+    };
+    
     return (
         <View style={styles.container}>
-            <HomeHeadNav navigation={navigation} title='MENU' user='staff'/>
-
+            <HomeHeadNav navigation={navigation} title='MENU' user='kitchen_manager'/>
             <View style={styles.searchContainer}>
                 <View style={styles.searchBox}>
                     <TextInput
@@ -137,13 +197,77 @@ const StaffMenuScreen = ({ navigation }) => {
                 style={styles.flatList}
                 contentContainerStyle={styles.flatListContent}
             />
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    setModalVisible(false);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Thay đổi Status</Text>
+
+                        <View style={styles.container2}>
+                            <View style={styles.halfContainer}>
+                                <TouchableOpacity style={styles.radioContainer} onPress={() => updateStatus(true)}>
+                                    <View style={[styles.radio]}>
+                                        {status && <View style={styles.radioSelected}/>}
+                                    </View>
+                                    <Text style={[styles.radioLabel, { color: '#5DA75A' }]}>Sale</Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.halfContainer}>
+                                <TouchableOpacity style={styles.radioContainer} onPress={() => updateStatus(false)}>
+                                    <View style={[styles.radio]}>
+                                        {!status && <View style={styles.radioSelected}/>}
+                                    </View>
+                                    <Text style={[styles.radioLabel, { color: '#BC1000' }]}>Stop Sale</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+    
+
+                        <View style={styles.container2}>
+                            <View style={styles.halfContainer}>
+                                <Pressable
+                                style={styles.buttonModal}
+                                onPress={() => setModalVisible(!modalVisible)}
+                                >
+                                    <Text style={styles.textStyle}>Hủy</Text>
+                                </Pressable>
+                            </View>
+
+                            <View style={styles.halfContainer}>
+                                <Pressable
+                                style={styles.buttonModal}
+                                onPress={() => handleSave(selectedItem)}
+                                >
+                                    <Text style={styles.textStyle}>OK</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     )
+    
 }
 
-export default StaffMenuScreen;
+export default KitchenManagerMenuScreen;
 
 const styles = StyleSheet.create({
+    container2: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    halfContainer: {
+        flex: 1,
+    },
     container: {
         flex: 1,
     },
@@ -156,13 +280,6 @@ const styles = StyleSheet.create({
         width: 140,
         height: 195,
         justifyContent: 'space-between',
-    },
-    container2: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    halfContainer: {
-        flex: 1,
     },
     categorySelectItemContainer: {
         backgroundColor: '#f2b269',
@@ -293,8 +410,73 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: "#ffffff",
     },
-    
+    flatList: {
+        flexGrow: 1,
+    },
     flatListContent: {
         alignItems: 'center',
-    },  
+    }, 
+
+    centeredView: {
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalView: {
+        margin: 25,
+        backgroundColor: '#FEF3E3',
+        borderRadius: 20,
+        padding: 30,
+        alignItems: "center",
+    },
+    
+    buttonModal: {
+        borderRadius: 20,
+        paddingVertical: 6,
+        borderWidth: 1,
+        marginTop: 15,
+        marginHorizontal: 30,
+        alignItems: 'center'
+    },
+    textStyle: {
+        fontSize: 16
+    },
+
+    modalText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: "center"
+    },
+    radioContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 8,
+        marginHorizontal: 20,
+    },
+    radio: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#000000',
+        marginRight: 10,
+        padding: 1
+    },
+    radioSelected: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: [{ translateX: -5.5 }, { translateY: -5.5 }],
+        width: 13,
+        height: 13,
+        borderRadius: 50,
+        backgroundColor: '#000',
+    },
+    radioLabel: {
+        fontSize: 17,
+        fontWeight: 'bold'
+    },
+
 });

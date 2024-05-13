@@ -28,7 +28,9 @@ const fetchMenuData = async () => {
           return { name: itemName, data: itemData };
         });
 
-        return { category, items };
+        const categoryImage = await fetchCategoryImages([category]);
+
+        return { category, items, image: categoryImage[category] };
       })
     );
 
@@ -79,6 +81,58 @@ const fetchCustomerData = async () => {
     console.log("Error when fetching data customer:", err);
   }
 };
+
+const fetchOrderedDishesData = async () => {
+  try {
+    const orderedDishesDoc = await firebase.firestore().collection("ordered_dishes").doc("ordered_dishes").get();
+    if (!orderedDishesDoc.exists) {
+      throw new Error("Ordered dishes document does not exist!");
+    }
+    const orderedDishesData = orderedDishesDoc.data();
+    const orderedDishes = orderedDishesData.ordered_dishes;
+
+    // Lọc ra các món ăn có trạng thái "ordered" hoặc "preparing"
+    const filteredDishes = [];
+    orderedDishes.forEach((dish, index) => {
+      if (dish.state === "ordered" || dish.state === "preparing") {
+        // Thêm trường id vào phần tử đã lọc
+        filteredDishes.push({ ...dish, id: index });
+      }
+    });
+    return filteredDishes;
+  } catch (error) {
+    console.log("Error when fetching ordered dishes data:", error);
+    throw error;
+  }
+};
+
+
+
+const fetchCompletedDishesData = async () => {
+  try {
+    const orderedDishesDoc = await firebase.firestore().collection("ordered_dishes").doc("ordered_dishes").get();
+    if (!orderedDishesDoc.exists) {
+      throw new Error("Ordered dishes document does not exist!");
+    }
+    const orderedDishesData = orderedDishesDoc.data();
+    const orderedDishes = orderedDishesData.ordered_dishes;
+
+    // Lọc ra các món ăn có trạng thái "ordered" hoặc "preparing"
+    const filteredDishes = [];
+    orderedDishes.forEach((dish, index) => {
+      if (dish.state === "cooked" || dish.state === "served") {
+        // Thêm trường id vào phần tử đã lọc
+        filteredDishes.push({ ...dish, id: index });
+      }
+    });
+
+    return filteredDishes;
+  } catch (error) {
+    console.log("Error when fetching ordered dishes data:", error);
+    throw error;
+  }
+};
+
 
 const getDocumentById = async (collectionName, documentId) => {
   try {
@@ -133,6 +187,16 @@ const fetchTableData = async () => {
   }
 };
 
+const fetchPreOrderData = async (tableId) => {
+    try {
+    const table = await getDocumentById("tables",tableId);
+    return table.preorder;
+    } catch(err) {
+    console.log("Error when fetching preorder data:", err);
+    return [];
+    }
+}
+
 const fetchPendingOrderData = async () => {
   try {
       const ordersSnapshot = await firebase.firestore().collection('order').where('state', '==', 'Chờ thanh toán').get();
@@ -145,6 +209,36 @@ const fetchPendingOrderData = async () => {
   } catch (error) {
       console.error("Lỗi khi lấy dữ liệu:", error);
   }
+};
+
+const fetchCategoryData = async (category) => {
+  try {
+    const categoryData = await firebase.firestore().collection("menu").doc(category).collection("items").get();
+
+    const items = [];
+
+    categoryData.forEach((itemDoc) => {
+      const itemName = itemDoc.id;
+      const itemData = itemDoc.data();
+      items.push({name: itemName, data: itemData});
+    });
+
+    return items;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+const fetchCategoryImages = async (category) => {
+  const storageRef = firebase.storage().ref();
+  const categoryImages = {};
+  try {
+    const imageURL = await storageRef.child(`icon/${category}.png`).getDownloadURL();
+    categoryImages[category] = imageURL;
+} catch (error) {
+    console.error(`Error fetching image for category ${category}:`, error);
+}
+  return categoryImages;
 };
 
 
@@ -253,6 +347,40 @@ const addOrder = async (date, total, guests, customer, items) => {
   }
 };
 
+const addOrderByTable = async (table_id, newItems) => {
+  try {
+      const tableRef = firebase.firestore().collection('tables').doc(table_id);
+      const tableSnapshot = await tableRef.get();
+      const existingItems = tableSnapshot.exists ? tableSnapshot.data().items : [];
+      console.log(newItems)
+
+      newItems.forEach((newItem) => {
+          const existingItemIndex = existingItems.findIndex(item => item.name === newItem.name);
+          if (existingItemIndex !== -1) {
+              existingItems[existingItemIndex].quantity += newItem.quantity;
+          } else if (newItem.quantity !== 0) {
+              existingItems.push(newItem);
+          }
+      });
+
+      const total = existingItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+
+      await tableRef.set(
+          {
+              items: existingItems,
+              total: total
+          },
+          { merge: true }
+      );
+
+      console.log("Order added successfully!");
+      return true;
+  } catch (error) {
+      console.error("Error adding order:", error);
+      return false;
+  }
+};
+
 const addReport = async (title, sender, content) => {
   try {
     const currentDate = new Date();
@@ -272,7 +400,7 @@ const addReport = async (title, sender, content) => {
   }
 };
 
-// const addInforBooking = async (
+// const addInforUsing = async (
 //   id,
 //   customerName,
 //   phoneNumber,
@@ -289,7 +417,7 @@ const addReport = async (title, sender, content) => {
 //   tableData.state = "booked";
 //   await firebase.firestore().collection("tables").doc(id).update(tableData);
 // };
-const addInforBooking = async (
+const addInforUsing = async (
   id,
   customerName,
   phoneNumber,
@@ -313,6 +441,43 @@ const addInforBooking = async (
       date: bookingDate,
       time: bookingTime,
       guests: numberOfGuests,
+      state: "in use",
+    };
+
+    // Cập nhật lại dữ liệu bàn trong Firestore
+    await tableRef.update(updatedTableData);
+    console.log("Thông tin đặt bàn đã được cập nhật thành công!");
+  } catch (error) {
+    console.error("Lỗi khi cập nhật thông tin đặt bàn:", error);
+  }
+};
+const addInforBooking = async (
+  id,
+  customerName,
+  phoneNumber,
+  bookingDate,
+  bookingTime,
+  numberOfGuests
+) => {
+  try {
+    // Lấy dữ liệu bàn từ Firestore
+    const tableRef = firebase.firestore().collection("tables").doc(id);
+    const tableSnapshot = await tableRef.get();
+    const preorder = tableSnapshot.exists ? tableSnapshot.data().preorder : [];
+    const tableData = tableSnapshot.data();
+
+    // Tạo một bản sao của dữ liệu bàn và thay đổi các giá trị
+    const updatedPreorder = {
+          name: customerName,
+          phone: phoneNumber,
+          date: bookingDate,
+          time: bookingTime,
+          guests: numberOfGuests,
+        };
+    preorder.push(updatedPreorder);
+    const updatedTableData = {
+      ...tableData,
+      preorder: preorder,
       state: "booked",
     };
 
@@ -416,6 +581,63 @@ const updateTables = async (updatedTableList) => {
     console.error("Error saving data of table:", error);
   }
 };
+
+const updateDishState = async (dishId, newState) => {
+  try {
+    const orderedDishesRef = firebase.firestore().collection("ordered_dishes").doc("ordered_dishes");
+    const orderedDishesDoc = await orderedDishesRef.get();
+
+    if (!orderedDishesDoc.exists) {
+      throw new Error("Ordered dishes document does not exist!");
+    }
+
+    const orderedDishesData = orderedDishesDoc.data().ordered_dishes;
+
+    const updatedDishes = orderedDishesData.map((dish, index) => {
+      if (index === dishId) {
+        return { ...dish, state: newState };
+      } else {
+        return dish;
+      }
+    });
+
+    // Cập nhật dữ liệu mới của mảng "ordered_dishes" trong Firestore
+    await orderedDishesRef.update({ ordered_dishes: updatedDishes });
+
+    console.log(`Dish with ID ${dishId} has been updated to state ${newState}`);
+  } catch (error) {
+    console.error("Error updating dish state:", error);
+    throw error;
+  }
+};
+
+const addOrderedDishes = async (orderList) => {
+  try {
+    // Lấy tham chiếu đến tài liệu ordered_dishes trong collection ordered_dishes
+    const orderedDishesRef = firebase.firestore().collection("ordered_dishes").doc("ordered_dishes");
+    const orderedDishesDoc = await orderedDishesRef.get();
+
+    if (!orderedDishesDoc.exists) {
+      throw new Error("Ordered dishes document does not exist!");
+    }
+
+    // Lấy dữ liệu của trường ordered_dishes trong tài liệu
+    const orderedDishesData = orderedDishesDoc.data().ordered_dishes;
+
+    // Thêm orderList vào cuối mảng ordered_dishes
+    const updatedDishes = [...orderedDishesData, ...orderList];
+
+    // Cập nhật dữ liệu mới của trường ordered_dishes trong Firestore
+    await orderedDishesRef.update({ ordered_dishes: updatedDishes });
+
+    console.log("Ordered dishes have been successfully added.");
+  } catch (error) {
+    console.error("Error adding ordered dishes:", error);
+    throw error;
+  }
+};
+
+
 const deleteTableData = async (tableId) => {
   try {
     const db = firebase.firestore();
@@ -431,16 +653,59 @@ const deleteTableData = async (tableId) => {
       });
 
     // Cập nhật trạng thái và total
+    if(db.collection("table").doc(tableId).preorder === null) {
     await db.collection("tables").doc(tableId).update({
-      state: "available",
-      total: 0,
-      guests: 0,
-    });
+          state: "available",
+          total: 0,
+          guests: 0,
+        });
+    } else {
+    await db.collection("tables").doc(tableId).update({
+              state: "booked",
+              total: 0,
+              guests: 0,
+            });
+    }
     console.log(
       "Dữ liệu đã được xóa và trạng thái đã được cập nhật thành công."
     );
   } catch (error) {
     console.error("Lỗi khi xóa dữ liệu và cập nhật trạng thái:", error);
+  }
+};
+const cancelPreorderBooking = async (table_id, preorder) => {
+  try {
+    const tableRef = firebase.firestore().collection("tables").doc(table_id);
+    const tableDocSnapshot = await tableRef.get();
+    if (tableDocSnapshot.exists) {
+      // Extract the data from the document
+      const tableData = tableDocSnapshot.data();
+
+      // Check if the preorder array exists
+      if (tableData.preorder) {
+        // Find the index of the preorder to delete
+        const indexToDelete = tableData.preorder.findIndex(item => (item.name === preorder.name && item.date === preorder.date && item.time === preorder.time));
+
+        // If the preorder exists in the array
+        if (indexToDelete !== -1) {
+          // Remove the preorder from the array
+          tableData.preorder.splice(indexToDelete, 1);
+
+          // Update the document in Firestore with the modified preorder array
+          await tableRef.update({ preorder: tableData.preorder });
+
+          console.log("Preorder deleted successfully.");
+        } else {
+          console.log("Preorder not found in the preorder array.");
+        }
+      } else {
+        console.log("Preorder array does not exist.");
+      }
+    } else {
+      console.log(`Document '${table_id}' does not exist in the 'tables' collection.`);
+    }
+  } catch (error) {
+    console.error("Lỗi khi huỷ đặt bàn:", error);
   }
 };
 
@@ -478,13 +743,23 @@ export {
   fetchStaffData,
   fetchCustomerData,
   fetchReportData,
+  fetchPreOrderData,
   getDocumentById,
   addOrder,
   addCustomer,
   deleteTableData,
   fetchTableData,
   updateTables,
+  addInforUsing,
   addInforBooking,
   cancelBooking,
+  cancelPreorderBooking,
   fetchPendingOrderData,
+  fetchOrderedDishesData,
+  fetchCompletedDishesData,
+  updateDishState,
+  fetchCategoryData,
+  fetchCategoryImages,
+  addOrderByTable,
+  addOrderedDishes,
 };

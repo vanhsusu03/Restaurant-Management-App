@@ -30,6 +30,13 @@ import PaymentScreen from './src/screens/cashier/PaymentScreen.js'
 import CashierTableScreen from './src/screens/cashier/TableScreen.js'
 import CashierSaleScreen from './src/screens/cashier/SaleScreen.js'
 import PaymentDetail from './src/screens/cashier/payment/PaymentDetail';
+import PreOrderScreen from './src/screens/cashier/order_table/PreOrderScreen.js';
+import BookedTableScreen from './src/screens/cashier/order_table/BookedTableScreen.js';
+import BookedDetailScreen from './src/screens/cashier/order_table/BookedDetail.js';
+import BookedDetail from './src/screens/staff/table/BookedDetail.js';
+import KitchenManagerMenuScreen from './src/screens/kitchen_manager/MenuScreen.js'
+import OrderedDishesScreen from './src/screens/kitchen_manager/OrderedDishes.js'
+import CompletedDishesScreen from './src/screens/kitchen_manager/CompletedDishes.js'
 
 import EditTables from './src/screens/admin/table/EditTables.js';
 import AddInforBooking from './src/screens/staff/table/AddInforBooking.js';
@@ -68,6 +75,7 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="table_detail" component={TableDetail} options={{ headerShown: false }} />
             <Stack.Screen name="table_booking" component={AddInforBooking} options={{ headerShown: false }} />
             <Stack.Screen name="table_booked" component={BookedTable} options={{ headerShown: false }} />
+            <Stack.Screen name="table_booked_detail" component={BookedDetail} options={{ headerShown: false }} />
             <Stack.Screen name="menu_order" component={MenuOrder} options={{ headerShown: false }} />
 
             {/* Trang dành cho cashier */}
@@ -75,8 +83,13 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="table_cashier" component={CashierTableScreen} options={{ headerShown: false }} />
             <Stack.Screen name="sale_cashier" component={CashierSaleScreen} options={{ headerShown: false }} />
             <Stack.Screen name="payment_detail" component={PaymentDetail} options={{ headerShown: false }} />
-
+            <Stack.Screen name="preorder_table" component={PreOrderScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="add_preorder" component={BookedTableScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="preorder_detail" component={BookedDetailScreen} options={{ headerShown: false }} />
             {/* Trang dành cho kitchen_manager */}
+            <Stack.Screen name="menu_kitchen_manager" component={KitchenManagerMenuScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="ordered_dishes" component={OrderedDishesScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="completed_dishes" component={CompletedDishesScreen} options={{ headerShown: false }} />
 
         </Stack.Navigator>
     </NavigationContainer>
