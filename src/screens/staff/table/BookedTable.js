@@ -82,7 +82,7 @@ const BookedTableScreen = ({ navigation, route }) => {
         }
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <HomeHeadNav navigation={navigation} title="DANH SÁCH KHÁCH ĐÃ ĐẶT" user="cashier" />
+      <HomeHeadNav navigation={navigation} title="DANH SÁCH KHÁCH ĐÃ ĐẶT" user="staff" />
       <TouchableOpacity style={styles.addButton} onPress={handleAddPreOrder} >
          <FontAwesome6 name="add" style={styles.icon} />
          <Text style={styles.addButtonText}>Thêm đặt bàn?</Text>

@@ -650,6 +650,7 @@ const deleteTableData = async (tableId) => {
       .update({
         customer: { name: "", phone: "" },
         items: [],
+        preorder: [],
       });
 
     // Cập nhật trạng thái và total
