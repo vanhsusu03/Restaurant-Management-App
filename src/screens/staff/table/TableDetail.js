@@ -71,6 +71,14 @@ const TableDetail = ({ navigation, route }) => {
     navigation.navigate("menu_order", { table_id: table_id });
   };
 
+  const handleAddReport = () => {
+    try {
+      navigation.navigate("report_staff_add");
+    } catch (err) {
+      console.error("Error navigating to AddReport:", err);
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <HomeHeadNav navigation={navigation} title="CHI TIẾT BÀN" user="staff" />
@@ -108,16 +116,16 @@ const TableDetail = ({ navigation, route }) => {
         <View style={styles.table}>
           <TableWrapper style={styles.tableWrapper}>
             <Table>
-            <Row
-              style={styles.tableTitle}
-              textStyle={styles.headerText}
-              data={[
-                <View style={styles.headerItemContainer}>
-                  <Text style={styles.headerText}>{'MÓN ĂN'}</Text>
-                  <Text style={styles.headerText}>{'SỐ LƯỢNG'}</Text>
-                </View>
-              ]}
-            />
+              <Row
+                style={styles.tableTitle}
+                textStyle={styles.headerText}
+                data={[
+                  <View style={styles.headerItemContainer}>
+                    <Text style={styles.headerText}>{"MÓN ĂN"}</Text>
+                    <Text style={styles.headerText}>{"SỐ LƯỢNG"}</Text>
+                  </View>,
+                ]}
+              />
 
               {data.items.map((item) => (
                 <Row
@@ -133,7 +141,7 @@ const TableDetail = ({ navigation, route }) => {
                         <Text style={styles.itemPrice}>{item.price}</Text>
                       </View>
                       <Text style={styles.itemQuantity}>{item.quantity}</Text>
-                    </View>
+                    </View>,
                   ]}
                   style={styles.row}
                   textStyle={styles.rowText}
@@ -150,6 +158,10 @@ const TableDetail = ({ navigation, route }) => {
           <Text style={styles.total}> {data.total} </Text>
         </View>
       )}
+      <TouchableOpacity style={styles.addButton} onPress={handleAddReport}>
+        <FontAwesome6 name="add" style={styles.icon} />
+        <Text style={styles.addButtonText}>Thêm phản hồi</Text>
+      </TouchableOpacity>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handlePayment}>
@@ -324,6 +336,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#EE9C37",
     fontSize: 17,
     padding: 2,
+  },
+  addButton: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    paddingRight: 30,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  addButtonText: {
+    fontSize: 18,
+    color: "#EE9C37",
   },
 });
 
