@@ -14,6 +14,7 @@ import {
   addCustomer,
   addOrder,
   deleteTableData,
+  fetchPreOrderData
 } from "../../../utils/firestore";
 import { colors, veg, nonveg } from "../../../globals/style.js";
 import HomeHeadNav from "../../../components/Header.js";
