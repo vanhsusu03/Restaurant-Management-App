@@ -1,4 +1,4 @@
-# Restaurant Management Mobile App
+# <img src="assets/icon3.png" width="80" /> Restaurant Management Mobile App
 
 ## :star2: Introduction
 
