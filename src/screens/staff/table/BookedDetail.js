@@ -36,8 +36,7 @@ const BookedDetail = ({ navigation, route }) => {
                         table_id,
                         preorderDetail.name,
                         preorderDetail.phone,
-                        preorderDetail.date,
-                        preorderDetail.time,
+                        preorderDetail.timestamp,
                         preorderDetail.guests
           );
           await firebase.firestore().collection("tables").doc(table_id).update({ items: [] });
