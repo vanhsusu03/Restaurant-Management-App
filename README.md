@@ -31,7 +31,7 @@ Requirements:
 * Expo SDK 51.0.8
 * Node.js >= 18.15.0
 * npm >= 9.5.0
-* 
+  
 Step-by-step introductions to get you running this app:
 ### 1) Clone this repository to your local machine:
 
@@ -47,7 +47,7 @@ npx expo start/npm start
 
 After that, you will see this screen: ![image](https://github.com/vanhsusu03/Restaurant-Management-App/assets/98511848/9b73b0f9-3cfe-4719-be10-3d046ebcd4d7)
 
-You can use Expo Go app (download from your mobile device) scan QR and start running this app. Or, you can use Androi Simulator extension for running on some IDE like Visual Studio Code, or running directly by using virtual device on Adroi Studio.
+You can use Expo Go app (download from your mobile device) scan QR and start running this app. Or, you can use Android Simulator extension for running on some IDE like Visual Studio Code, or running directly by using virtual device on Adroid Studio.
 
 ## :raising_hand: Questions
 If you have any questions about running this code, or this project, contact us - the developers: 
