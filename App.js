@@ -41,6 +41,7 @@ import CompletedDishesScreen from './src/screens/kitchen_manager/CompletedDishes
 import EditTables from './src/screens/admin/table/EditTables.js';
 import AddInforBooking from './src/screens/staff/table/AddInforBooking.js';
 import BookedTable from './src/screens/staff/table/BookedTable.js';
+import Comment from './src/screens/staff/table/Comment.js';
 export default function App() {
 const Stack = createNativeStackNavigator();
   return (
@@ -77,7 +78,8 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="table_booked" component={BookedTable} options={{ headerShown: false }} />
             <Stack.Screen name="table_booked_detail" component={BookedDetail} options={{ headerShown: false }} />
             <Stack.Screen name="menu_order" component={MenuOrder} options={{ headerShown: false }} />
-
+            <Stack.Screen name="comment" component={Comment} options={{heaederShown: false}} />
+            
             {/* Trang dành cho cashier */}
             <Stack.Screen name="payment_cashier" component={PaymentScreen} options={{ headerShown: false }} />
             <Stack.Screen name="table_cashier" component={CashierTableScreen} options={{ headerShown: false }} />

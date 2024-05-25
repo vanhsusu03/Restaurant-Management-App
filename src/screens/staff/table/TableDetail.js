@@ -61,7 +61,7 @@ const TableDetail = ({ navigation, route }) => {
       );
       await deleteTableData(table_id);
       alert("Hóa đơn này đã được chuyển sang trạng thái chờ thanh toán!");
-      navigation.navigate("table_staff");
+      navigation.navigate("comment");
     } catch (error) {
       console.error("Error saving data:", error);
     }
