@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import moment from 'moment'; // import moment library
 import HomeHeadNav from "../../../components/Header.js";
 import {
   getDocumentById,
@@ -29,41 +30,39 @@ const PreOrderScreen = ({ navigation, route }) => {
   const [numberOfGuests, setNumberOfGuests] = useState(null);
 
   const handleCancel = () => {
-            navigation.goBack();
-        };
+    navigation.goBack();
+  };
 
-  const checkBookingTable = async  () => {
-        if(!customerName
-            || !phoneNumber
-            || !bookingDate
-            || !bookingTime
-            || !numberOfGuests)
-        {
-          Alert.alert(
-              "Thông báo",
-              "Điền thiếu thông tin khách hàng"
-              )
-        }
-        else {
-          addInforBooking(
-                        table_id,
-                        customerName,
-                        phoneNumber,
-                        bookingDate,
-                        bookingTime,
-                        numberOfGuests
-                      );
+  const checkBookingTable = async () => {
+    if (!customerName || !phoneNumber || !bookingDate || !bookingTime || !numberOfGuests) {
+      Alert.alert(
+        "Thông báo",
+        "Điền thiếu thông tin khách hàng"
+      )
+    } else {
+      // Convert bookingDate and bookingTime to a Firestore timestamp
+      const dateTimeString = `${bookingDate} ${bookingTime}`;
+      const timestamp = moment(dateTimeString, "DD-MM-YYYY HH:mm").toDate();
+      console.log(timestamp);
 
-                      Alert.alert(
-                        "Thông báo",
-                        "Đặt trước bàn thành công!"
-                      )
-                      try {
-                        navigation.navigate("table_cashier");
-                      } catch (error) {
-                        console.error("Error navigating to :TableScreen", error);
-                      }
-        }
+      addInforBooking(
+        table_id,
+        customerName,
+        phoneNumber,
+        timestamp, // save as timestamp
+        numberOfGuests
+      );
+
+      Alert.alert(
+        "Thông báo",
+        "Đặt trước bàn thành công!"
+      )
+      try {
+        navigation.navigate("table_cashier");
+      } catch (error) {
+        console.error("Error navigating to :TableScreen", error);
+      }
+    }
   }
 
   return (
@@ -120,34 +119,13 @@ const PreOrderScreen = ({ navigation, route }) => {
         <Button
           title="Đặt bàn"
           color="#FF5733"
-          onPress={() => {
-            addInforBooking(
-              table_id,
-              customerName,
-              phoneNumber,
-              bookingDate,
-              bookingTime,
-              numberOfGuests
-            );
-            Alert.alert(
-              "Thông báo",
-              "Bàn đã được đặt"
-            )
-            try {
-              navigation.navigate("table_cashier");
-            } catch (error) {
-              console.error("Error navigating to :TableScreen", error);
-            }
-          }}
+          onPress={checkBookingTable}
         />
         <Button
-                  title="Quay lại"
-                  color="#FF5733"
-                  onPress={() => {
-                    handleCancel();
-                  }
-                    }
-                />
+          title="Quay lại"
+          color="#FF5733"
+          onPress={handleCancel}
+        />
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Alert } from "react-native";
 import { firebase } from "../../Firebase/firebase";
 import * as ImagePicker from "expo-image-picker";
+import moment from 'moment';
 
 const fetchMenuData = async () => {
   try {
@@ -188,13 +189,23 @@ const fetchTableData = async () => {
 };
 
 const fetchPreOrderData = async (tableId) => {
-    try {
-    const table = await getDocumentById("tables",tableId);
-    return table.preorder;
-    } catch(err) {
-    console.log("Error when fetching preorder data:", err);
-    return [];
-    }
+  try {
+    const tableRef = firebase.firestore().collection("tables").doc(tableId);
+    const tableSnapshot = await tableRef.get();
+    const preorderList = tableSnapshot.exists ? tableSnapshot.data().preorder : [];
+
+    // Convert timestamp to date and time strings
+    const updatedPreorderList = preorderList.map(item => ({
+      ...item,
+      date: moment(item.timestamp.toDate()).format('DD-MM-YYYY'),
+      time: moment(item.timestamp.toDate()).format('HH:mm')
+    }));
+
+    return updatedPreorderList;
+  } catch (error) {
+    console.error("Error fetching preorder data:", error);
+    throw error;
+  }
 }
 
 const fetchPendingOrderData = async () => {
@@ -421,8 +432,7 @@ const addInforUsing = async (
   id,
   customerName,
   phoneNumber,
-  bookingDate,
-  bookingTime,
+  timestamp,
   numberOfGuests
 ) => {
   try {
@@ -438,8 +448,7 @@ const addInforUsing = async (
         name: customerName,
         phone: phoneNumber,
       },
-      date: bookingDate,
-      time: bookingTime,
+      timestamp: timestamp,
       guests: numberOfGuests,
       state: "in use",
     };
@@ -455,8 +464,7 @@ const addInforBooking = async (
   id,
   customerName,
   phoneNumber,
-  bookingDate,
-  bookingTime,
+  timestamp,
   numberOfGuests
 ) => {
   try {
@@ -468,11 +476,10 @@ const addInforBooking = async (
 
     // Tạo một bản sao của dữ liệu bàn và thay đổi các giá trị
     const updatedPreorder = {
-          name: customerName,
-          phone: phoneNumber,
-          date: bookingDate,
-          time: bookingTime,
-          guests: numberOfGuests,
+      name: customerName,
+      phone: phoneNumber,
+      timestamp: firebase.firestore.Timestamp.fromDate(timestamp), // Lưu dưới dạng timestamp
+      guests: numberOfGuests,
         };
     preorder.push(updatedPreorder);
     const updatedTableData = {
