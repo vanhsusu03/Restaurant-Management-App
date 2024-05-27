@@ -31,6 +31,9 @@ const BookedDetail = ({ navigation, route }) => {
   const handleCancelPreorderBooking = async () => {
         await cancelPreorderBooking(table_id, preorderDetail)
   }
+  const startUsingTable = async () => {
+    await cancelPreorderBooking(table_id, preorderDetail)
+  }
   const checkUsingTable = async  () => {
           addInforUsing(
                         table_id,
@@ -40,6 +43,7 @@ const BookedDetail = ({ navigation, route }) => {
                         preorderDetail.guests
           );
           await firebase.firestore().collection("tables").doc(table_id).update({ items: [] });
+          await startUsingTable();
                       Alert.alert(
                         "Thông báo",
                         "Bàn bắt đầu được sử dụng!"
@@ -105,6 +109,7 @@ const BookedDetail = ({ navigation, route }) => {
                   }
                     }
                 />
+                <View style={styles.padd} />
                 <Button
                                   title="Bắt đầu sử dụng"
                                   color="#FF5733"
@@ -113,6 +118,7 @@ const BookedDetail = ({ navigation, route }) => {
                                   }
                                     }
                                 />
+                                <View style={styles.padd} />
         <Button
           title="Quay lại"
           color="#FF5733"
@@ -164,6 +170,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 10,
   },
+  padd: {
+  marginBottom: 10
+  }
 });
 
 export default BookedDetail;
