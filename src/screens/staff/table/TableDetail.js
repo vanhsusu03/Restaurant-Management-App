@@ -61,7 +61,7 @@ const TableDetail = ({ navigation, route }) => {
       );
       await deleteTableData(table_id);
       alert("Hóa đơn này đã được chuyển sang trạng thái chờ thanh toán!");
-      navigation.navigate("table_staff");
+      navigation.navigate("comment");
     } catch (error) {
       console.error("Error saving data:", error);
     }
@@ -71,13 +71,12 @@ const TableDetail = ({ navigation, route }) => {
     navigation.navigate("menu_order", { table_id: table_id });
   };
 
-  const handleAddReport = () => {
-    try {
-      navigation.navigate("report_staff_add");
-    } catch (err) {
-      console.error("Error navigating to AddReport:", err);
-    }
+  const formatDateTime = (timestamp) => {
+    const date = new Date(timestamp);
+    const formattedDate = date.toLocaleDateString(); // Chuyển đổi timestamp sang ngày
+    return formattedDate;
   };
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -103,7 +102,7 @@ const TableDetail = ({ navigation, route }) => {
           <View style={styles.dateInfo}>
             <Fontisto name={"date"} size={20} />
             <Text style={styles.customerText}>Ngày: </Text>
-            <Text style={styles.tableText}>{data.date}</Text>
+            <Text style={styles.tableText}>{formatDateTime(data.timestamp)}</Text>
           </View>
         </View>
       )}
@@ -158,10 +157,6 @@ const TableDetail = ({ navigation, route }) => {
           <Text style={styles.total}> {data.total} </Text>
         </View>
       )}
-      <TouchableOpacity style={styles.addButton} onPress={handleAddReport}>
-        <FontAwesome6 name="add" style={styles.icon} />
-        <Text style={styles.addButtonText}>Thêm phản hồi</Text>
-      </TouchableOpacity>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handlePayment}>
