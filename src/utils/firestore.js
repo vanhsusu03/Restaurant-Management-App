@@ -651,29 +651,29 @@ const deleteTableData = async (tableId) => {
 
     // Xóa dữ liệu về customer và items
     // Đặt trường customer về một map rỗng
-    await db
-      .collection("tables")
-      .doc(tableId)
-      .update({
-        customer: { name: "", phone: "" },
-        items: [],
-        preorder: [],
-      });
+    await db.collection("tables").doc(tableId).update({
+      customer: { name: "", phone: "" },
+      items: [],
+    });
 
-    // Cập nhật trạng thái và total
-    if(db.collection("table").doc(tableId).preorder === null) {
-    await db.collection("tables").doc(tableId).update({
-          state: "available",
-          total: 0,
-          guests: 0,
-        });
+    // Truy xuất tài liệu để kiểm tra preorder
+    const tableRef = db.collection("tables").doc(tableId);
+    const tableDoc = await tableRef.get();
+
+    if (tableDoc.exists && tableDoc.data().preorder.length === 0) {
+      await tableRef.update({
+        state: "available",
+        total: 0,
+        guests: 0,
+      });
     } else {
-    await db.collection("tables").doc(tableId).update({
-              state: "booked",
-              total: 0,
-              guests: 0,
-            });
+      await tableRef.update({
+        state: "booked",
+        total: 0,
+        guests: 0,
+      });
     }
+
     console.log(
       "Dữ liệu đã được xóa và trạng thái đã được cập nhật thành công."
     );
@@ -681,6 +681,7 @@ const deleteTableData = async (tableId) => {
     console.error("Lỗi khi xóa dữ liệu và cập nhật trạng thái:", error);
   }
 };
+
 const cancelPreorderBooking = async (table_id, preorder) => {
   try {
     const tableRef = firebase.firestore().collection("tables").doc(table_id);
