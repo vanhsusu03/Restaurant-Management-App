@@ -83,6 +83,7 @@ const BookedTableScreen = ({ navigation, route }) => {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <HomeHeadNav navigation={navigation} title="DANH SÁCH KHÁCH ĐÃ ĐẶT" user="cashier" />
+
       <TouchableOpacity style={styles.addButton} onPress={handleAddPreOrder} >
          <FontAwesome6 name="add" style={styles.icon} />
          <Text style={styles.addButtonText}>Thêm khách đặt</Text>
@@ -90,6 +91,7 @@ const BookedTableScreen = ({ navigation, route }) => {
         <View style={styles.imageContainer}>
           <Text style={styles.tableId}>Bàn số {table_id} </Text>
         </View>
+
         <View>
                         <FlatList
                             data={preorderList}
@@ -97,6 +99,7 @@ const BookedTableScreen = ({ navigation, route }) => {
                             keyExtractor={(_, index) => index.toString()}
                         />
                     </View>
+                    <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <Button
                           title="Quay lại"
                           color="#FF5733"
@@ -105,6 +108,7 @@ const BookedTableScreen = ({ navigation, route }) => {
                           }
                             }
                         />
+                        </ScrollView>
     </KeyboardAvoidingView>
   );
 };

@@ -86,6 +86,7 @@ const BookedDetailScreen = ({ navigation, route }) => {
                   }
                     }
                 />
+                <View style={styles.button_padding} />
         <Button
           title="Quay lại"
           color="#FF5733"
@@ -137,6 +138,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 10,
   },
+  button_padding: {
+  marginBottom: 10,
+  }
 });
 
 export default BookedDetailScreen;

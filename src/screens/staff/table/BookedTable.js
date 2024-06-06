@@ -25,8 +25,10 @@ import {
 import { firebase } from "../../../../Firebase/firebase";
 
 const BookedTableScreen = ({ navigation, route }) => {
-  const { table_id } = route.params;
+    const table_id = route.params.table_id;
     const [preorderList, setPreOrderList] = useState("");
+
+    const statusTable = route.params.status;
 
     const reloadPreOrder = useCallback(async () => {
             try {
@@ -73,20 +75,27 @@ const BookedTableScreen = ({ navigation, route }) => {
                   </TouchableOpacity>
               )
           }
-        const handleAddPreOrder = () => {
+        const handleShowOptions = () => {
             try {
-                   navigation.navigate("preorder_table", {table_id: table_id});
-                    } catch(err) {
-                        console.error('Error navigating to AddPreOrder:', err);
-                    }
+            if(statusTable === 'booked') {
+                navigation.navigate("table_booking", {table_id: table_id});
+            } else if (statusTable === 'in use') {
+                navigation.navigate("table_detail", {table_id: table_id});
+            }
+
+        } catch(err) {
+            console.error('Error navigating to AddPreOrder:', err);
+          }
         }
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <HomeHeadNav navigation={navigation} title="DANH SÁCH KHÁCH ĐÃ ĐẶT" user="cashier" />
-      <TouchableOpacity style={styles.addButton} onPress={handleAddPreOrder} >
-         <FontAwesome6 name="add" style={styles.icon} />
-         <Text style={styles.addButtonText}>Thêm đặt bàn?</Text>
-      </TouchableOpacity>
+      <TouchableOpacity style={styles.addButton} onPress={handleShowOptions} >
+               <FontAwesome6 name="add" style={styles.icon} />
+               <Text style={styles.addButtonText}>
+               {statusTable === 'booked' ? 'Sử dụng bàn' : statusTable === 'in use' ? 'Chi tiết bàn' : "NaN"}
+               </Text>
+            </TouchableOpacity>
         <View style={styles.imageContainer}>
           <Text style={styles.tableId}>Bàn số {table_id} </Text>
         </View>
@@ -97,6 +106,16 @@ const BookedTableScreen = ({ navigation, route }) => {
                             keyExtractor={(_, index) => index.toString()}
                         />
                     </View>
+                    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                            <Button
+                                              title="Quay lại"
+                                              color="#FF5733"
+                                              onPress={() => {
+                                                handleCancel();
+                                              }
+                                                }
+                                            />
+                                            </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -110,7 +129,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   imageContainer: {
-    marginTop: 5,
+    marginTop: 25,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 30,
