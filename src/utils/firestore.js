@@ -693,7 +693,7 @@ const cancelPreorderBooking = async (table_id, preorder) => {
       // Check if the preorder array exists
       if (tableData.preorder) {
         // Find the index of the preorder to delete
-        const indexToDelete = tableData.preorder.findIndex(item => (item.name === preorder.name && item.date === preorder.date && item.time === preorder.time));
+        const indexToDelete = tableData.preorder.findIndex(item => (item.name === preorder.name && item.phone === preorder.phone));
 
         // If the preorder exists in the array
         if (indexToDelete !== -1) {

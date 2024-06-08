@@ -89,7 +89,7 @@ const BookedTableScreen = ({ navigation, route }) => {
         }
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <HomeHeadNav navigation={navigation} title="DANH SÁCH KHÁCH ĐÃ ĐẶT" user="cashier" />
+      <HomeHeadNav navigation={navigation} title="DANH SÁCH KHÁCH ĐÃ ĐẶT" user="staff" />
       <TouchableOpacity style={styles.addButton} onPress={handleShowOptions} >
                <FontAwesome6 name="add" style={styles.icon} />
                <Text style={styles.addButtonText}>
@@ -107,14 +107,11 @@ const BookedTableScreen = ({ navigation, route }) => {
                         />
                     </View>
                     <ScrollView contentContainerStyle={styles.scrollViewContent}>
-                            <Button
-                                              title="Quay lại"
-                                              color="#FF5733"
-                                              onPress={() => {
-                                                handleCancel();
-                                              }
-                                                }
-                                            />
+                            <View style={styles.buttonContainer}>
+                                            <TouchableOpacity style={styles.button} onPress={handleCancel}>
+                                                                      <Text style={styles.buttonText}>Quay lại</Text>
+                                                                    </TouchableOpacity>
+                                          </View>
                                             </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -211,6 +208,22 @@ const styles = StyleSheet.create({
                   padding: 2,
                   marginRight: 8
               },
+      buttonContainer: {
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginBottom: 20
+            },
+            button: {
+              backgroundColor: '#EE9C37',
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 10,
+              marginHorizontal: 10,
+            },
+            buttonText: {
+              fontSize: 18,
+              color: '#fff',
+            },
 });
 
 export default BookedTableScreen;

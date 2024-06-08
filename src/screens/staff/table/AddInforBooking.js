@@ -9,6 +9,7 @@ import {
   Image,
   StyleSheet,
   Alert,
+  TouchableOpacity
 } from "react-native";
 import HomeHeadNav from "../../../components/Header.js";
 import {
@@ -90,7 +91,7 @@ const AddInforBooking = ({ navigation, route }) => {
           />
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Ngày đặt bàn:</Text>
+          <Text style={styles.label}>Ngày ăn:</Text>
           <TextInput
             style={styles.input}
             value={bookingDate}
@@ -99,7 +100,7 @@ const AddInforBooking = ({ navigation, route }) => {
           />
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Thời gian đặt:</Text>
+          <Text style={styles.label}>Thời gian bắt đầu:</Text>
           <TextInput
             style={styles.input}
             value={bookingTime}
@@ -116,23 +117,14 @@ const AddInforBooking = ({ navigation, route }) => {
             keyboardType="numeric"
           />
         </View>
-        <View style={styles.button}>
-        <Button
-          title="Xác nhận"
-          color="#FF5733"
-          style = {styles.button}
-          onPress={() => {
-            checkBookingTable()
-          }}
-        />
-        </View>
-        <Button
-                  title="Quay lại"
-                  color="#FF5733"
-                  onPress={() => {
-                    handleCancel()
-                  }}
-                />
+        <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.button} onPress={checkBookingTable}>
+                          <Text style={styles.buttonText}>Xác nhận</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={handleCancel}>
+                                                  <Text style={styles.buttonText}>Quay lại</Text>
+                                                </TouchableOpacity>
+                      </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -175,7 +167,23 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   button: {
-  marginBottom: 10,}
+  marginBottom: 10,},
+  buttonContainer: {
+                flexDirection: 'row',
+                justifyContent: 'center',
+                marginBottom: 20
+              },
+              button: {
+                backgroundColor: '#EE9C37',
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                borderRadius: 10,
+                marginHorizontal: 10,
+              },
+              buttonText: {
+                fontSize: 18,
+                color: '#fff',
+              },
 });
 
 export default AddInforBooking;
