@@ -9,6 +9,7 @@ import {
   Image,
   StyleSheet,
   Alert,
+  TouchableOpacity
 } from "react-native";
 import HomeHeadNav from "../../../components/Header.js";
 import {
@@ -69,32 +70,27 @@ const BookedDetailScreen = ({ navigation, route }) => {
                       style={styles.input}
                     >{preorderDetail.guests}</Text>
         </View>
-        <Button
-                  title="Hủy đặt bàn"
-                  color="#FF5733"
-                  onPress={() => {
-                    handleCancelPreorderBooking();
-                    Alert.alert(
-                                  "Thông báo",
-                                  "Hủy đặt trước bàn thành công"
-                                )
-                                try {
-                                  navigation.navigate("table_cashier");
-                                } catch (error) {
-                                  console.error("Error navigating to :TableScreen", error);
-                                }
-                  }
-                    }
-                />
                 <View style={styles.button_padding} />
-        <Button
-          title="Quay lại"
-          color="#FF5733"
-          onPress={() => {
-            handleCancel();
-          }
-            }
-        />
+        <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.button}                   onPress={async () => {
+                                                                                    await handleCancelPreorderBooking();
+                                                                                    Alert.alert(
+                                                                                                  "Thông báo",
+                                                                                                  "Hủy đặt trước bàn thành công"
+                                                                                                )
+                                                                                                try {
+                                                                                                  navigation.navigate("table_cashier");
+                                                                                                } catch (error) {
+                                                                                                  console.error("Error navigating to :TableScreen", error);
+                                                                                                }
+                                                                                  }
+                                                                                    }>
+                          <Text style={styles.buttonText}>Hủy đặt bàn</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={handleCancel}>
+                                                  <Text style={styles.buttonText}>Quay lại</Text>
+                                                </TouchableOpacity>
+                      </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -140,7 +136,23 @@ const styles = StyleSheet.create({
   },
   button_padding: {
   marginBottom: 10,
-  }
+  },
+  buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 20
+      },
+      button: {
+        backgroundColor: '#EE9C37',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginHorizontal: 10,
+      },
+      buttonText: {
+        fontSize: 18,
+        color: '#fff',
+      },
 });
 
 export default BookedDetailScreen;

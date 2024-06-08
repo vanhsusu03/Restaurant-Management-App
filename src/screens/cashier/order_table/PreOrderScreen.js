@@ -9,6 +9,7 @@ import {
   Image,
   StyleSheet,
   Alert,
+  TouchableOpacity
 } from "react-native";
 import moment from 'moment'; // import moment library
 import HomeHeadNav from "../../../components/Header.js";
@@ -116,16 +117,14 @@ const PreOrderScreen = ({ navigation, route }) => {
             keyboardType="numeric"
           />
         </View>
-        <Button
-          title="Đặt bàn"
-          color="#FF5733"
-          onPress={checkBookingTable}
-        />
-        <Button
-          title="Quay lại"
-          color="#FF5733"
-          onPress={handleCancel}
-        />
+        <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={checkBookingTable}>
+                  <Text style={styles.buttonText}>Đặt bàn</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={handleCancel}>
+                                          <Text style={styles.buttonText}>Quay lại</Text>
+                                        </TouchableOpacity>
+              </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -166,6 +165,22 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginBottom: 20
+    },
+    button: {
+      backgroundColor: '#EE9C37',
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+      marginHorizontal: 10,
+    },
+    buttonText: {
+      fontSize: 18,
+      color: '#fff',
+    },
 });
 
 export default PreOrderScreen;
