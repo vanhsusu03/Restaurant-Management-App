@@ -23,7 +23,7 @@ const Comment = ({ navigation, route }) => {
   const formattedDate = currentDate.toLocaleDateString("en-US");
 
   const handleCancel = () => {
-    navigation.goBack();
+    navigation.navigate("table_staff");
   };
 
   const handleAddComment = () => {
