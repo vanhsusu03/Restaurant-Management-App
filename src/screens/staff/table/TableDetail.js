@@ -14,7 +14,6 @@ import {
   addCustomer,
   addOrder,
   deleteTableData,
-  fetchPreOrderData
 } from "../../../utils/firestore";
 import { colors, veg, nonveg } from "../../../globals/style.js";
 import HomeHeadNav from "../../../components/Header.js";
@@ -49,33 +48,16 @@ const TableDetail = ({ navigation, route }) => {
     navigation.goBack();
   };
 
-  const handlePayment = async () => {
+  const handleAddComment = async () => {
     try {
-      await addCustomer(data.customer.name, data.customer.phone);
-      await addOrder(
-        table_id,
-        data.date,
-        data.total,
-        data.guests,
-        data.customer,
-        data.items
-      );
-      await deleteTableData(table_id);
-      alert("Hóa đơn này đã được chuyển sang trạng thái chờ thanh toán!");
-      navigation.navigate("comment");
+      navigation.navigate("comment", { table_id: table_id });
     } catch (error) {
-      console.error("Error saving data:", error);
+      console.error("Error add comment:", error);
     }
   };
 
   const handleAdd = () => {
     navigation.navigate("menu_order", { table_id: table_id });
-  };
-
-  const formatDateTime = (timestamp) => {
-    const date = new Date(timestamp);
-    const formattedDate = date.toLocaleDateString(); // Chuyển đổi timestamp sang ngày
-    return formattedDate;
   };
   
 
@@ -103,7 +85,7 @@ const TableDetail = ({ navigation, route }) => {
           <View style={styles.dateInfo}>
             <Fontisto name={"date"} size={20} />
             <Text style={styles.customerText}>Ngày: </Text>
-            <Text style={styles.tableText}>{formatDateTime(data.timestamp)}</Text>
+            <Text style={styles.tableText}>{data.date}</Text>
           </View>
         </View>
       )}
@@ -160,7 +142,7 @@ const TableDetail = ({ navigation, route }) => {
       )}
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={handlePayment}>
+        <TouchableOpacity style={styles.button} onPress={handleAddComment}>
           <Text style={styles.buttonText}>Thanh toán</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleCancel}>
