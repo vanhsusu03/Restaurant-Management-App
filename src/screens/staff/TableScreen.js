@@ -44,7 +44,7 @@ const StaffTableScreen = ({ navigation }) => {
             case "booked":
               return navigation.navigate("table_booked", { table_id: ID, status:"booked" });
             case "in use":
-              return navigation.navigate("table_booked", { table_id: ID, status: "in use" });
+              return navigation.navigate("table_detail", { table_id: ID, status: "in use" });
           }
           navigation.navigate("table_detail", { table_id: ID });
         }}
