@@ -13,21 +13,56 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import HomeHeadNav from '../../../components/Header.js'
+import HomeHeadNav from "../../../components/Header.js";
+import {
+  getDocumentById,
+  addCustomer,
+  addOrder,
+  deleteTableData,
+} from "../../../utils/firestore";
 const Comment = ({ navigation, route }) => {
-  const [sender, onSenderChange] = useState();
   const [content, onContentChange] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const [sender, onSenderChange] = useState();
+  const { table_id } = route.params;
+  const [data, setData] = useState(null);
 
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleDateString("en-US");
+  const fetchTableData = useCallback(async () => {
+    try {
+      const tableData = await getDocumentById("tables", table_id);
+      setData(tableData);
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+    }
+  }, [table_id]);
+
+  useEffect(() => {
+    const reload = navigation.addListener("focus", () => {
+      fetchTableData();
+    });
+    return reload;
+  }, [navigation, fetchTableData]);
 
   const handleCancel = () => {
     navigation.goBack();
   };
 
-  const handleAddComment = () => {
-
+  const handlePayment = async () => {
+    try {
+      await addCustomer(data.customer.name, data.customer.phone);
+      await addOrder(
+        data.date,
+        data.total,
+        data.guests,
+        data.customer,
+        data.items,
+        content,
+      );
+      await deleteTableData(table_id);
+      alert("Hóa đơn này đã được chuyển sang trạng thái chờ thanh toán!");
+      navigation.navigte("table_staff");
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
   };
 
   return (
@@ -35,42 +70,35 @@ const Comment = ({ navigation, route }) => {
       <Animated.View style={[styles.container]}>
         <HomeHeadNav navigation={navigation} title="NHẬN XÉT" user="staff" />
         <ScrollView>
-          <Text style={styles.header}>Người viết:</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={onSenderChange}
-            value={sender}
-          ></TextInput>
+          {data && (
+            <View>
+              <Text style={styles.header}>Người viết:</Text>
+              <Text style={styles.input}>{data.customer.name}</Text>
 
-          <Text style={styles.header}>Ngày viết:</Text>
-          <Text style={styles.input}>{formattedDate}</Text>
+              <Text style={styles.header}>Ngày viết:</Text>
+              <Text style={styles.input}>{data.date}</Text>
 
-          <Text style={styles.header}>Nội dung:</Text>
-          <TextInput
-            style={[styles.input, { height: 150 }]} // Adjust height for multiline input
-            multiline={true} // Allow multiline input
-            onChangeText={onContentChange}
-            value={content}
-            onFocus={() => {}}
-          ></TextInput>
+              <Text style={styles.header}>Nội dung:</Text>
+              <TextInput
+                style={[styles.input, { height: 150 }]} // Adjust height for multiline input
+                multiline={true} // Allow multiline input
+                onChangeText={onContentChange}
+                value={content}
+                onFocus={() => {}}
+              ></TextInput>
+            </View>
+          )}
 
           <Text style={styles.header}>Đánh giá</Text>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleAddComment}>
+            <TouchableOpacity style={styles.button} onPress={handlePayment}>
               <Text style={styles.buttonText}>Gửi</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleCancel}>
               <Text style={styles.buttonText}>Hủy</Text>
             </TouchableOpacity>
           </View>
-          {isLoading && (
-            <View style={styles.loadingOverlay}>
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#fff" />
-              </View>
-            </View>
-          )}
         </ScrollView>
       </Animated.View>
     </KeyboardAvoidingView>
@@ -177,17 +205,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     backgroundColor: "lightblue",
-  },
-  loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loadingContainer: {
-    backgroundColor: "#333",
-    padding: 20,
-    borderRadius: 10,
   },
 });
 
