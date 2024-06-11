@@ -18,7 +18,7 @@ Our project use React Native for front-end and Node.js + Firebase database for s
             |_admin/ --> all code for admin role
             |_staff/ --> all code for staff role
             |_cashier/ --> all code for cashier role
-            |_kitche_manager/ --> all code for kitchen manager role
+            |_kitchen_manager/ --> all code for kitchen manager role
       |_utils/
             |_auth.js --> all code involved in authentication
             |_firestore.js --> all codes for server side
@@ -47,7 +47,7 @@ npx expo start/npm start
 
 After that, you will see this screen: ![image](https://github.com/vanhsusu03/Restaurant-Management-App/assets/98511848/9b73b0f9-3cfe-4719-be10-3d046ebcd4d7)
 
-You can use Expo Go app (download from your mobile device) scan QR and start running this app. Or, you can use Android Simulator extension for running on some IDE like Visual Studio Code, or running directly by using virtual device on Adroid Studio.
+You can use Expo Go app (download from your mobile device) scan QR and start running this app. Or, you can use Android Simulator extension for running on some IDE like Visual Studio Code, or running directly by using virtual device on Android Studio.
 
 ## :raising_hand: Questions
 If you have any questions about running this code, or this project, contact us - the developers: 
