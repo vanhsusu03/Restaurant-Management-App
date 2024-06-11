@@ -7,6 +7,7 @@ const AdminSaleScreen = ({ navigation }) => {
     return (
         <View>
             <HomeHeadNav navigation={navigation} title='DOANH THU' user='admin'/>
+            
         </View>
     )
 }

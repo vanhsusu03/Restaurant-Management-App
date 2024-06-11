@@ -715,6 +715,13 @@ const cancelPreorderBooking = async (table_id, preorder) => {
           await tableRef.update({ preorder: tableData.preorder });
 
           console.log("Preorder deleted successfully.");
+
+          if(tableData.preorder.length == 0 ) {
+              await tableRef.update({
+                  state: "available"
+              })
+              console.log("Đã hết preorder, chuyển về available");
+          }
         } else {
           console.log("Preorder not found in the preorder array.");
         }
