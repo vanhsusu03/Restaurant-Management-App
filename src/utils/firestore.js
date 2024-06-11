@@ -145,7 +145,15 @@ const getDocumentById = async (collectionName, documentId) => {
 
     if (documentSnapshot.exists) {
       console.log("Getting document successfully!");
-      return { id: documentSnapshot.id, ...documentSnapshot.data() };
+      const documentData = documentSnapshot.data();
+      // Assuming the timestamp field is named 'timestamp'
+      const timestamp = documentData.timestamp;
+      return { 
+        id: documentSnapshot.id, 
+        ...documentData,
+        date: moment(timestamp.toDate()).format('DD-MM-YYYY'),
+      time: moment(timestamp.toDate()).format('HH:mm')
+      };
     } else {
       console.log("Document not found");
     }
@@ -340,6 +348,7 @@ const addCustomer = async (name, phone) => {
   }
 };
 
+
 const addOrder = async (table_id, date, total, guests, customer, items) => {
   try {
     await firebase.firestore().collection("order").add({
@@ -349,6 +358,7 @@ const addOrder = async (table_id, date, total, guests, customer, items) => {
       guests: guests,
       customer: customer,
       items: items,
+      comment: comment,
       state: "Chờ thanh toán",
     });
     console.log("Order added successfully!");
