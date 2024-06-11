@@ -779,6 +779,49 @@ const payment = async (orderId, date, total) => {
   }
 };
 
+const fetchPaymentData = async () => {
+  try {
+    const paymentRef = await firebase.firestore().collection("payment").get();
+    var date = new Date().getDate();
+    var month = new Date().getMonth();
+    var year = new Date().getFullYear();
+
+    const paymentData = paymentRef.docs.map((cusDoc) => {
+      const itemData = cusDoc.data();
+      return { ...itemData };
+    });
+    return paymentData;
+
+  //   querySnapshot.forEach(async (doc) => {
+  //     await doc.ref.update({
+  //       name: name,
+  //       age: age,
+  //       gender: gender,
+  //       role: role,
+  //       email: email,
+  //       phone: phone,
+  //     });
+  //   console.log("Edit info staff successfully:", doc.id);
+  // });
+
+    // if(labelText == "week") {
+    //   querySnapshot = await paymentRef
+    //   .where("date", "<=",  )
+    //   .where("email", "==", staff.email)
+    //   .get();
+    // } else if (labelText == 'week') {
+  
+    // } else if (labelText == 'month') {
+  
+    // } else if (labelText == 'year') {
+  
+    // }
+    // return querySnapshot;
+  } catch(error) {
+    console.log("Error when fetching payment data: " + error);
+  }
+};
+
 export {
   getImage,
   upImgStogare,
@@ -811,5 +854,6 @@ export {
   fetchCategoryImages,
   addOrderByTable,
   addOrderedDishes,
-  payment
+  payment,
+  fetchPaymentData
 };
