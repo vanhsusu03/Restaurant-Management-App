@@ -270,7 +270,7 @@ const AdminSaleScreen = ({ navigation }) => {
             <Text style={styles.paymentId}>{item.date}</Text>
           </View>
           <View style={styles.totalContainer}>
-            <Text style={styles.paymentId}>{item.total / 1000}.000vnd</Text>
+            <Text style={styles.paymentId}>{item.total/1000}.000 vnđ</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -367,7 +367,9 @@ const styles = StyleSheet.create({
   },
   totalContainer: {
     alignItems: 'center',
-    justifyContent: 'left'
+    justifyContent: 'left',
+    // marginHorizontal: 30,
+    flex: 4
   },
   header: {
     textAlign: 'center',
