@@ -72,24 +72,23 @@ const BookedDetailScreen = ({ navigation, route }) => {
         </View>
                 <View style={styles.button_padding} />
         <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button}                   onPress={async () => {
-                                                                                    await handleCancelPreorderBooking();
-                                                                                    Alert.alert(
-                                                                                                  "Thông báo",
-                                                                                                  "Hủy đặt trước bàn thành công"
-                                                                                                )
-                                                                                                try {
-                                                                                                  navigation.navigate("table_cashier");
-                                                                                                } catch (error) {
-                                                                                                  console.error("Error navigating to :TableScreen", error);
-                                                                                                }
-                                                                                  }
-                                                                                    }>
+                        <TouchableOpacity style={styles.button} 
+                        onPress={async () => {
+                          await handleCancelPreorderBooking();
+                          Alert.alert(
+                            "Thông báo",
+                            "Hủy đặt trước bàn thành công"
+                            )
+                            try {
+                              navigation.navigate("table_cashier");
+                            } catch (error) {
+                              console.error("Error navigating to :TableScreen", error);
+                            }}}>
                           <Text style={styles.buttonText}>Hủy đặt bàn</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button} onPress={handleCancel}>
                                                   <Text style={styles.buttonText}>Quay lại</Text>
-                                                </TouchableOpacity>
+                        </TouchableOpacity>
                       </View>
       </ScrollView>
     </KeyboardAvoidingView>
