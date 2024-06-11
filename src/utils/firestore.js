@@ -348,9 +348,11 @@ const addCustomer = async (name, phone) => {
   }
 };
 
-const addOrder = async (date, total, guests, customer, items, comment) => {
+
+const addOrder = async (table_id, date, total, guests, customer, items) => {
   try {
     await firebase.firestore().collection("order").add({
+      table: table_id,
       date: date,
       total: total,
       guests: guests,
@@ -748,6 +750,28 @@ const cancelBooking = async (table_id) => {
   }
 };
 
+const payment = async (orderId, date, total) => {
+  try {
+    // Get a reference to the order document
+    const orderRef = firebase.firestore().collection('order').doc(orderId);
+
+    // Update the state field to 'Đã thanh toán'
+    await orderRef.update({
+      state: 'Đã thanh toán'
+    });
+    console.log('Order state was updated successfully.');
+    await firebase.firestore().collection("payment").add({
+      orderId: orderId,
+      date: date,
+      total: total,
+    });
+    console.log("Payment was added successfully!");
+    return true;
+  } catch (error) {
+    console.error('Error updating order state:', error);
+  }
+};
+
 export {
   getImage,
   upImgStogare,
@@ -780,4 +804,5 @@ export {
   fetchCategoryImages,
   addOrderByTable,
   addOrderedDishes,
+  payment
 };

@@ -43,7 +43,7 @@ const Comment = ({ navigation, route }) => {
   }, [navigation, fetchTableData]);
 
   const handleCancel = () => {
-    navigation.goBack();
+    navigation.navigate("table_staff");
   };
 
   const handlePayment = async () => {
