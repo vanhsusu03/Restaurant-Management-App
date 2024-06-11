@@ -12,7 +12,7 @@ const PaymentDetail = ({ navigation, route }) => {
 
   const handlePayment = async () => {
     try {
-        await payment(data.id);
+        await payment(data.id, data.date, data.total);
         alert('Hóa đơn này đã được thanh toán thành công!');
         navigation.navigate('payment_cashier');
     } catch (error) {
