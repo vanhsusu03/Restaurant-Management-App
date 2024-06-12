@@ -21,6 +21,7 @@ import {
   addInforUsing,
 } from "../../../utils/firestore";
 import { firebase } from "../../../../Firebase/firebase";
+import moment from 'moment' // import moment library
 
 const AddInforBooking = ({ navigation, route }) => {
   const { table_id } = route.params;
@@ -46,12 +47,12 @@ const AddInforBooking = ({ navigation, route }) => {
             "Điền thiếu thông tin khách hàng"
             )
       }
+
       else {
         // Convert bookingDate and bookingTime to a Firestore timestamp
         const dateTimeString = `${bookingDate} ${bookingTime}`
-        const timestamp = moment(dateTimeString, 'DD-MM-YYYY HH:mm').toDate()
+        const timestamp = moment(dateTimeString, 'DD/MM/YYYY HH:mm').toDate()
         console.log(timestamp)
-
         addInforUsing(
                       table_id,
                       customerName,

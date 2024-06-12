@@ -50,6 +50,7 @@ const Comment = ({ navigation, route }) => {
     try {
       await addCustomer(data.customer.name, data.customer.phone);
       await addOrder(
+        table_id,
         data.date,
         data.total,
         data.guests,

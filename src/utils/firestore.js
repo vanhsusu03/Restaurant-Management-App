@@ -156,7 +156,7 @@ const getDocumentById = async (collectionName, documentId) => {
       return {
         id: documentSnapshot.id,
         ...documentData,
-        date: moment(timestamp.toDate()).format('DD-MM-YYYY'),
+        date: moment(timestamp.toDate()).format('DD/MM/YYYY'),
         time: moment(timestamp.toDate()).format('HH:mm')
       }
     } else {
@@ -187,6 +187,20 @@ const fetchReportData = async () => {
   }
 }
 
+const fetchOrderRateData = async () => {
+  try {
+    const rate = await firebase.firestore().collection("rate").get();
+    const rateList = [];
+    rate.forEach((doc) => {
+      rateList.push(doc.data());
+    });
+    return rateList;
+  } catch (err) {
+    console.error("Error when fetching data report:", err);
+    return [];
+  }
+};
+
 const fetchTableData = async () => {
   try {
     const table = await firebase.firestore().collection('tables').get()
@@ -212,7 +226,7 @@ const fetchPreOrderData = async tableId => {
     // Convert timestamp to date and time strings
     const updatedPreorderList = preorderList.map(item => ({
       ...item,
-      date: moment(item.timestamp.toDate()).format('DD-MM-YYYY'),
+      date: moment(item.timestamp.toDate()).format('DD/MM/YYYY'),
       time: moment(item.timestamp.toDate()).format('HH:mm')
     }))
 
@@ -365,7 +379,7 @@ const addCustomer = async (name, phone) => {
   }
 }
 
-const addOrder = async (table_id, date, total, guests, customer, items) => {
+const addOrder = async (table_id, date, total, guests, customer, items, comment) => {
   try {
     await firebase.firestore().collection('order').add({
       table: table_id,
@@ -691,7 +705,7 @@ const deleteTableData = async tableId => {
       .doc(tableId)
       .update({
         customer: { name: '', phone: '' },
-        items: []
+        items: [],
       })
 
     // Truy xuất tài liệu để kiểm tra preorder
@@ -850,6 +864,7 @@ export {
   fetchPendingOrderData,
   fetchOrderedDishesData,
   fetchCompletedDishesData,
+  fetchOrderRateData,
   updateDishState,
   fetchCategoryData,
   fetchCategoryImages,

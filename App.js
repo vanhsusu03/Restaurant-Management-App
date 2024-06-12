@@ -12,6 +12,7 @@ import AdminTableScreen from './src/screens/admin/TableScreen.js'
 import AdminReportScreen from './src/screens/admin/ReportScreen.js'
 import AdminSaleScreen from './src/screens/admin/SaleScreen.js'
 import AdminUserScreen from './src/screens/admin/UserScreen.js'
+import OrderRateScreen from './src/screens/admin/OrderRateScreen.js'
 import SideBar from './src/components/SideBar.js'
 import DishDetail from './src/screens/admin/menu/DishDetail';
 import AddDish from './src/screens/admin/menu/AddDish';
@@ -65,6 +66,7 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="report_admin" component={AdminReportScreen} options={{ headerShown: false }} />
             <Stack.Screen name="sale_admin" component={AdminSaleScreen} options={{ headerShown: false }} />
             <Stack.Screen name="user" component={AdminUserScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="order_rate" component={OrderRateScreen} options={{ headerShown: false }} />
 
             {/* Trang dành cho staff */}
             <Stack.Screen name="customer_staff" component={StaffCustomerScreen} options={{ headerShown: false }} />
@@ -88,6 +90,7 @@ const Stack = createNativeStackNavigator();
             <Stack.Screen name="preorder_table" component={PreOrderScreen} options={{ headerShown: false }} />
             <Stack.Screen name="add_preorder" component={BookedTableScreen} options={{ headerShown: false }} />
             <Stack.Screen name="preorder_detail" component={BookedDetailScreen} options={{ headerShown: false }} />
+
             {/* Trang dành cho kitchen_manager */}
             <Stack.Screen name="menu_kitchen_manager" component={KitchenManagerMenuScreen} options={{ headerShown: false }} />
             <Stack.Screen name="ordered_dishes" component={OrderedDishesScreen} options={{ headerShown: false }} />
