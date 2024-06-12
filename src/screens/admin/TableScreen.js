@@ -34,8 +34,7 @@ const AdminTableScreen = ({ navigation }) => {
   };
 
   const renderTable = ({ item }) => {
-//  alert(item.img)
-//const img = item.img;
+
     return (
       <Image
         source={
