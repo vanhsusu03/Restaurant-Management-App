@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { Table, Row, TableWrapper } from 'react-native-table-component';
 import { firebase } from '../../../../Firebase/firebase';
 import { payment } from '../../../utils/firestore';
@@ -23,7 +23,7 @@ const PaymentDetail = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <HomeHeadNav navigation={navigation} title='CHI TIẾT HÓA ĐƠN' user='cashier'/>
-
+        <ScrollView>
         <View style={styles.customer}>
           <View style={styles.customerInfo}>
             <Text style={styles.customerTitle}>Tên khách hàng: </Text>
@@ -94,6 +94,7 @@ const PaymentDetail = ({ navigation, route }) => {
           <Text style={styles.buttonText}>Thanh toán</Text>
         </TouchableOpacity>
       </View>
+        </ScrollView>
     </View>
   );
 };
