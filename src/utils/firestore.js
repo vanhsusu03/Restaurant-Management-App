@@ -392,6 +392,13 @@ const addOrder = async (table_id, date, total, guests, customer, items, comment)
       state: 'Chờ thanh toán'
     })
     console.log('Order added successfully!')
+    if (comment.length === 0) {
+      await firebase.firestore().collection('rate').add({
+        date: date,
+        rate: comment,
+      });
+    }
+    console.log('Rate added successfully!')
     return true
   } catch (error) {
     console.error('Error adding order:', error)
