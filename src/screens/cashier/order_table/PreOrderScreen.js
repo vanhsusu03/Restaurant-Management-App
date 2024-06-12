@@ -23,7 +23,8 @@ import {
 import { firebase } from '../../../../Firebase/firebase'
 
 const PreOrderScreen = ({ navigation, route }) => {
-  const { table_id } = route.params
+  const table_id = route.params.table_id
+  const img = route.params.img
   const [customerName, setCustomerName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [bookingDate, setBookingDate] = useState('')
@@ -75,7 +76,7 @@ const PreOrderScreen = ({ navigation, route }) => {
       />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.imageContainer}>
-          <Image source={require('../../../../assets/TableList/Table1.png')} />
+          <Image source={{ uri: img }} />
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Tên khách hàng:</Text>

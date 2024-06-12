@@ -167,6 +167,33 @@ const getDocumentById = async (collectionName, documentId) => {
   }
 }
 
+const getImageByTableId = async (tableId) => {
+  try {
+    const documentRef = firebase.firestore().collection('tables').doc(tableId);
+    const documentSnapshot = await documentRef.get();
+
+    if (documentSnapshot.exists) {
+      console.log('Getting document successfully!');
+      const documentData = documentSnapshot.data();
+      const img = documentData.img; // Extract the 'img' field
+
+      if (img) {
+        return img;
+      } else {
+        console.log('Image field not found in the document');
+        return null;
+      }
+    } else {
+      console.log('Document not found');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error getting document:', error);
+    return null;
+  }
+}
+
+
 const fetchReportData = async () => {
   try {
     const report = await firebase.firestore().collection('report').get()
@@ -392,7 +419,7 @@ const addOrder = async (table_id, date, total, guests, customer, items, comment)
       state: 'Chờ thanh toán'
     })
     console.log('Order added successfully!')
-    if (comment.length === 0) {
+    if (comment.length !== 0) {
       await firebase.firestore().collection('rate').add({
         date: date,
         rate: comment,
@@ -879,4 +906,5 @@ export {
   addOrderedDishes,
   payment,
   fetchPaymentData,
+  getImageByTableId
 }

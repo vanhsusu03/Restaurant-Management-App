@@ -26,6 +26,7 @@ import { firebase } from "../../../../Firebase/firebase";
 
 const BookedTableScreen = ({ navigation, route }) => {
     const table_id = route.params.table_id;
+    const img = route.params.img;
     const [preorderList, setPreOrderList] = useState("");
 
     const statusTable = route.params.status;
@@ -78,7 +79,7 @@ const BookedTableScreen = ({ navigation, route }) => {
         const handleShowOptions = () => {
             try {
             if(statusTable === 'booked') {
-                navigation.navigate("table_booking", {table_id: table_id});
+                navigation.navigate("table_booking", {table_id: table_id, img: img});
             } else if (statusTable === 'in use') {
                 navigation.navigate("table_detail", {table_id: table_id});
             }

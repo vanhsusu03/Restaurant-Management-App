@@ -25,7 +25,8 @@ import {
 import { firebase } from '../../../../Firebase/firebase'
 
 const BookedTableScreen = ({ navigation, route }) => {
-  const { table_id } = route.params
+  const table_id = route.params.table_id
+  const img = route.params.img
   const [preorderList, setPreOrderList] = useState('')
 
   const reloadPreOrder = useCallback(async () => {
@@ -56,7 +57,8 @@ const BookedTableScreen = ({ navigation, route }) => {
         onPress={() =>
           navigation.navigate('preorder_detail', {
             table_id: table_id,
-            preorder: item
+            preorder: item,
+            img: img
           })
         }
       >

@@ -40,9 +40,9 @@ const CashierTableScreen = ({ navigation }) => {
             case "unavailable":
               return;
             case "available":
-              return navigation.navigate("preorder_table", {table_id: ID});
+              return navigation.navigate("preorder_table", {table_id: ID, img: item.img });
             case "booked":
-              return navigation.navigate("add_preorder", { table_id: ID });
+              return navigation.navigate("add_preorder", { table_id: ID, img: item.img });
             case "in use":
             return navigation.navigate("add_preorder", {table_id: ID});
           }
