@@ -50,6 +50,7 @@ const Comment = ({ navigation, route }) => {
     try {
       await addCustomer(data.customer.name, data.customer.phone);
       await addOrder(
+        table_id,
         data.date,
         data.total,
         data.guests,
@@ -59,7 +60,7 @@ const Comment = ({ navigation, route }) => {
       );
       await deleteTableData(table_id);
       alert("Hóa đơn này đã được chuyển sang trạng thái chờ thanh toán!");
-      navigation.navigte("table_staff");
+      navigation.navigate("table_staff");
     } catch (error) {
       console.error("Error saving data:", error);
     }

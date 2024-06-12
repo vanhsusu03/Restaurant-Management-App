@@ -156,7 +156,7 @@ const getDocumentById = async (collectionName, documentId) => {
       return {
         id: documentSnapshot.id,
         ...documentData,
-        date: moment(timestamp.toDate()).format('DD-MM-YYYY'),
+        date: moment(timestamp.toDate()).format('DD/MM/YYYY'),
         time: moment(timestamp.toDate()).format('HH:mm')
       }
     } else {
@@ -226,7 +226,7 @@ const fetchPreOrderData = async tableId => {
     // Convert timestamp to date and time strings
     const updatedPreorderList = preorderList.map(item => ({
       ...item,
-      date: moment(item.timestamp.toDate()).format('DD-MM-YYYY'),
+      date: moment(item.timestamp.toDate()).format('DD/MM/YYYY'),
       time: moment(item.timestamp.toDate()).format('HH:mm')
     }))
 
@@ -379,7 +379,7 @@ const addCustomer = async (name, phone) => {
   }
 }
 
-const addOrder = async (table_id, date, total, guests, customer, items) => {
+const addOrder = async (table_id, date, total, guests, customer, items, comment) => {
   try {
     await firebase.firestore().collection('order').add({
       table: table_id,
@@ -705,7 +705,7 @@ const deleteTableData = async tableId => {
       .doc(tableId)
       .update({
         customer: { name: '', phone: '' },
-        items: []
+        items: [],
       })
 
     // Truy xuất tài liệu để kiểm tra preorder
