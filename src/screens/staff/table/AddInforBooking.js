@@ -21,7 +21,6 @@ import {
   addInforUsing,
 } from "../../../utils/firestore";
 import { firebase } from "../../../../Firebase/firebase";
-import moment from 'moment' // import moment library
 
 const AddInforBooking = ({ navigation, route }) => {
   const { table_id } = route.params;
