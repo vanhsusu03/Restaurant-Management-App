@@ -5,16 +5,16 @@ import { FlatList } from 'react-native';
 import { colors, veg, nonveg } from '../../globals/style.js'
 
 import { FontAwesome6, FontAwesome5 } from '@expo/vector-icons';
-import { fetchReportData, addReport } from '../../utils/firestore.js';
+import { fetchOrderRateData } from '../../utils/firestore.js';
 
-const AdminReportScreen = ({ navigation }) => {
-    const [reportList, setReportList] = useState([]);
+const OrderRateScreen = ({ navigation }) => {
+    const [rateList, setRateList] = useState([]);
     const animatedContainerRef = useRef(new Animated.Value(0)).current;
 
-    const reloadReport = useCallback(async () => {
+    const reloadRate = useCallback(async () => {
         try {
-            const newData = await fetchReportData();
-            setReportList(newData);
+            const newData = await fetchOrderRateData();
+            setRateList(newData);
 
         } catch (error) {
             console.error("Error reloading data:", error);
@@ -24,20 +24,17 @@ const AdminReportScreen = ({ navigation }) => {
 
     useEffect(() => {
         const reload = navigation.addListener('focus', () => {
-            reloadReport();
+            reloadRate();
         });
 
         return reload;
-    }, [navigation, reloadReport]);
+    }, [navigation, reloadRate]);
 
-    const renderReport = ({ item }) => {
-        const limitedTitle = item.title.slice(0, 30);
+    const renderRate = ({ item }) => {
+        const limitedTitle = item.rate.slice(0, 20);
 
         return (
-            <TouchableOpacity
-                style={styles.reportItem}
-                onPress={() => navigation.navigate('report_staff_view', { report: item, user: 'admin' })}
-            >
+            <View style={styles.reportItem}>
                 <View style={styles.reportContainer}>
                     <FontAwesome5 name="file-alt" style={styles.reportIcon} />
                     <View style={styles.reportTitleContainer}>
@@ -47,21 +44,21 @@ const AdminReportScreen = ({ navigation }) => {
                         <Text style={styles.reportDate}>{item.date}</Text>
                     </View>
                 </View>
-            </TouchableOpacity>
+            </View>
         )
     }
 
 
     return (
         <View>
-            <HomeHeadNav navigation={navigation} title='BÁO CÁO' user='admin' />
+            <HomeHeadNav navigation={navigation} title='ĐÁNH GIÁ' user='admin' />
             <View style={styles.listTitleContainer}>
-                 <Text style={styles.listTitle}>DANH SÁCH BÁO CÁO</Text>
+                 <Text style={styles.listTitle}>ĐÁNH GIÁ CỦA KHÁCH HÀNG</Text>
             </View>
             <View>
                 <FlatList
-                    data={reportList}
-                    renderItem={renderReport}
+                    data={rateList}
+                    renderItem={renderRate}
                     keyExtractor={(_, index) => index.toString()}
                 />
             </View>
@@ -150,4 +147,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default AdminReportScreen;
+export default OrderRateScreen;

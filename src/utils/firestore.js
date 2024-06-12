@@ -174,6 +174,20 @@ const fetchReportData = async () => {
   }
 };
 
+const fetchOrderRateData = async () => {
+  try {
+    const rate = await firebase.firestore().collection("rate").get();
+    const rateList = [];
+    rate.forEach((doc) => {
+      rateList.push(doc.data());
+    });
+    return rateList;
+  } catch (err) {
+    console.error("Error when fetching data report:", err);
+    return [];
+  }
+};
+
 const fetchTableData = async () => {
   try {
     const table = await firebase.firestore().collection("tables").get();
@@ -789,6 +803,7 @@ export {
   fetchPendingOrderData,
   fetchOrderedDishesData,
   fetchCompletedDishesData,
+  fetchOrderRateData,
   updateDishState,
   fetchCategoryData,
   fetchCategoryImages,
