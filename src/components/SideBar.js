@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { colors } from '../globals/style.js';
-import { MaterialIcons, FontAwesome, SimpleLineIcons, FontAwesome6, Ionicons } from '@expo/vector-icons';
+import { MaterialIcons, FontAwesome, SimpleLineIcons, FontAwesome6, Ionicons, AntDesign } from '@expo/vector-icons';
 
 const SideBar = ({ navigation, title, user }) => {
     const [activeItem, setActiveItem] = useState(null);
@@ -21,6 +21,7 @@ const SideBar = ({ navigation, title, user }) => {
         { title: 'QUẢN LÝ BÀN', screenName: 'table_admin', type: MaterialIcons, icon: 'table-restaurant' },
         { title: 'BÁO CÁO', screenName: 'report_admin', type: SimpleLineIcons, icon: 'notebook' },
         { title: 'DOANH THU', screenName: 'sale_admin', type: FontAwesome6, icon: 'money-check-dollar' },
+        { title: 'ĐÁNH GIÁ', screenName: 'order_rate', type: AntDesign, icon: 'star' },
     ];
 
     // Khai báo các mục cho người dùng "staff"

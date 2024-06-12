@@ -55,11 +55,11 @@ const CashierTableScreen = ({ navigation }) => {
               case "unavailable":
                 return null;
               case "available":
-                return require("../../../assets/TableList/Table1.png");
+                return { uri: item.img };
               case "booked":
-                return require("../../../assets/TableList/Table1booked.png");
+                return { uri: item.imgBooked };
               case "in use":
-                return require("../../../assets/TableList/Table1using.png");
+                return { uri: item.imgUsing };
             }
           })()}
           style={styles.imageTable}

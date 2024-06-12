@@ -34,19 +34,18 @@ const AdminTableScreen = ({ navigation }) => {
   };
 
   const renderTable = ({ item }) => {
-//  alert(item.img)
-//const img = item.img;
     return (
       <Image
         source={
-          item.state == "unavailable"
+          item.state === "unavailable"
             ? null
-            : require("../../../assets/TableList/Table1.png")
+            : { uri: item.img }
         }
         style={styles.imageTable}
       />
     );
   };
+
   return (
     reloadTable(),
     <View style={styles.container}>
