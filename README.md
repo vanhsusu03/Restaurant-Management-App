@@ -4,14 +4,14 @@
 
 A mobile app for managing your own Thai hotpot restaurant. There're 4 actors in our system: administrator(s), staff(s), kitchen manager(s) and cashier(s).
 
-Each actor will have their own activities. **Staff** can confirm guest's infors to using table, order for guest(s) and serve dishes. **Kitchen manager** is a role that control all ordered dishes. **Cashier** will get pre-order from guests and control payment. **Administrator** will control the whole processes in the system.
+Each actor has their own activities. **Staff** can confirm guest's infors to using table, order for guest(s) and serve dishes. **Kitchen manager** is a role that control all ordered dishes. **Cashier** will get pre-order from guests and control payment. **Administrator** controls the whole processes in the system.
 
 ## :question: What's in this repository
 
 Our project use React Native for front-end and Node.js + Firebase database for server side. This is some important part in our structure:
 ```
 |_Firebase/ 
-      |_fireabse.js --> code for initialize connection to Firebase database
+      |_firebase.js --> code for initialize connection to Firebase database
 
 |_src/
       |_screens --> all front-end codes
@@ -38,7 +38,7 @@ Step-by-step introductions to get you running this app:
 ```bash
 git clone https://github.com/vanhsusu03/Restaurant-Management-App.git 
 ```
-### 2) Running the client side
+### 2) Running project
 
 ```bash
 npm install (or npm i)
