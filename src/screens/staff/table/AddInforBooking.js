@@ -11,6 +11,7 @@ import {
   Alert,
   TouchableOpacity
 } from "react-native";
+import moment from 'moment' // import moment library
 import HomeHeadNav from "../../../components/Header.js";
 import {
   getDocumentById,
@@ -20,7 +21,6 @@ import {
   addInforUsing,
 } from "../../../utils/firestore";
 import { firebase } from "../../../../Firebase/firebase";
-import moment from 'moment' // import moment library
 
 const AddInforBooking = ({ navigation, route }) => {
   const { table_id } = route.params;
@@ -56,7 +56,7 @@ const AddInforBooking = ({ navigation, route }) => {
                       table_id,
                       customerName,
                       phoneNumber,
-                      timestamp,
+                      timestamp, // save as timestamp
                       numberOfGuests
                     );
         await firebase.firestore().collection("tables").doc(table_id).update({ items: [] });
