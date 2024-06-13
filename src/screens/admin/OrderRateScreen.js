@@ -31,7 +31,7 @@ const OrderRateScreen = ({ navigation }) => {
     }, [navigation, reloadRate]);
 
     const renderRate = ({ item }) => {
-        const limitedTitle = item.rate.slice(0, 20);
+        const limitedTitle = item.rate.slice(0, 30);
 
         return (
             <View style={styles.reportItem}>

@@ -18,6 +18,17 @@ import { updateTables } from "../../../utils/firestore.js";
 const EditTables = ({ navigation, route }) => {
   const tableList = route.params;
   const [updatedTableList, setUpdateTableList] = useState(tableList);
+  const images = {
+      1: require("../../../../assets/TableList/Table1.png"),
+      2: require("../../../../assets/TableList/Table2.png"),
+      3: require("../../../../assets/TableList/Table3.png"),
+      4: require("../../../../assets/TableList/Table4.png"),
+      5: require("../../../../assets/TableList/Table5.png"),
+      6: require("../../../../assets/TableList/Table6.png"),
+      7: require("../../../../assets/TableList/Table7.png"),
+      8: require("../../../../assets/TableList/Table8.png"),
+      9: require("../../../../assets/TableList/Table9.png"),
+    };
 
   const fixTable = (item) => {
     Alert.alert(
@@ -81,7 +92,7 @@ const EditTables = ({ navigation, route }) => {
           source={
             item.state == "unavailable"
               ? require("../../../../assets/TableList/TableAdd.png")
-              : require("../../../../assets/TableList/Table1.png")
+              : images[item.id]
           }
           style={styles.imageTable}
         />

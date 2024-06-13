@@ -29,7 +29,6 @@ import TableDetail from './src/screens/staff/table/TableDetail';
 import MenuOrder from './src/screens/staff/table/MenuOrder.js';
 import PaymentScreen from './src/screens/cashier/PaymentScreen.js'
 import CashierTableScreen from './src/screens/cashier/TableScreen.js'
-import CashierSaleScreen from './src/screens/cashier/SaleScreen.js'
 import PaymentDetail from './src/screens/cashier/payment/PaymentDetail';
 import PreOrderScreen from './src/screens/cashier/order_table/PreOrderScreen.js';
 import BookedTableScreen from './src/screens/cashier/order_table/BookedTableScreen.js';
@@ -85,7 +84,6 @@ const Stack = createNativeStackNavigator();
             {/* Trang dành cho cashier */}
             <Stack.Screen name="payment_cashier" component={PaymentScreen} options={{ headerShown: false }} />
             <Stack.Screen name="table_cashier" component={CashierTableScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="sale_cashier" component={CashierSaleScreen} options={{ headerShown: false }} />
             <Stack.Screen name="payment_detail" component={PaymentDetail} options={{ headerShown: false }} />
             <Stack.Screen name="preorder_table" component={PreOrderScreen} options={{ headerShown: false }} />
             <Stack.Screen name="add_preorder" component={BookedTableScreen} options={{ headerShown: false }} />

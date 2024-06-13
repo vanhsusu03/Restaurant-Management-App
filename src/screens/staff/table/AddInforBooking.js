@@ -31,6 +31,19 @@ const AddInforBooking = ({ navigation, route }) => {
   const [bookingTime, setBookingTime] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState(null);
 
+  const images = {
+      1: require("../../../../assets/TableList/Table1.png"),
+      2: require("../../../../assets/TableList/Table2.png"),
+      3: require("../../../../assets/TableList/Table3.png"),
+      4: require("../../../../assets/TableList/Table4.png"),
+      5: require("../../../../assets/TableList/Table5.png"),
+      6: require("../../../../assets/TableList/Table6.png"),
+      7: require("../../../../assets/TableList/Table7.png"),
+      8: require("../../../../assets/TableList/Table8.png"),
+      9: require("../../../../assets/TableList/Table9.png"),
+    };
+
+
   const handleCancel = () => {
           navigation.goBack();
       };
@@ -77,7 +90,7 @@ const AddInforBooking = ({ navigation, route }) => {
       <HomeHeadNav navigation={navigation} title="THÔNG TIN KHÁCH HÀNG" user="staff" />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: img }} />
+          <Image source={images[table_id]} />
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Tên khách hàng:</Text>

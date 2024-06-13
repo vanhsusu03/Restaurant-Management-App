@@ -38,7 +38,6 @@ const SideBar = ({ navigation, title, user }) => {
     const cashierItems = [
         { title: 'THANH TOÁN', screenName: 'payment_cashier', type: MaterialIcons, icon: 'payment' },
         { title: 'ĐẶT BÀN', screenName: 'table_cashier', type: MaterialIcons, icon: 'table-restaurant' },
-        { title: 'DOANH THU', screenName: 'sale_cashier', type: FontAwesome6, icon: 'money-check-dollar' },
     ];
 
     // Khai báo các mục cho người dùng "kitchen_manager"
